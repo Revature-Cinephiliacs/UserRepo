@@ -28,6 +28,10 @@ namespace UserApi
         {
 
             services.AddControllers();
+
+            var conectionstring = Configuration.GetConnectionString("usersecret");
+            //services.AddDbContext<>(option => option.usesqlserver(conectionstring));
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "UserApi", Version = "v1" });
