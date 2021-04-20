@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserApi", "UserApi\UserApi.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models", "Models\Models.csproj", "{13F07963-93B2-43F3-B60A-89975891F8D7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing", "Testing\Testing.csproj", "{77166F95-393A-4C93-9808-29735E32ADA0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -72,5 +74,17 @@ Global
 		{13F07963-93B2-43F3-B60A-89975891F8D7}.Release|x64.Build.0 = Release|Any CPU
 		{13F07963-93B2-43F3-B60A-89975891F8D7}.Release|x86.ActiveCfg = Release|Any CPU
 		{13F07963-93B2-43F3-B60A-89975891F8D7}.Release|x86.Build.0 = Release|Any CPU
+		{77166F95-393A-4C93-9808-29735E32ADA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77166F95-393A-4C93-9808-29735E32ADA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77166F95-393A-4C93-9808-29735E32ADA0}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{77166F95-393A-4C93-9808-29735E32ADA0}.Debug|x64.Build.0 = Debug|Any CPU
+		{77166F95-393A-4C93-9808-29735E32ADA0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{77166F95-393A-4C93-9808-29735E32ADA0}.Debug|x86.Build.0 = Debug|Any CPU
+		{77166F95-393A-4C93-9808-29735E32ADA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77166F95-393A-4C93-9808-29735E32ADA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77166F95-393A-4C93-9808-29735E32ADA0}.Release|x64.ActiveCfg = Release|Any CPU
+		{77166F95-393A-4C93-9808-29735E32ADA0}.Release|x64.Build.0 = Release|Any CPU
+		{77166F95-393A-4C93-9808-29735E32ADA0}.Release|x86.ActiveCfg = Release|Any CPU
+		{77166F95-393A-4C93-9808-29735E32ADA0}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
