@@ -35,7 +35,7 @@ namespace BusinessLogic
         public async Task<bool> UpdateUser(Guid userid, User user)
         {
             var repoUser = Mapper.UserToRepoUser(user);
-            return await _repo.UpdateUser(userid, repoUser);
+            return await _repo.UpdateUser(userid.ToString(), repoUser);
         }
 
          /// <summary>
@@ -73,33 +73,18 @@ namespace BusinessLogic
             return users;
         }
 
-        public Task<bool> IsUserExist(string uid)
-        {
-            throw new NotImplementedException();
-        }
-
         /// <summary>
         /// Delete the user
         /// Return true if successful
         /// </summary>
         public async Task<bool> DeleteUser(Guid userid)
         {
-            return await _repo.DeleteUser(userid);
+            return await _repo.DeleteUser(userid.ToString());
         }
 
-        /// <summary>
-        /// Updates a user's permission to be an admin
-        /// </summary>
-        /// <param name="uid"></param>
-        /// <returns></returns>
-        public async Task<bool> AddAsAdmin(Guid userid)
+        public bool IsUserExistByEmail(string email)
         {
-            return await _repo.AddAsAdmin(userid);
-        }
-
-        public async Task<bool> IsUserExist(Guid userid)
-        {
-            User isUser = await _repo.GetUser(userid);
+            var isUser = _repo.GetUser(email);
             if(isUser == null)
             {
                 return true;
@@ -112,7 +97,7 @@ namespace BusinessLogic
 
         public async Task<bool> UpdatePermissions(Guid userid, int permissionLevel)
         {
-            return await _repo.UpdatePermissions(userid, permissionLevel);
+            return await _repo.UpdatePermissions(userid.ToString(), permissionLevel);
         }
     }
 }
