@@ -110,10 +110,14 @@ namespace BusinessLogic
             return await _repo.UpdatePermissions(userid.ToString(), permissionLevel);
         }
 
-        
-        public async Task<List<string>> GetFollowingMovies(string username)
+        /// <summary>
+        /// Get a list of movies that a user is following using the user's id
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        public async Task<List<string>> GetFollowingMovies(Guid userid)
         {
-            List<Repository.Models.FollowingMovie> repoFollowingMovies = await _repo.GetFollowingMovies(username);
+            List<Repository.Models.FollowingMovie> repoFollowingMovies = await _repo.GetFollowingMovies(userid.ToString());
             if(repoFollowingMovies == null)
             {
                 Console.WriteLine("UserLogic.GetFollowingMovies() was called for a username that doesn't exist.");
@@ -128,15 +132,19 @@ namespace BusinessLogic
             return followingMovies;
         }
 
-           public async Task<bool> FollowMovie(string username, string movieid)
+        /// <summary>
+        /// Have a user start following a movie using the userid and movieid
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <param name="movieid"></param>
+        /// <returns></returns>
+        public async Task<bool> FollowMovie(Guid userid, string movieid)
         {
             Repository.Models.FollowingMovie repoFollowingMovie = new Repository.Models.FollowingMovie();
-            repoFollowingMovie.Username = username;
+            repoFollowingMovie.UserId = userid.ToString();
             repoFollowingMovie.MovieId = movieid;
             
             return await _repo.FollowMovie(repoFollowingMovie);
         }
-
-
     }
 }

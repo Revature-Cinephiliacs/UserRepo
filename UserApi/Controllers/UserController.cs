@@ -172,7 +172,7 @@ namespace CineAPI.Controllers
         [HttpPost("movie/{userid}/{movieid}")]
         public async Task<ActionResult> FollowMovie(Guid userid, string movieid)
         {
-            var result = await _userLogic.FollowMovie(username, movieid);
+            var result = await _userLogic.FollowMovie(userid, movieid);
             if(result)
             {
                 return StatusCode(201);
