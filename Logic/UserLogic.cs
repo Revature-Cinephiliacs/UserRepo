@@ -99,5 +99,34 @@ namespace BusinessLogic
         {
             return await _repo.UpdatePermissions(userid.ToString(), permissionLevel);
         }
+
+        
+        public async Task<List<string>> GetFollowingMovies(string username)
+        {
+            List<Repository.Models.FollowingMovie> repoFollowingMovies = await _repo.GetFollowingMovies(username);
+            if(repoFollowingMovies == null)
+            {
+                Console.WriteLine("UserLogic.GetFollowingMovies() was called for a username that doesn't exist.");
+                return null;
+            }
+
+            List<string> followingMovies = new List<string>();
+            foreach (var repoFollowingMovie in repoFollowingMovies)
+            {
+                followingMovies.Add(repoFollowingMovie.MovieId);
+            }
+            return followingMovies;
+        }
+
+           public async Task<bool> FollowMovie(string username, string movieid)
+        {
+            Repository.Models.FollowingMovie repoFollowingMovie = new Repository.Models.FollowingMovie();
+            repoFollowingMovie.Username = username;
+            repoFollowingMovie.MovieId = movieid;
+            
+            return await _repo.FollowMovie(repoFollowingMovie);
+        }
+
+
     }
 }
