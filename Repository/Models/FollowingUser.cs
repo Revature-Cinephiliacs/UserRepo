@@ -5,6 +5,9 @@ using System.Collections.Generic;
 
 namespace Repository.Models
 {
+    /// <summary>
+    /// Database model for junction table from database-first
+    /// </summary>
     public partial class FollowingUser
     {
         public string FollowerUserId { get; set; }

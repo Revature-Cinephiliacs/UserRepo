@@ -138,5 +138,50 @@ namespace CineAPI.Controllers
                 return StatusCode(404);
             }
         }
+
+        
+        /// <summary>
+        /// Returns a list containing all of the movie IDs for the Movies that
+        /// the User with the provided username is following.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
+        [HttpGet("movies/{userid}")]
+        public async Task<ActionResult<List<string>>> GetFollowingMovies(Guid userid)
+        {
+            List<string> movieids = await _userLogic.GetFollowingMovies(userid);
+            
+            if(movieids == null)
+            {
+                return StatusCode(404);
+            }
+            if(movieids.Count == 0)
+            {
+                return StatusCode(204);
+            }
+            StatusCode(200);
+            return movieids;
+        }
+
+        /// <summary>
+        /// Adds the Movie with the provided movie ID to the provided User's 
+        /// list of Movies they are following.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="movieid"></param>
+        /// <returns></returns>
+        [HttpPost("movie/{userid}/{movieid}")]
+        public async Task<ActionResult> FollowMovie(Guid userid, string movieid)
+        {
+            var result = await _userLogic.FollowMovie(userid, movieid);
+            if(result)
+            {
+                return StatusCode(201);
+            }
+            else
+            {
+                return StatusCode(400);
+            }
+        }
     }
 }
