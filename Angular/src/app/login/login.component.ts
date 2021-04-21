@@ -39,7 +39,7 @@ export class LoginComponent implements OnInit {
   }
 
   login(){
-    console.log("Login attempt" + this.email);
+    console.log("Login attempt: " + this.email);
     this._login.getUser(this.email).subscribe((data: User) => {
       console.log(data);
       this.currentUser = data;
