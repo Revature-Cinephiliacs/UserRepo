@@ -14,7 +14,7 @@ namespace BusinessLogic
         {
             _repo = repo;
         }
-          /// <summary>
+        /// <summary>
         /// Adds a new User Object to repository.
         /// Returns true if sucessful; false otherwise.
         /// </summary>
@@ -44,7 +44,6 @@ namespace BusinessLogic
         /// </summary>
         /// <param name="username"></param>
         /// <returns>User</returns>
-
         public User GetUser(string useremail)
         {
             var repoUser = _repo.GetUser(useremail);
@@ -60,7 +59,6 @@ namespace BusinessLogic
         /// Returns a list of every User object.
         /// </summary>
         /// <returns></returns>
-
         public async Task<List<User>> GetUsers()
         {
             var repoUsers = await _repo.GetUsers();
@@ -82,6 +80,11 @@ namespace BusinessLogic
             return await _repo.DeleteUser(userid.ToString());
         }
 
+        /// <summary>
+        /// Checks if a user already exists in the database by email
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
         public bool IsUserExistByEmail(string email)
         {
             var isUser = _repo.GetUser(email);
@@ -95,6 +98,13 @@ namespace BusinessLogic
             }
         }
 
+        /// <summary>
+        /// Updates the permission levels of a user in the database
+        /// Returns true is successful, else return false.
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <param name="permissionLevel"></param>
+        /// <returns></returns>
         public async Task<bool> UpdatePermissions(Guid userid, int permissionLevel)
         {
             return await _repo.UpdatePermissions(userid.ToString(), permissionLevel);

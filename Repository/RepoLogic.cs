@@ -25,9 +25,19 @@ namespace Repository
         /// <returns></returns>
         public async Task<bool> AddUser(User repoUser)
         {
-            if (UserExists(repoUser.UserId))
+            if (UserExistsById(repoUser.UserId))
             {
-                Console.WriteLine("RepoLogic.AddUser() was called for a user that already exists.");
+                Console.WriteLine("RepoLogic.AddUser() was called for a userid that already exists.");
+                return false;
+            }
+            if (UserExistsByEmail(repoUser.Email))
+            {
+                Console.WriteLine("RepoLogic.AddUser() was called for a useremail that already exists.");
+                return false;
+            }
+            if (UserExistsByUsername(repoUser.Username))
+            {
+                Console.WriteLine("RepoLogic.AddUser() was called for a username that already exists.");
                 return false;
             }
             await _dbContext.Users.AddAsync(repoUser);
@@ -155,7 +165,7 @@ namespace Repository
         /// <returns></returns>
         public async Task<List<FollowingMovie>> GetFollowingMovies(string userId)
         {
-            if(!UserExists(userId))
+            if(!UserExistsById(userId))
             {
                 Console.WriteLine("RepoLogic.GetFollowingMovies() was called for a user that doesn't exist.");
                 return null;
@@ -173,7 +183,7 @@ namespace Repository
         /// <returns></returns>
         public async Task<bool> FollowMovie(FollowingMovie followingMovie)
         {
-            if(!UserExists(followingMovie.UserId))
+            if(!UserExistsById(followingMovie.UserId))
             {
                 Console.WriteLine("RepoLogic.FollowMovie() was called for a user that doesn't exist.");
                 return false;
@@ -202,9 +212,29 @@ namespace Repository
         /// </summary>
         /// <param name="username"></param>
         /// <returns></returns>
-        private bool UserExists(string userId)
+        private bool UserExistsById(string userId)
         {
             return (_dbContext.Users.Where(u => u.UserId == userId).FirstOrDefault<User>() != null);
+        }
+
+        /// <summary>
+        /// Returns true iff the user email exists in the database's Users table
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        private bool UserExistsByEmail(string email)
+        {
+            return (_dbContext.Users.Where(u => u.Email == email).FirstOrDefault<User>() != null);
+        }
+
+        /// <summary>
+        /// Returns true iff the user's username already exists in the database's Users table
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        private bool UserExistsByUsername(string username)
+        {
+            return (_dbContext.Users.Where(u => u.Username == username).FirstOrDefault<User>() != null);
         }
     }
 }
