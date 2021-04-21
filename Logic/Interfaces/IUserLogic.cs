@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-using Repository.Models;
+using Repository;
+using GlobalModels;
 
 namespace BusinessLogic.Interfaces
 {
@@ -41,15 +42,15 @@ namespace BusinessLogic.Interfaces
         /// Delete the user
         /// Return true or false
 
-        public Task<bool> DeleteUser(string uid);
+        // public Task<bool> DeleteUser(string uid);
 
-        /// <summary>
-        /// add admin role to user
-        /// pass user id 
-        /// return true if successful
-        /// </summary>
-        /// 
-        public Task<bool> AddAsAdmin(string uid);
+        // /// <summary>
+        // /// add admin role to user
+        // /// pass user id 
+        // /// return true if successful
+        // /// </summary>
+        // /// 
+        // public Task<bool> AddAsAdmin(string uid);
 
       
     }
