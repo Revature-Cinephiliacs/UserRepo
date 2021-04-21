@@ -25,7 +25,7 @@ namespace Repository
         /// <returns></returns>
         public async Task<bool> AddUser(User repoUser)
         {
-            if (UserExists(repoUser.Username))
+            if (UserExists(repoUser.UserId))
             {
                 Console.WriteLine("RepoLogic.AddUser() was called for a user that already exists.");
                 return false;
@@ -37,23 +37,48 @@ namespace Repository
         }
 
         /// <summary>
-        /// Updates the information of the User identified by the username argument
-        /// to the information in the User object. Returns true iff successful.
-        /// Returns false if the user doesn't exist.
+        /// Updates the information of the User identified by the userId argument
+        /// to the information in the updatedUser object. Returns true iff successful.
+        /// Returns false if the user doesn't exist, if the updated username already exists,
+        /// or if the updated email already exists.
         /// </summary>
         /// <param name="repoUser"></param>
         /// <returns></returns>
-        public async Task<bool> UpdateUser(string username, User updatedUser)
+        public async Task<bool> UpdateUser(string userId, User updatedUser)
         {
-            User existingUser = _dbContext.Users.Where(u => u.Username == username).FirstOrDefault<User>();
+            User existingUser = _dbContext.Users.Where(u => u.UserId == userId).FirstOrDefault<User>();
             if (existingUser == null)
             {
                 Console.WriteLine("RepoLogic.UpdateUser() was called for a user that doesn't exist.");
                 return false;
             }
+            if(existingUser.Username != updatedUser.Username)
+            {
+                if(_dbContext.Users.Where(u => u.Username == updatedUser.Username).FirstOrDefault<User>() == null)
+                {
+                    existingUser.Username = updatedUser.Username;
+                }
+                else
+                {
+                    Console.WriteLine("RepoLogic.UpdateUser() was called with a updated username that already exists.");
+                    return false;
+                }
+            }
+            if(existingUser.Email != updatedUser.Email)
+            {
+                if(_dbContext.Users.Where(u => u.Email == updatedUser.Email).FirstOrDefault<User>() == null)
+                {
+                    existingUser.Email = updatedUser.Email;
+                }
+                else
+                {
+                    Console.WriteLine("RepoLogic.UpdateUser() was called with a updated email that already exists.");
+                    return false;
+                }
+            }
             existingUser.FirstName = updatedUser.FirstName;
             existingUser.LastName = updatedUser.LastName;
-            existingUser.Email = updatedUser.Email;
+            existingUser.DateOfBirth = updatedUser.DateOfBirth;
 
             await _dbContext.SaveChangesAsync();
             return true;
@@ -80,23 +105,59 @@ namespace Repository
             return await _dbContext.Users.ToListAsync();
         }
 
+        
         /// <summary>
-        /// Returns a list of all FollowingMovie objects from the database that match the username
+        /// Removes the user with the userId specified in the argument from the database.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task<bool> DeleteUser(string userId)
+        {
+            User existingUser = _dbContext.Users.Where(u => u.UserId == userId).FirstOrDefault<User>();
+            if (existingUser == null)
+            {
+                Console.WriteLine("RepoLogic.DeleteUser() was called for a user that doesn't exist.");
+                return false;
+            }
+
+            _dbContext.Users.Remove(existingUser);
+
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdatePermissions(string userId, int permissionsLevel)
+        {
+            User existingUser = _dbContext.Users.Where(u => u.UserId == userId).FirstOrDefault<User>();
+            if (existingUser == null)
+            {
+                Console.WriteLine("RepoLogic.UpdatePermissions() was called for a user that doesn't exist.");
+                return false;
+            }
+
+            if(permissionsLevel > 255 || permissionsLevel < 0)
+            {
+                Console.WriteLine("RepoLogic.UpdatePermissions() was called with a permissionsLevel that is " +
+                    "outside the range of the database type (Byte).");
+                return false;
+            }
+            existingUser.Permissions = (byte)permissionsLevel;
+
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        /// <summary>
+        /// Returns a list of all FollowingMovie objects from the database that match the userId
         /// specified in the argument. Returns null if the user doesn't exist.
         /// </summary>
         /// <param name="username"></param>
         /// <returns></returns>
-        public async Task<List<FollowingMovie>> GetFollowingMovies(string username)
+        public async Task<List<FollowingMovie>> GetFollowingMovies(string userId)
         {
-            var userExists = UserExists(username);
-            if(!userExists)
+            if(!UserExists(userId))
             {
                 Console.WriteLine("RepoLogic.GetFollowingMovies() was called for a user that doesn't exist.");
-                return null;
-            }
-            string userId = GetUserId(username);
-            if(userId == null)
-            {
                 return null;
             }
             return await _dbContext.FollowingMovies.Where(f => f.UserId == userId).ToListAsync();
@@ -112,13 +173,7 @@ namespace Repository
         /// <returns></returns>
         public async Task<bool> FollowMovie(FollowingMovie followingMovie)
         {
-            string username = GetUsername(followingMovie.UserId);
-            if(username == null)
-            {
-                return false;
-            }
-            var userExists = UserExists(username);
-            if(!userExists)
+            if(!UserExists(followingMovie.UserId))
             {
                 Console.WriteLine("RepoLogic.FollowMovie() was called for a user that doesn't exist.");
                 return false;
@@ -143,33 +198,13 @@ namespace Repository
         }
 
         /// <summary>
-        /// Returns true iff the username, specified in the argument, exists in the database's Users table.
+        /// Returns true iff the userId, specified in the argument, exists in the database's Users table.
         /// </summary>
         /// <param name="username"></param>
         /// <returns></returns>
-        private bool UserExists(string username)
+        private bool UserExists(string userId)
         {
-            return (_dbContext.Users.Where(u => u.Username == username).FirstOrDefault<User>() != null);
-        }
-
-        private string GetUserId(string username)
-        {
-            User user = _dbContext.Users.Where(u => u.Username == username).FirstOrDefault<User>();
-            if(user == null)
-            {
-                return null;
-            }
-            return user.UserId;
-        }
-
-        private string GetUsername(string userId)
-        {
-            User user = _dbContext.Users.Where(u => u.UserId == userId).FirstOrDefault<User>();
-            if(user == null)
-            {
-                return null;
-            }
-            return user.Username;
+            return (_dbContext.Users.Where(u => u.UserId == userId).FirstOrDefault<User>() != null);
         }
     }
 }
