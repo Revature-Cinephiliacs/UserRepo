@@ -60,14 +60,14 @@ namespace Repository
         }
 
         /// <summary>
-        /// Returns the User object from the database that matches the username specified
-        /// in the argument. Returns null if the username is not found.
+        /// Returns the User object from the database that matches the email specified
+        /// in the argument. Returns null if the email is not found.
         /// </summary>
         /// <param name="username"></param>
         /// <returns></returns>
-        public User GetUser(string username)
+        public User GetUser(string email)
         {
-            return _dbContext.Users.Where(u => u.Username == username).FirstOrDefault<User>();
+            return _dbContext.Users.Where(u => u.Email == email).FirstOrDefault<User>();
         }
 
         /// <summary>
@@ -94,7 +94,12 @@ namespace Repository
                 Console.WriteLine("RepoLogic.GetFollowingMovies() was called for a user that doesn't exist.");
                 return null;
             }
-            return await _dbContext.FollowingMovies.Where(f => f.Username == username).ToListAsync();
+            string userId = GetUserId(username);
+            if(userId == null)
+            {
+                return null;
+            }
+            return await _dbContext.FollowingMovies.Where(f => f.UserId == userId).ToListAsync();
         }
 
         /// <summary>
@@ -107,7 +112,12 @@ namespace Repository
         /// <returns></returns>
         public async Task<bool> FollowMovie(FollowingMovie followingMovie)
         {
-            var userExists = UserExists(followingMovie.Username);
+            string username = GetUsername(followingMovie.UserId);
+            if(username == null)
+            {
+                return false;
+            }
+            var userExists = UserExists(username);
             if(!userExists)
             {
                 Console.WriteLine("RepoLogic.FollowMovie() was called for a user that doesn't exist.");
@@ -117,7 +127,7 @@ namespace Repository
 
             // Ensure the User is not already Following this Movie
             if((await _dbContext.FollowingMovies.Where(fm => 
-                    fm.Username == followingMovie.Username 
+                    fm.UserId == followingMovie.UserId 
                     && fm.MovieId == followingMovie.MovieId
                 ).FirstOrDefaultAsync<FollowingMovie>()) != null)
             {
@@ -140,6 +150,26 @@ namespace Repository
         private bool UserExists(string username)
         {
             return (_dbContext.Users.Where(u => u.Username == username).FirstOrDefault<User>() != null);
+        }
+
+        private string GetUserId(string username)
+        {
+            User user = _dbContext.Users.Where(u => u.Username == username).FirstOrDefault<User>();
+            if(user == null)
+            {
+                return null;
+            }
+            return user.UserId;
+        }
+
+        private string GetUsername(string userId)
+        {
+            User user = _dbContext.Users.Where(u => u.UserId == userId).FirstOrDefault<User>();
+            if(user == null)
+            {
+                return null;
+            }
+            return user.Username;
         }
     }
 }

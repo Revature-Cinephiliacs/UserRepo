@@ -72,6 +72,12 @@ namespace BusinessLogic
             }
             return users;
         }
+
+        public Task<bool> IsUserExist(string uid)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Delete the user
         /// Return true if successful

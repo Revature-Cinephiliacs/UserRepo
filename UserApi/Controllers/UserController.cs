@@ -137,7 +137,5 @@ namespace CineAPI.Controllers
                 return StatusCode(404);
             }
         }
-
-
     }
 }

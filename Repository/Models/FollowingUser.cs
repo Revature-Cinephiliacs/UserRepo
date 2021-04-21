@@ -7,10 +7,10 @@ namespace Repository.Models
 {
     public partial class FollowingUser
     {
-        public string Follower { get; set; }
-        public string Followee { get; set; }
+        public string FollowerUserId { get; set; }
+        public string FolloweeUserId { get; set; }
 
-        public virtual User FolloweeNavigation { get; set; }
-        public virtual User FollowerNavigation { get; set; }
+        public virtual User FolloweeUser { get; set; }
+        public virtual User FollowerUser { get; set; }
     }
 }

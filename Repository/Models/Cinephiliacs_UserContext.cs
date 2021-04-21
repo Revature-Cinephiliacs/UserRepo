@@ -30,69 +30,76 @@ namespace Repository.Models
 
             modelBuilder.Entity<FollowingMovie>(entity =>
             {
-                entity.HasKey(e => new { e.Username, e.MovieId })
+                entity.HasKey(e => new { e.UserId, e.MovieId })
                     .HasName("user_following_movie_pk");
 
                 entity.ToTable("following_movies");
 
-                entity.Property(e => e.Username)
-                    .HasMaxLength(30)
+                entity.Property(e => e.UserId)
+                    .HasMaxLength(50)
                     .IsUnicode(false)
-                    .HasColumnName("username");
+                    .HasColumnName("userID");
 
                 entity.Property(e => e.MovieId)
                     .HasMaxLength(20)
                     .IsUnicode(false)
                     .HasColumnName("movieID");
 
-                entity.HasOne(d => d.UsernameNavigation)
+                entity.HasOne(d => d.User)
                     .WithMany(p => p.FollowingMovies)
-                    .HasForeignKey(d => d.Username)
+                    .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__following__usern__66603565");
+                    .HasConstraintName("FK__following__userI__797309D9");
             });
 
             modelBuilder.Entity<FollowingUser>(entity =>
             {
-                entity.HasKey(e => new { e.Follower, e.Followee })
+                entity.HasKey(e => new { e.FollowerUserId, e.FolloweeUserId })
                     .HasName("follower_followee_pk");
 
                 entity.ToTable("following_users");
 
-                entity.Property(e => e.Follower)
-                    .HasMaxLength(30)
+                entity.Property(e => e.FollowerUserId)
+                    .HasMaxLength(50)
                     .IsUnicode(false)
-                    .HasColumnName("follower");
+                    .HasColumnName("follower_userID");
 
-                entity.Property(e => e.Followee)
-                    .HasMaxLength(30)
+                entity.Property(e => e.FolloweeUserId)
+                    .HasMaxLength(50)
                     .IsUnicode(false)
-                    .HasColumnName("followee");
+                    .HasColumnName("followee_userID");
 
-                entity.HasOne(d => d.FolloweeNavigation)
-                    .WithMany(p => p.FollowingUserFolloweeNavigations)
-                    .HasForeignKey(d => d.Followee)
+                entity.HasOne(d => d.FolloweeUser)
+                    .WithMany(p => p.FollowingUserFolloweeUsers)
+                    .HasForeignKey(d => d.FolloweeUserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__following__follo__5FB337D6");
+                    .HasConstraintName("FK__following__follo__76969D2E");
 
-                entity.HasOne(d => d.FollowerNavigation)
-                    .WithMany(p => p.FollowingUserFollowerNavigations)
-                    .HasForeignKey(d => d.Follower)
+                entity.HasOne(d => d.FollowerUser)
+                    .WithMany(p => p.FollowingUserFollowerUsers)
+                    .HasForeignKey(d => d.FollowerUserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__following__follo__5EBF139D");
+                    .HasConstraintName("FK__following__follo__75A278F5");
             });
 
             modelBuilder.Entity<User>(entity =>
             {
-                entity.HasKey(e => e.Username)
-                    .HasName("PK__users__F3DBC5734CF2C035");
-
                 entity.ToTable("users");
 
-                entity.Property(e => e.Username)
-                    .HasMaxLength(30)
+                entity.HasIndex(e => e.Email, "UQ__users__AB6E6164D3A26C5C")
+                    .IsUnique();
+
+                entity.HasIndex(e => e.Username, "UQ__users__F3DBC572EED267C9")
+                    .IsUnique();
+
+                entity.Property(e => e.UserId)
+                    .HasMaxLength(50)
                     .IsUnicode(false)
-                    .HasColumnName("username");
+                    .HasColumnName("userID");
+
+                entity.Property(e => e.DateOfBirth)
+                    .HasColumnType("date")
+                    .HasColumnName("date_of_birth");
 
                 entity.Property(e => e.Email)
                     .HasMaxLength(50)
@@ -110,6 +117,11 @@ namespace Repository.Models
                     .HasColumnName("last_name");
 
                 entity.Property(e => e.Permissions).HasColumnName("permissions");
+
+                entity.Property(e => e.Username)
+                    .HasMaxLength(30)
+                    .IsUnicode(false)
+                    .HasColumnName("username");
             });
 
             OnModelCreatingPartial(modelBuilder);
