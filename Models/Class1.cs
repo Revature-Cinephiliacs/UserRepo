@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Repository
+namespace Models
 {
     public class Class1
     {
