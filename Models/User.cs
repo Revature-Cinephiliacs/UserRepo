@@ -3,8 +3,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace GlobalModels
 {
+    /// <summary>
+    /// DTO Object for Frontend User
+    /// </summary>
     public sealed class User : IEquatable<User>
     {
+        public Guid Userid { get; set; } = Guid.NewGuid();
         [Required]
         [StringLength(30)]
         public string Username { get; set; }
@@ -25,6 +29,7 @@ namespace GlobalModels
         [Required]
         [Range(0,3)]
         public byte Permissions { get; set; }
+        public string Dateofbirth { get; set; }
         public User()
         {
 
