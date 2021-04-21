@@ -5,6 +5,8 @@ namespace GlobalModels
 {
     public sealed class User : IEquatable<User>
     {
+        public string Userid { get; set; }
+
         [Required]
         [StringLength(30)]
         public string Username { get; set; }
@@ -21,6 +23,10 @@ namespace GlobalModels
         [StringLength(50)]
         [RegularExpression( @"(.+)(@)(.+).(.+){2,4}?$")]
         public string Email { get; set; }
+
+        [Required]
+        [StringLength(50)]
+        public string Dateofbirth { get; set; }
         
         [Required]
         [Range(0,3)]
@@ -30,12 +36,14 @@ namespace GlobalModels
 
         }
 
-        public User(string username, string firstname, string lastname, string email, byte permissions)
+        public User(string userId, string username, string firstname, string lastname, string email, string dateofbirth, byte permissions)
         {
+            Userid = userId;
             Username = username;
             Firstname = firstname;
             Lastname = lastname;
             Email = email;
+            Dateofbirth = dateofbirth;
             Permissions = permissions;
         }
 

@@ -22,6 +22,7 @@ namespace BusinessLogic
         /// <returns></returns>
         public async Task<bool> CreateUser(User user)
         {
+            user.Userid = Guid.NewGuid().ToString();
             var repoUser = Mapper.UserToRepoUser(user);
             return await _repo.AddUser(repoUser);
         }

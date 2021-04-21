@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using GlobalModels;
 
 namespace BusinessLogic
@@ -14,6 +15,7 @@ namespace BusinessLogic
         public static Repository.Models.User UserToRepoUser(User user)
         {
             var repoUser = new Repository.Models.User();
+            repoUser.UserId = user.Userid;
             repoUser.Username = user.Username;
             repoUser.FirstName = user.Firstname;
             repoUser.LastName = user.Lastname;
@@ -31,8 +33,10 @@ namespace BusinessLogic
         /// <returns></returns>
         public static User RepoUserToUser(Repository.Models.User repoUser)
         {
-            var user = new User(repoUser.Username, repoUser.FirstName, repoUser.LastName,
-                repoUser.Email, repoUser.Permissions);
+            DateTime repoDate = repoUser.DateOfBirth ?? DateTime.Now;
+            string dtoDate = repoDate.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture);
+            var user = new User(repoUser.UserId, repoUser.Username, repoUser.FirstName, repoUser.LastName,
+                repoUser.Email, dtoDate, repoUser.Permissions);
             return user;
         }
     }
