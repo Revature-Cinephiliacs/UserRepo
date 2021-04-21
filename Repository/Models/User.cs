@@ -20,11 +20,9 @@ namespace Repository.Models
         public string Email { get; set; }
         public byte Permissions { get; set; }
 
-    }
-}
-
         public virtual ICollection<FollowingMovie> FollowingMovies { get; set; }
         public virtual ICollection<FollowingUser> FollowingUserFolloweeNavigations { get; set; }
         public virtual ICollection<FollowingUser> FollowingUserFollowerNavigations { get; set; }
+
     }
 }

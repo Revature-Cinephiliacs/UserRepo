@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 
 using Repository;
 using GlobalModels;
+using System;
 
 namespace BusinessLogic.Interfaces
 {
@@ -22,7 +23,7 @@ namespace BusinessLogic.Interfaces
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        public Task<bool> UpdateUser(string username, User user);
+        public Task<bool> UpdateUser(Guid userid, User user);
 
         /// <summary>
         /// Returns the User object whose Username is equal to the username argument.
@@ -41,15 +42,14 @@ namespace BusinessLogic.Interfaces
         /// <summary>
         /// Delete the user
         /// Return true or false
+        /// </summary>
+        public Task<bool> DeleteUser(Guid userid);
 
-        // public Task<bool> DeleteUser(string uid);
-
-        // /// <summary>
-        // /// add admin role to user
-        // /// pass user id 
-        // /// return true if successful
-        // /// </summary>
-        // /// 
+        /// <summary>
+        /// add admin role to user
+        /// pass user id 
+        /// return true if successful
+        /// </summary>
         // public Task<bool> AddAsAdmin(string uid);
 
         /// <summary>
@@ -57,8 +57,16 @@ namespace BusinessLogic.Interfaces
         /// pass user id 
         /// return true if successful
         /// </summary>
-        /// 
-        public Task<bool> IsUserExist(string uid);
+        public Task<bool> IsUserExist(Guid userid);
+
+        /// <summary>
+        /// Updates the permission level of user
+        /// 1 = user, 2 = moderator, 3 = admin
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <param name="permissionLevel"></param>
+        /// <returns></returns>
+        Task<bool> UpdatePermissions(Guid userid, int permissionLevel);
       
     }
 }

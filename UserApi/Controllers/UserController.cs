@@ -60,8 +60,8 @@ namespace CineAPI.Controllers
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        [HttpPost("update/{username}")]
-        public async Task<ActionResult> UpdateUser(string username, [FromBody] User user)
+        [HttpPost("update/{userid}")]
+        public async Task<ActionResult> UpdateUser(Guid userid, [FromBody] User user)
         {
             if (!ModelState.IsValid)
             {
@@ -69,7 +69,7 @@ namespace CineAPI.Controllers
                 return StatusCode(400);
             }
 
-            if (await _userLogic.UpdateUser(username, user))
+            if (await _userLogic.UpdateUser(userid, user))
             {
                 return StatusCode(202);
             }
@@ -101,35 +101,34 @@ namespace CineAPI.Controllers
         /// </summary>
         /// <param name="userid"></param>
         /// <returns></returns>
-        // [HttpDelete("delete/{userid}")]
-        // public async Task<ActionResult> DeleteUser(string userid, [FromBody] User user)
-        // {
-        //     if (!ModelState.IsValid)
-        //     {
-        //         Console.WriteLine("UserController.UpdateUser() was called with invalid body data.");
-        //         return StatusCode(400);
-        //     }
+        [HttpDelete("delete/{userid}")]
+        public async Task<ActionResult> DeleteUser(Guid userid, [FromBody] User user)
+        {
+            if (!ModelState.IsValid)
+            {
+                Console.WriteLine("UserController.UpdateUser() was called with invalid body data.");
+                return StatusCode(400);
+            }
 
-        //     if (await _userLogic.DeleteUser(userid))
-        //     {
-        //         return StatusCode(202);
-        //     }
-        //     else
-        //     {
-        //         return StatusCode(404);
-        //     }
-        // }
+            if (await _userLogic.DeleteUser(userid))
+            {
+                return StatusCode(202);
+            }
+            else
+            {
+                return StatusCode(404);
+            }
+        }
 
         [HttpPost("addadmin/{userid}")]
-        public async Task<ActionResult> AddAsAdmin(string userid)
+        public async Task<ActionResult> AddAsAdmin(Guid userid)
         {
-            if (!userid)
+            if (userid == Guid.Empty)
             {
                 Console.WriteLine("UserController.UpdateUser() was called with invalid user id.");
                 return StatusCode(400);
             }
-
-            if (await _userLogic.UpdateUser(userid))
+            if (await _userLogic.UpdatePermissions(userid, 3))
             {
                 return StatusCode(202);
             }
