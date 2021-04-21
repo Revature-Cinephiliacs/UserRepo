@@ -46,18 +46,11 @@ namespace BusinessLogic.Interfaces
         public Task<bool> DeleteUser(Guid userid);
 
         /// <summary>
-        /// add admin role to user
-        /// pass user id 
-        /// return true if successful
-        /// </summary>
-        // public Task<bool> AddAsAdmin(string uid);
-
-        /// <summary>
         /// to check if a user exists
         /// pass user id 
         /// return true if successful
         /// </summary>
-        public Task<bool> IsUserExist(Guid userid);
+        public bool IsUserExistByEmail(string email);
 
         /// <summary>
         /// Updates the permission level of user
