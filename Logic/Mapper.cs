@@ -15,7 +15,7 @@ namespace BusinessLogic
         public static Repository.Models.User UserToRepoUser(User user)
         {
             var repoUser = new Repository.Models.User();
-            repoUser.UserId = user.Userid;
+            repoUser.UserId = user.Userid.ToString();
             repoUser.Username = user.Username;
             repoUser.FirstName = user.Firstname;
             repoUser.LastName = user.Lastname;
