@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Repository;
-using Repository.Models;
+using GlobalModels;
 
 namespace BusinessLogic
 {
@@ -50,14 +50,14 @@ namespace BusinessLogic
             return users;
         }
 
-        public async Task<bool> DeleteUser(string uid)
-        {
-            return await _repo.DeleteUser(uid);
-        }
+        // public async Task<bool> DeleteUser(string uid)
+        // {
+        //     return await _repo.DeleteUser(uid);
+        // }
 
-        public async Task<bool> AddAsAdmin(string uid)
-        {
-            return await _repo.AddAsAdmin(uid);
-        }
+        // public async Task<bool> AddAsAdmin(string uid)
+        // {
+        //     return await _repo.AddAsAdmin(uid);
+        // }
     }
 }
