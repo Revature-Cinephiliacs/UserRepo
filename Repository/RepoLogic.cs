@@ -25,7 +25,7 @@ namespace Repository
         /// <returns></returns>
         public async Task<bool> AddUser(User repoUser)
         {
-            if(UserExists(repoUser.Username))
+            if (UserExists(repoUser.Username))
             {
                 Console.WriteLine("RepoLogic.AddUser() was called for a user that already exists.");
                 return false;
@@ -46,7 +46,7 @@ namespace Repository
         public async Task<bool> UpdateUser(string username, User updatedUser)
         {
             User existingUser = _dbContext.Users.Where(u => u.Username == username).FirstOrDefault<User>();
-            if(existingUser == null)
+            if (existingUser == null)
             {
                 Console.WriteLine("RepoLogic.UpdateUser() was called for a user that doesn't exist.");
                 return false;

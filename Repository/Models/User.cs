@@ -22,6 +22,9 @@ namespace Repository.Models
         public DateTime? DateOfBirth { get; set; }
         public byte Permissions { get; set; }
 
+    }
+}
+
         public virtual ICollection<FollowingMovie> FollowingMovies { get; set; }
         public virtual ICollection<FollowingUser> FollowingUserFolloweeUsers { get; set; }
         public virtual ICollection<FollowingUser> FollowingUserFollowerUsers { get; set; }

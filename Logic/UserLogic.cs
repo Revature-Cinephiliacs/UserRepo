@@ -14,6 +14,12 @@ namespace BusinessLogic
         {
             _repo = repo;
         }
+          /// <summary>
+        /// Adds a new User Object to repository.
+        /// Returns true if sucessful; false otherwise.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
 
         public async Task<bool> CreateUser(User user)
         {
@@ -21,15 +27,29 @@ namespace BusinessLogic
             return await _repo.AddUser(repoUser);
         }
 
+        /// <summary>
+        /// Updates a User Object in repository.
+        /// Returns true if sucessful; false otherwise.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+
         public async Task<bool> UpdateUser(string username, User user)
         {
             var repoUser = Mapper.UserToRepoUser(user);
             return await _repo.UpdateUser(username, repoUser);
         }
 
-        public User GetUser(string username)
+         /// <summary>
+        /// Returns the User object whose Username is equal to the username argument.
+        /// Returns null if the username is not found.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns>User</returns>
+
+        public User GetUser(string useremail)
         {
-            var repoUser = _repo.GetUser(username);
+            var repoUser = _repo.GetUser(useremail);
             if(repoUser == null)
             {
                 Console.WriteLine("UserLogic.GetUser() was called with a nonexistant username.");
@@ -37,6 +57,11 @@ namespace BusinessLogic
             }
             return Mapper.RepoUserToUser(repoUser);
         }
+
+        /// <summary>
+        /// Returns a list of every User object.
+        /// </summary>
+        /// <returns></returns>
 
         public async Task<List<User>> GetUsers()
         {
@@ -49,7 +74,10 @@ namespace BusinessLogic
             }
             return users;
         }
-
+        /// <summary>
+        /// Delete the user
+        /// Return true if successful
+        /// </summary>
         // public async Task<bool> DeleteUser(string uid)
         // {
         //     return await _repo.DeleteUser(uid);
