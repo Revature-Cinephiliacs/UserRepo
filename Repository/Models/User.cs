@@ -23,7 +23,7 @@ namespace Repository.Models
         public byte Permissions { get; set; }
 
         public virtual ICollection<FollowingMovie> FollowingMovies { get; set; }
-        public virtual ICollection<FollowingUser> FollowingUserFolloweeNavigations { get; set; }
-        public virtual ICollection<FollowingUser> FollowingUserFollowerNavigations { get; set; }
+        public virtual ICollection<FollowingUser> FollowingUserFolloweeUsers { get; set; }
+        public virtual ICollection<FollowingUser> FollowingUserFollowerUsers { get; set; }
     }
 }
