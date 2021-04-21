@@ -136,6 +136,14 @@ namespace Repository
             return true;
         }
 
+        /// <summary>
+        /// Updates a user's permission to a specific level
+        /// 1 = user, 2 = mod, 3 = admin
+        /// Checks if user exists and if it's a valid permission level
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="permissionsLevel"></param>
+        /// <returns></returns>
         public async Task<bool> UpdatePermissions(string userId, int permissionsLevel)
         {
             User existingUser = _dbContext.Users.Where(u => u.UserId == userId).FirstOrDefault<User>();
@@ -188,7 +196,7 @@ namespace Repository
                 Console.WriteLine("RepoLogic.FollowMovie() was called for a user that doesn't exist.");
                 return false;
             }
-// MS API CALL: Make sure movie exists
+            // MS API CALL: Make sure movie exists //
 
             // Ensure the User is not already Following this Movie
             if((await _dbContext.FollowingMovies.Where(fm => 
