@@ -20,7 +20,6 @@ namespace BusinessLogic
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-
         public async Task<bool> CreateUser(User user)
         {
             var repoUser = Mapper.UserToRepoUser(user);
@@ -33,11 +32,10 @@ namespace BusinessLogic
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-
-        public async Task<bool> UpdateUser(string username, User user)
+        public async Task<bool> UpdateUser(Guid userid, User user)
         {
             var repoUser = Mapper.UserToRepoUser(user);
-            return await _repo.UpdateUser(username, repoUser);
+            return await _repo.UpdateUser(userid, repoUser);
         }
 
          /// <summary>
@@ -84,14 +82,37 @@ namespace BusinessLogic
         /// Delete the user
         /// Return true if successful
         /// </summary>
-        // public async Task<bool> DeleteUser(string uid)
-        // {
-        //     return await _repo.DeleteUser(uid);
-        // }
+        public async Task<bool> DeleteUser(Guid userid)
+        {
+            return await _repo.DeleteUser(userid);
+        }
 
-        // public async Task<bool> AddAsAdmin(string uid)
-        // {
-        //     return await _repo.AddAsAdmin(uid);
-        // }
+        /// <summary>
+        /// Updates a user's permission to be an admin
+        /// </summary>
+        /// <param name="uid"></param>
+        /// <returns></returns>
+        public async Task<bool> AddAsAdmin(Guid userid)
+        {
+            return await _repo.AddAsAdmin(userid);
+        }
+
+        public async Task<bool> IsUserExist(Guid userid)
+        {
+            User isUser = await _repo.GetUser(userid);
+            if(isUser == null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> UpdatePermissions(Guid userid, int permissionLevel)
+        {
+            return await _repo.UpdatePermissions(userid, permissionLevel);
+        }
     }
 }
