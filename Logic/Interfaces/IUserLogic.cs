@@ -60,6 +60,26 @@ namespace BusinessLogic.Interfaces
         /// <param name="permissionLevel"></param>
         /// <returns></returns>
         Task<bool> UpdatePermissions(Guid userid, int permissionLevel);
+
+        
+        /// <summary>
+        /// Returns a list of every FollowingMovie object that was created by the user
+        /// specified by the username argument. Returns null if the username doesn't
+        /// exist.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
+        public Task<List<string>> GetFollowingMovies(Guid userid);
+
+        
+        /// <summary>
+        /// Adds a new FollowingMovie Object to storage.
+        /// Returns true if sucessful; false otherwise.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="movieid"></param>
+        /// <returns></returns>
+        public Task<bool> FollowMovie(Guid userid, string movieid);
       
     }
 }
