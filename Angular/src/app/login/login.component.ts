@@ -13,7 +13,8 @@ export class LoginComponent implements OnInit {
     firstname:'',
     lastname:'',
     email:'',
-    permissions:1
+    permissions:1,
+    dateofbirth: null
   }
   @Output() currentUserChange = new EventEmitter<User>();
 
@@ -83,7 +84,7 @@ export class LoginComponent implements OnInit {
   }
   
 
-  isPasswordRigt(pass:string){
+  isPasswordRight(pass:string){
     console.log("Checking");
     return (pass == this.password);
   }
