@@ -52,6 +52,13 @@ namespace BusinessLogic.Interfaces
         // /// 
         // public Task<bool> AddAsAdmin(string uid);
 
+        /// <summary>
+        /// to check if a user exists
+        /// pass user id 
+        /// return true if successful
+        /// </summary>
+        /// 
+        public Task<bool> IsUserExist(string uid);
       
     }
 }
