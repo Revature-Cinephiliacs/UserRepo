@@ -81,12 +81,12 @@ namespace CineAPI.Controllers
         /// <summary>
         /// Returns the User information associated with the provided username.
         /// </summary>
-        /// <param name="username"></param>
+        /// <param name="useremail"></param>
         /// <returns></returns>
-        [HttpGet("{username}")]
-        public ActionResult<User> GetUser(string username)
+        [HttpGet("{useremail}")]
+        public ActionResult<User> GetUser(string useremail)
         {
-            User user = _userLogic.GetUser(username);
+            User user = _userLogic.GetUser(useremail);
 
             if (user == null)
             {
@@ -95,13 +95,18 @@ namespace CineAPI.Controllers
             StatusCode(200);
             return user;
         }
+        /// <summary>
+        /// Delete the User based on userid.
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
 
         [HttpDelete("delete/{userid}")]
-        public async Task<ActionResult> DeleteUser(string userid, [FromBody] User user)
+        public async Task<ActionResult> DeleteUser(string userid)
         {
-            if (!ModelState.IsValid)
+            if (!userid)
             {
-                Console.WriteLine("UserController.UpdateUser() was called with invalid body data.");
+                Console.WriteLine("UserController.UpdateUser() was called with invalid data.");
                 return StatusCode(400);
             }
 
@@ -114,17 +119,23 @@ namespace CineAPI.Controllers
                 return StatusCode(404);
             }
         }
+         /// <summary>
+        /// Adds admin priveileges to a user based on userid.
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns>Action Result</returns>
 
-        [HttpPost("addadmin/{username}")]
-        public async Task<ActionResult> AddAsAdmin(string username, [FromBody] User user)
+
+        [HttpPost("addadmin/{userid}")]
+        public async Task<ActionResult> AddAsAdmin(string userid)
         {
-            if (!ModelState.IsValid)
+            if (!userid)
             {
-                Console.WriteLine("UserController.UpdateUser() was called with invalid body data.");
+                Console.WriteLine("UserController.UpdateUser() was called with invalid user id.");
                 return StatusCode(400);
             }
 
-            if (await _userLogic.UpdateUser(username, user))
+            if (await _userLogic.UpdateUser(userid))
             {
                 return StatusCode(202);
             }

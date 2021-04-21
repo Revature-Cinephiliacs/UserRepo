@@ -39,8 +39,8 @@ namespace BusinessLogic.Interfaces
 
         /// <summary>
         /// Delete the user
-        /// Return true or false
-
+        /// Return true if successful
+        /// </summary>
         public Task<bool> DeleteUser(string uid);
 
         /// <summary>
@@ -51,6 +51,13 @@ namespace BusinessLogic.Interfaces
         /// 
         public Task<bool> AddAsAdmin(string uid);
 
+        /// <summary>
+        /// to check if a user exists
+        /// pass user id 
+        /// return true if successful
+        /// </summary>
+        /// 
+        public Task<bool> IsUserExist(string uid);
       
     }
 }
