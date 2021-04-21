@@ -120,24 +120,24 @@ namespace CineAPI.Controllers
         //     }
         // }
 
-        [HttpPost("addadmin/{userid}")]
-        public async Task<ActionResult> AddAsAdmin(string userid)
-        {
-            if (!userid)
-            {
-                Console.WriteLine("UserController.UpdateUser() was called with invalid user id.");
-                return StatusCode(400);
-            }
+        // [HttpPost("addadmin/{userid}")]
+        // public async Task<ActionResult> AddAsAdmin(string userid)
+        // {
+        //     if (!userid)
+        //     {
+        //         Console.WriteLine("UserController.UpdateUser() was called with invalid user id.");
+        //         return StatusCode(400);
+        //     }
 
-            if (await _userLogic.UpdateUser(userid))
-            {
-                return StatusCode(202);
-            }
-            else
-            {
-                return StatusCode(404);
-            }
-        }
+        //     if (await _userLogic.UpdateUser(userid))
+        //     {
+        //         return StatusCode(202);
+        //     }
+        //     else
+        //     {
+        //         return StatusCode(404);
+        //     }
+        // }
 
 
     }

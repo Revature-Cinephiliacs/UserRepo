@@ -10,21 +10,20 @@ namespace Repository.Models
         public User()
         {
             FollowingMovies = new HashSet<FollowingMovie>();
-            FollowingUserFolloweeNavigations = new HashSet<FollowingUser>();
-            FollowingUserFollowerNavigations = new HashSet<FollowingUser>();
+            FollowingUserFolloweeUsers = new HashSet<FollowingUser>();
+            FollowingUserFollowerUsers = new HashSet<FollowingUser>();
         }
 
+        public string UserId { get; set; }
         public string Username { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
+        public DateTime? DateOfBirth { get; set; }
         public byte Permissions { get; set; }
 
-    }
-}
-
         public virtual ICollection<FollowingMovie> FollowingMovies { get; set; }
-        public virtual ICollection<FollowingUser> FollowingUserFolloweeNavigations { get; set; }
-        public virtual ICollection<FollowingUser> FollowingUserFollowerNavigations { get; set; }
+        public virtual ICollection<FollowingUser> FollowingUserFolloweeUsers { get; set; }
+        public virtual ICollection<FollowingUser> FollowingUserFollowerUsers { get; set; }
     }
 }
