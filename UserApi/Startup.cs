@@ -46,6 +46,10 @@ namespace UserApi
                 options => options.UseSqlServer(myConnectionString)
             );
 
+            services.AddScoped<BusinessLogic.Interfaces.IUserLogic, BusinessLogic.UserLogic>();
+
+            services.AddScoped<Repository.RepoLogic>();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "UserApi", Version = "v1" });

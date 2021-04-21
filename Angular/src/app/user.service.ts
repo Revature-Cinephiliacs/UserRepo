@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { User } from './models'
+import { NewUser, User } from './models'
 
 @Injectable({
   providedIn: 'root'
@@ -12,22 +12,29 @@ export class UserService {
   askingUser:string = "";
   connection:string ="";
   loggedIn:any;
-  baseURL:string = " ";
+  serverURL:string = "https://localhost:5000/";
 
   constructor(private http:HttpClient) { }
 
-  createUser(newUser:string){
+  createUser(newUser:NewUser){
     console.log(newUser);
-    return this.http.post(this.baseURL+ "user/",newUser);
+    return this.http.post(this.serverURL + "user/", JSON.stringify(newUser));
   }
 
-  loginUser(userName:string){
-
-    this.connection =  this.baseURL +"user/" + userName;
-    console.log(this.connection);
-    return this.http.get<User>(this.connection);
+  getUser(email:string){
+    return this.http.get<User>(this.serverURL +"user/user/" + email);
   }
 
+  updateUser(userId: string, updatedUser: NewUser){
+    console.log(updatedUser);
+    return this.http.post(this.serverURL+ "user/update/" + userId, JSON.stringify(updatedUser));
+  }
 
-  
+  deleteUser(userId: string){
+    return this.http.delete(this.serverURL + "user/user/delete/" + userId);
+  }
+
+  makeUserAdmin(userId: string){
+    return this.http.post(this.serverURL+ "user/user/addadmin/" + userId, null);
+  }
 }

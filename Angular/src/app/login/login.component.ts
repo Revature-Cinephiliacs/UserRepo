@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { UserService } from '../user.service';
-import { User } from '../models';
+import { NewUser, User } from '../models';
 
 @Component({
   selector: 'app-login',
@@ -8,26 +8,28 @@ import { User } from '../models';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  @Input() currentUser: User = {
-    username:'',
-    firstname:'',
-    lastname:'',
-    email:'',
-    permissions:1
-  }
-  @Output() currentUserChange = new EventEmitter<User>();
+  email: string = "";
 
-  userName: string = "";
-  password: string = "";
-  passwordNotOk: any = false;
+  loggedIn: any = false;
 
   isLoginPage: boolean = true;
 
-  newUser: any = {
+  newUser: NewUser = {
     username:'',
     firstname:'',
     lastname:'',
     email:'',
+    dateofbirth:'',
+    permissions:1
+  }
+
+  currentUser: User = {
+    userid:'',
+    username:'',
+    firstname:'',
+    lastname:'',
+    email:'',
+    dateofbirth:'',
     permissions:1
   }
 
@@ -37,62 +39,59 @@ export class LoginComponent implements OnInit {
   }
 
   login(){
-    console.log("Login attempt" + this.userName);
-    this._login.loginUser(this.userName).subscribe((data: User) => {
+    console.log("Login attempt" + this.email);
+    this._login.getUser(this.email).subscribe((data: User) => {
       console.log(data);
-      if (data.lastname == this.password)
-      {
-        this.passwordNotOk = false;
-        this.currentUser = data;
-      }
-      else {
-        this.passwordNotOk = true;
-        setTimeout(() => { 
-          this.passwordNotOk = false;
-        }, 3000);
-      }
-      console.log(this.currentUser.username);
-      this.currentUserChange.emit(this.currentUser);
-      localStorage.setItem("loggedin",JSON.stringify(this.currentUser));
-      return data;
+      this.currentUser = data;
+      this.loggedIn = true;
     });
   }
 
   createUser() {
-    console.log("In Create");
-    if(!this.newUser.firstname || !this.newUser.lastname || !this.newUser.username ||!this.newUser.email)
+    if(!this.newUser.firstname || !this.newUser.lastname || !this.newUser.username ||!this.newUser.email || !this.newUser.dateofbirth)
     {
       console.log("Please fill in all data")
     }
     else
     {
-      console.log(JSON.stringify(this.newUser));
+      console.log("NewUser:" + JSON.stringify(this.newUser));
       this._login.createUser(this.newUser).subscribe(data => {
         console.log(data);
-        this.currentUser = this.newUser;
-        this.userName = this.currentUser.username;
-        this.password = this.currentUser.lastname;
-        this.login();
       });
     }
   }
 
-  getUserName(){
-    console.log(this.userName);
-    return this.userName;
+  updateUser() {
+    if(!this.newUser.firstname || !this.newUser.lastname || !this.newUser.username ||!this.newUser.email || !this.newUser.dateofbirth || this.email)
+    {
+      console.log("Please fill in all data")
+    }
+    else
+    {
+      console.log("UpdateUser:" + JSON.stringify(this.newUser));
+      this._login.updateUser(this.currentUser.userid, this.newUser).subscribe(data => {
+        console.log(data);
+      });
+    }
   }
-  
 
-  isPasswordRigt(pass:string){
-    console.log("Checking");
-    return (pass == this.password);
+  deleteUser() {
+    if(this.loggedIn)
+    {
+      this._login.deleteUser(this.currentUser.userid).subscribe(data => {
+        console.log(data);
+      });
+      this.loggedIn = false;
+    }
   }
 
-  switchToRegister(): void {
-    this.isLoginPage = false;
-  }
-
-  backToLogin(): void {
-    this.isLoginPage = true;
+  makeUserAdmin() {
+    if(this.loggedIn)
+    {
+      this._login.makeUserAdmin(this.currentUser.userid).subscribe(data => {
+        console.log(data);
+      });
+      this.loggedIn = false;
+    }
   }
 }

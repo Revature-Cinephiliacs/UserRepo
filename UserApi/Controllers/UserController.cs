@@ -96,6 +96,7 @@ namespace CineAPI.Controllers
             StatusCode(200);
             return user;
         }
+        
         /// <summary>
         /// Delete the User based on userid.
         /// </summary>
