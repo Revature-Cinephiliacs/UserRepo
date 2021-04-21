@@ -33,7 +33,6 @@ namespace GlobalModels
         [Required]
         [Range(0,3)]
         public byte Permissions { get; set; }
-        public string Dateofbirth { get; set; }
         public User()
         {
 
@@ -41,7 +40,7 @@ namespace GlobalModels
 
         public User(string userId, string username, string firstname, string lastname, string email, string dateofbirth, byte permissions)
         {
-            Userid = userId;
+            Userid = Guid.Parse(userId);
             Username = username;
             Firstname = firstname;
             Lastname = lastname;

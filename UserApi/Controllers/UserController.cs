@@ -121,6 +121,11 @@ namespace CineAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Changes a user's permissionlevel up to an admin level's (3)
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
         [HttpPost("addadmin/{userid}")]
         public async Task<ActionResult> AddAsAdmin(Guid userid)
         {
