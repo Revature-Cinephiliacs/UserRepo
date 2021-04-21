@@ -38,7 +38,7 @@ export class LoginComponent implements OnInit {
 
   login(){
     console.log("Login attempt" + this.userName);
-    this._login.loginUser(this.userName).subscribe((data: User) => {
+    this._login.getUser(this.userName).subscribe((data: User) => {
       console.log(data);
       if (data.lastname == this.password)
       {
@@ -47,7 +47,7 @@ export class LoginComponent implements OnInit {
       }
       else {
         this.passwordNotOk = true;
-        setTimeout(() => { 
+        setTimeout(() => {
           this.passwordNotOk = false;
         }, 3000);
       }
@@ -81,7 +81,7 @@ export class LoginComponent implements OnInit {
     console.log(this.userName);
     return this.userName;
   }
-  
+
 
   isPasswordRigt(pass:string){
     console.log("Checking");
