@@ -5,6 +5,9 @@ using System.Collections.Generic;
 
 namespace Repository.Models
 {
+    /// <summary>
+    /// Database model for User from database-first
+    /// </summary>
     public partial class User
     {
         public User()
