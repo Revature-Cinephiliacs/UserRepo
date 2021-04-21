@@ -9,6 +9,9 @@ namespace Repository.Models
     {
         public User()
         {
+            FollowingMovies = new HashSet<FollowingMovie>();
+            FollowingUserFolloweeNavigations = new HashSet<FollowingUser>();
+            FollowingUserFollowerNavigations = new HashSet<FollowingUser>();
         }
 
         public string Username { get; set; }
@@ -20,3 +23,8 @@ namespace Repository.Models
     }
 }
 
+        public virtual ICollection<FollowingMovie> FollowingMovies { get; set; }
+        public virtual ICollection<FollowingUser> FollowingUserFolloweeNavigations { get; set; }
+        public virtual ICollection<FollowingUser> FollowingUserFollowerNavigations { get; set; }
+    }
+}

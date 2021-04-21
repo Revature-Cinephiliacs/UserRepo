@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using BusinessLogic.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Repository.Models;
+using Repository;
+using GlobalModels;
 
 namespace CineAPI.Controllers
 {
@@ -100,31 +101,24 @@ namespace CineAPI.Controllers
         /// </summary>
         /// <param name="userid"></param>
         /// <returns></returns>
+        // [HttpDelete("delete/{userid}")]
+        // public async Task<ActionResult> DeleteUser(string userid, [FromBody] User user)
+        // {
+        //     if (!ModelState.IsValid)
+        //     {
+        //         Console.WriteLine("UserController.UpdateUser() was called with invalid body data.");
+        //         return StatusCode(400);
+        //     }
 
-        [HttpDelete("delete/{userid}")]
-        public async Task<ActionResult> DeleteUser(string userid)
-        {
-            if (!userid)
-            {
-                Console.WriteLine("UserController.UpdateUser() was called with invalid data.");
-                return StatusCode(400);
-            }
-
-            if (await _userLogic.DeleteUser(userid))
-            {
-                return StatusCode(202);
-            }
-            else
-            {
-                return StatusCode(404);
-            }
-        }
-         /// <summary>
-        /// Adds admin priveileges to a user based on userid.
-        /// </summary>
-        /// <param name="userid"></param>
-        /// <returns>Action Result</returns>
-
+        //     if (await _userLogic.DeleteUser(userid))
+        //     {
+        //         return StatusCode(202);
+        //     }
+        //     else
+        //     {
+        //         return StatusCode(404);
+        //     }
+        // }
 
         [HttpPost("addadmin/{userid}")]
         public async Task<ActionResult> AddAsAdmin(string userid)

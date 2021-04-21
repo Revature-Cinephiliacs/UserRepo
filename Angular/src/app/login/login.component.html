@@ -1,0 +1,36 @@
+<div *ngIf="isLoginPage; then thenBlock else elseBlock"></div>
+<ng-template #thenBlock>
+  <form>
+    <div class="container" (ngSubmit)="login()">
+        <h2>Log In</h2>
+        <label for="uname">Username:</label><br>
+        <input type="text" placeholder="Enter Username" [(ngModel)]="userName" [ngModelOptions]="{standalone: true}" required>
+        <br>
+        <label for="pword">Password:</label><br>
+        <input type="password" placeholder="Enter Password" [(ngModel)]="password" [ngModelOptions]="{standalone: true}" required>
+        <p *ngIf="passwordNotOk" id="pwcheck">Incorrect Password</p>
+        <br>
+        <button (click)="login()">Login</button><br>
+        <a (click)="switchToRegister()">Create an Account</a>
+    </div>
+  </form>
+</ng-template>
+<ng-template #elseBlock>
+  <form class="registerform">
+    <div class="container" (ngSubmit)="createUser()">
+      <h2>Register</h2>
+      <label for="uname">Username:</label><br>
+      <input type="text" placeholder="Enter Username" [(ngModel)]="newUser.username" [ngModelOptions]="{standalone: true}" required><br>
+      <label for="uname">Password:</label><br>
+      <input type="text" placeholder="Enter Password" required><br>
+      <label for="uname">First Name:</label><br>
+      <input type="text" placeholder="Enter First Name" [(ngModel)]="newUser.firstname" [ngModelOptions]="{standalone: true}" required><br>
+      <label for="uname">Last Name:</label><br>
+      <input type="text" placeholder="Enter Last Name" [(ngModel)]="newUser.lastname" [ngModelOptions]="{standalone: true}" required><br>
+      <label for="uname">Email:</label><br>
+      <input type="text" placeholder="Enter Email Address" [(ngModel)]="newUser.email" [ngModelOptions]="{standalone: true}" required><br>
+      <button (click)="createUser()">Register</button><br>
+      <a (click)="backToLogin()">Return to Login</a>
+    </div>
+  </form>
+</ng-template>
