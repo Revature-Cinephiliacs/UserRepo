@@ -23,7 +23,7 @@ namespace BusinessLogic.Interfaces
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        public Task<bool> UpdateUser(Guid userid, User user);
+        public Task<bool> UpdateUser(string userid, User user);
 
         /// <summary>
         /// Returns the User object whose Username is equal to the username argument.
@@ -43,14 +43,7 @@ namespace BusinessLogic.Interfaces
         /// Delete the user
         /// Return true or false
         /// </summary>
-        public Task<bool> DeleteUser(Guid userid);
-
-        /// <summary>
-        /// to check if a user exists
-        /// pass user id 
-        /// return true if successful
-        /// </summary>
-        public bool IsUserExistByEmail(string email);
+        public Task<bool> DeleteUser(string userid);
 
         /// <summary>
         /// Updates the permission level of user
@@ -59,7 +52,7 @@ namespace BusinessLogic.Interfaces
         /// <param name="userid"></param>
         /// <param name="permissionLevel"></param>
         /// <returns></returns>
-        Task<bool> UpdatePermissions(Guid userid, int permissionLevel);
+        Task<bool> UpdatePermissions(string userid, int permissionLevel);
 
         
         /// <summary>
@@ -69,7 +62,7 @@ namespace BusinessLogic.Interfaces
         /// </summary>
         /// <param name="username"></param>
         /// <returns></returns>
-        public Task<List<string>> GetFollowingMovies(Guid userid);
+        public Task<List<string>> GetFollowingMovies(string userid);
 
         
         /// <summary>
@@ -79,7 +72,14 @@ namespace BusinessLogic.Interfaces
         /// <param name="username"></param>
         /// <param name="movieid"></param>
         /// <returns></returns>
-        public Task<bool> FollowMovie(Guid userid, string movieid);
-      
+        public Task<bool> FollowMovie(string userid, string movieid);
+
+        /// <summary>
+        /// Returns the age of the user, in years with decimal places representing
+        /// the days. Returns null if the userid does not exist.
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        public double? GetUserAge(string userid);
     }
 }

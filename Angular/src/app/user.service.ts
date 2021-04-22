@@ -17,7 +17,6 @@ export class UserService {
   constructor(private http:HttpClient) { }
 
   createUser(newUser:NewUser){
-    console.log(newUser);
     return this.http.post(this.serverURL + "user/", newUser);
   }
 
@@ -26,7 +25,6 @@ export class UserService {
   }
 
   updateUser(userId: string, updatedUser: NewUser){
-    console.log(updatedUser);
     return this.http.post(this.serverURL+ "user/update/" + userId, updatedUser);
   }
 

@@ -1,7 +1,7 @@
 <form>
   <div class="container">
       <h2>Log In</h2>
-      <label for="uname">Username:</label><br>
+      <label for="uname">Email:</label><br>
       <input type="text" placeholder="Enter Email" [(ngModel)]="email" [ngModelOptions]="{standalone: true}" required>
       <br>
       <button (click)="login()">Login</button><br>
@@ -23,7 +23,7 @@
     <input type="text" placeholder="Enter Last Name" [(ngModel)]="newUser.lastname" [ngModelOptions]="{standalone: true}" required><br>
     <label>Email:</label><br>
     <input type="email" placeholder="Enter Email Address" [(ngModel)]="newUser.email" [ngModelOptions]="{standalone: true}" required><br>
-    <label>Email:</label><br>
+    <label>Date of Birth:</label><br>
     <input type="date" placeholder="Enter Date of Birth" [(ngModel)]="newUser.dateofbirth" [ngModelOptions]="{standalone: true}" required><br>
     <button (click)="createUser()">Register</button><br>
     <div *ngIf="loggedIn">

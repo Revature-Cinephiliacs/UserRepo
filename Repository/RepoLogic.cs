@@ -52,7 +52,8 @@ namespace Repository
         /// Returns false if the user doesn't exist, if the updated username already exists,
         /// or if the updated email already exists.
         /// </summary>
-        /// <param name="repoUser"></param>
+        /// <param name="userId"></param>
+        /// <param name="updatedUser"></param>
         /// <returns></returns>
         public async Task<bool> UpdateUser(string userId, User updatedUser)
         {
@@ -98,11 +99,22 @@ namespace Repository
         /// Returns the User object from the database that matches the email specified
         /// in the argument. Returns null if the email is not found.
         /// </summary>
-        /// <param name="username"></param>
+        /// <param name="email"></param>
         /// <returns></returns>
-        public User GetUser(string email)
+        public User GetUserByEmail(string email)
         {
             return _dbContext.Users.Where(u => u.Email == email).FirstOrDefault<User>();
+        }
+
+        /// <summary>
+        /// Returns the User object from the database that matches the userId specified
+        /// in the argument. Returns null if the userId is not found.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public User GetUserByUserId(string userId)
+        {
+            return _dbContext.Users.Where(u => u.UserId == userId).FirstOrDefault<User>();
         }
 
         /// <summary>
@@ -169,7 +181,7 @@ namespace Repository
         /// Returns a list of all FollowingMovie objects from the database that match the userId
         /// specified in the argument. Returns null if the user doesn't exist.
         /// </summary>
-        /// <param name="username"></param>
+        /// <param name="userId"></param>
         /// <returns></returns>
         public async Task<List<FollowingMovie>> GetFollowingMovies(string userId)
         {
@@ -218,7 +230,7 @@ namespace Repository
         /// <summary>
         /// Returns true iff the userId, specified in the argument, exists in the database's Users table.
         /// </summary>
-        /// <param name="username"></param>
+        /// <param name="userId"></param>
         /// <returns></returns>
         private bool UserExistsById(string userId)
         {
@@ -228,7 +240,7 @@ namespace Repository
         /// <summary>
         /// Returns true iff the user email exists in the database's Users table
         /// </summary>
-        /// <param name="userId"></param>
+        /// <param name="email"></param>
         /// <returns></returns>
         private bool UserExistsByEmail(string email)
         {
@@ -238,7 +250,7 @@ namespace Repository
         /// <summary>
         /// Returns true iff the user's username already exists in the database's Users table
         /// </summary>
-        /// <param name="email"></param>
+        /// <param name="username"></param>
         /// <returns></returns>
         private bool UserExistsByUsername(string username)
         {
