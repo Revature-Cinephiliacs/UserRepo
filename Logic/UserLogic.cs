@@ -137,10 +137,18 @@ namespace BusinessLogic
                 return null;
             }
             DateTime dateOfBirth = repoUser.DateOfBirth ?? DateTime.Now;
+            DateTime now = DateTime.Now;
 
             int years = DateTime.Now.Year - dateOfBirth.Year;
-            int days = DateTime.Now.Day - dateOfBirth.Day;
-            return years + (days / 365.2422);
+            if(now.Month < dateOfBirth.Month)
+            {
+                years -= 1;
+            }
+            else if(now.Month == dateOfBirth.Month && now.Day < dateOfBirth.Day)
+            {
+                years -= 1;
+            }
+            return years;
         }
     }
 }

@@ -59,7 +59,7 @@ namespace Testing
             oldUser.Permissions = 1;
             oldUser.Email = "oldtest@gmail.com";
             GlobalModels.User newUser = new GlobalModels.User();
-            newUser.Userid = Guid.Parse(oldUser.UserId);
+            newUser.Userid = oldUser.UserId;
             newUser.Firstname = "Test";
             newUser.Lastname = "Testing";
             newUser.Email = "Testing@email.com";
@@ -211,7 +211,7 @@ namespace Testing
                 RepoLogic userRepo = new RepoLogic(context1);
                 UserLogic test = new UserLogic(userRepo);
                 
-                returnedValue = await Task.Run(() => test.UpdateUser(Guid.Parse(oldUser.UserId), newUser));
+                returnedValue = await Task.Run(() => test.UpdateUser(oldUser.UserId, newUser));
                 dbUser = context1.Users.FirstOrDefault(x => x.UserId == oldUser.UserId);
             }
 
