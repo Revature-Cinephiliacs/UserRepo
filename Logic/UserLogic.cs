@@ -28,6 +28,7 @@ namespace BusinessLogic
 
         /// <summary>
         /// Updates a User Object in repository.
+        /// what's up
         /// Returns true if sucessful; false otherwise.
         /// </summary>
         /// <param name="user"></param>
