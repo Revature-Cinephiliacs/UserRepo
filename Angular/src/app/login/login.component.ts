@@ -43,14 +43,20 @@ export class LoginComponent implements OnInit {
     this._login.getUser(this.email).subscribe((data: User) => {
       console.log(data);
       this.currentUser = data;
+      this.newUser.username = this.currentUser.username;
+      this.newUser.firstname = this.currentUser.firstname;
+      this.newUser.lastname = this.currentUser.lastname;
+      this.newUser.email = this.currentUser.email;
+      this.newUser.dateofbirth = this.currentUser.dateofbirth;
       this.loggedIn = true;
     });
   }
 
   createUser() {
-    if(!this.newUser.firstname || !this.newUser.lastname || !this.newUser.username ||!this.newUser.email || !this.newUser.dateofbirth)
+    if(!this.newUser.username || !this.newUser.firstname || !this.newUser.lastname || !this.newUser.email || !this.newUser.dateofbirth)
     {
-      console.log("Please fill in all data")
+
+      console.log("Please fill in all data");
     }
     else
     {
@@ -62,9 +68,14 @@ export class LoginComponent implements OnInit {
   }
 
   updateUser() {
-    if(!this.newUser.firstname || !this.newUser.lastname || !this.newUser.username ||!this.newUser.email || !this.newUser.dateofbirth || this.email)
+    if(!this.currentUser.userid || !this.newUser.username || !this.newUser.firstname || !this.newUser.lastname || !this.newUser.email || !this.newUser.dateofbirth)
     {
-      console.log("Please fill in all data")
+      console.log("Please fill in all data");
+      console.log(this.newUser.username);
+      console.log(this.newUser.firstname);
+      console.log(this.newUser.lastname);
+      console.log(this.newUser.email);
+      console.log(this.newUser.dateofbirth);
     }
     else
     {

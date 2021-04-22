@@ -32,10 +32,10 @@ namespace BusinessLogic
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        public async Task<bool> UpdateUser(Guid userid, User user)
+        public async Task<bool> UpdateUser(string userid, User user)
         {
             var repoUser = Mapper.UserToRepoUser(user);
-            return await _repo.UpdateUser(userid.ToString(), repoUser);
+            return await _repo.UpdateUser(userid, repoUser);
         }
 
          /// <summary>
@@ -46,7 +46,7 @@ namespace BusinessLogic
         /// <returns>User</returns>
         public User GetUser(string useremail)
         {
-            var repoUser = _repo.GetUser(useremail);
+            var repoUser = _repo.GetUserByEmail(useremail);
             if(repoUser == null)
             {
                 Console.WriteLine("UserLogic.GetUser() was called with a nonexistant username.");
@@ -75,27 +75,9 @@ namespace BusinessLogic
         /// Delete the user
         /// Return true if successful
         /// </summary>
-        public async Task<bool> DeleteUser(Guid userid)
+        public async Task<bool> DeleteUser(string userid)
         {
-            return await _repo.DeleteUser(userid.ToString());
-        }
-
-        /// <summary>
-        /// Checks if a user already exists in the database by email
-        /// </summary>
-        /// <param name="email"></param>
-        /// <returns></returns>
-        public bool IsUserExistByEmail(string email)
-        {
-            var isUser = _repo.GetUser(email);
-            if(isUser == null)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return await _repo.DeleteUser(userid);
         }
 
         /// <summary>
@@ -105,9 +87,9 @@ namespace BusinessLogic
         /// <param name="userid"></param>
         /// <param name="permissionLevel"></param>
         /// <returns></returns>
-        public async Task<bool> UpdatePermissions(Guid userid, int permissionLevel)
+        public async Task<bool> UpdatePermissions(string userid, int permissionLevel)
         {
-            return await _repo.UpdatePermissions(userid.ToString(), permissionLevel);
+            return await _repo.UpdatePermissions(userid, permissionLevel);
         }
 
         /// <summary>
@@ -115,9 +97,9 @@ namespace BusinessLogic
         /// </summary>
         /// <param name="userid"></param>
         /// <returns></returns>
-        public async Task<List<string>> GetFollowingMovies(Guid userid)
+        public async Task<List<string>> GetFollowingMovies(string userid)
         {
-            List<Repository.Models.FollowingMovie> repoFollowingMovies = await _repo.GetFollowingMovies(userid.ToString());
+            List<Repository.Models.FollowingMovie> repoFollowingMovies = await _repo.GetFollowingMovies(userid);
             if(repoFollowingMovies == null)
             {
                 Console.WriteLine("UserLogic.GetFollowingMovies() was called for a username that doesn't exist.");
@@ -138,13 +120,27 @@ namespace BusinessLogic
         /// <param name="userid"></param>
         /// <param name="movieid"></param>
         /// <returns></returns>
-        public async Task<bool> FollowMovie(Guid userid, string movieid)
+        public async Task<bool> FollowMovie(string userid, string movieid)
         {
             Repository.Models.FollowingMovie repoFollowingMovie = new Repository.Models.FollowingMovie();
-            repoFollowingMovie.UserId = userid.ToString();
+            repoFollowingMovie.UserId = userid;
             repoFollowingMovie.MovieId = movieid;
             
             return await _repo.FollowMovie(repoFollowingMovie);
+        }
+
+        public double? GetUserAge(string userid)
+        {
+            Repository.Models.User repoUser = _repo.GetUserByUserId(userid);
+            if(repoUser == null || repoUser.DateOfBirth == null)
+            {
+                return null;
+            }
+            DateTime dateOfBirth = repoUser.DateOfBirth ?? DateTime.Now;
+
+            int years = DateTime.Now.Year - dateOfBirth.Year;
+            int days = DateTime.Now.Day - dateOfBirth.Day;
+            return years + (days / 365.2422);
         }
     }
 }

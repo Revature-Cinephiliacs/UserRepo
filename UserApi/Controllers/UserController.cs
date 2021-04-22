@@ -56,12 +56,12 @@ namespace CineAPI.Controllers
         /// <summary>
         /// Updates User information based on the information provided.
         /// Returns a 400 status code if the incoming data is invalid.
-        /// Returns a 404 status code if the username does not already exist.
+        /// Returns a 404 status code if the userid does not already exist.
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
         [HttpPost("update/{userid}")]
-        public async Task<ActionResult> UpdateUser(Guid userid, [FromBody] User user)
+        public async Task<ActionResult> UpdateUser(string userid, [FromBody] User user)
         {
             if (!ModelState.IsValid)
             {
@@ -80,7 +80,7 @@ namespace CineAPI.Controllers
         }
 
         /// <summary>
-        /// Returns the User information associated with the provided username.
+        /// Returns the User information associated with the provided user email.
         /// </summary>
         /// <param name="useremail"></param>
         /// <returns></returns>
@@ -103,7 +103,7 @@ namespace CineAPI.Controllers
         /// <param name="userid"></param>
         /// <returns></returns>
         [HttpDelete("delete/{userid}")]
-        public async Task<ActionResult> DeleteUser(Guid userid, [FromBody] User user)
+        public async Task<ActionResult> DeleteUser(string userid, [FromBody] User user)
         {
             if (!ModelState.IsValid)
             {
@@ -127,13 +127,8 @@ namespace CineAPI.Controllers
         /// <param name="userid"></param>
         /// <returns></returns>
         [HttpPost("addadmin/{userid}")]
-        public async Task<ActionResult> AddAsAdmin(Guid userid)
+        public async Task<ActionResult> AddAsAdmin(string userid)
         {
-            if (userid == Guid.Empty)
-            {
-                Console.WriteLine("UserController.UpdateUser() was called with invalid user id.");
-                return StatusCode(400);
-            }
             if (await _userLogic.UpdatePermissions(userid, 3))
             {
                 return StatusCode(202);
@@ -144,6 +139,28 @@ namespace CineAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Returns the age of the user associated with the provided userid.
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        [HttpGet("age/{userid}")]
+        public ActionResult<double> GetUserAge(string userid)
+        {
+            double? nullableAge = _userLogic.GetUserAge(userid);
+            double age = 0;
+
+            if (nullableAge == null)
+            {
+                return StatusCode(404);
+            }
+            else
+            {
+                age = nullableAge ?? 0;
+            }
+            StatusCode(200);
+            return age;
+        }
         
         /// <summary>
         /// Returns a list containing all of the movie IDs for the Movies that
@@ -152,7 +169,7 @@ namespace CineAPI.Controllers
         /// <param name="username"></param>
         /// <returns></returns>
         [HttpGet("movies/{userid}")]
-        public async Task<ActionResult<List<string>>> GetFollowingMovies(Guid userid)
+        public async Task<ActionResult<List<string>>> GetFollowingMovies(string userid)
         {
             List<string> movieids = await _userLogic.GetFollowingMovies(userid);
             
@@ -176,7 +193,7 @@ namespace CineAPI.Controllers
         /// <param name="movieid"></param>
         /// <returns></returns>
         [HttpPost("movie/{userid}/{movieid}")]
-        public async Task<ActionResult> FollowMovie(Guid userid, string movieid)
+        public async Task<ActionResult> FollowMovie(string userid, string movieid)
         {
             var result = await _userLogic.FollowMovie(userid, movieid);
             if(result)
