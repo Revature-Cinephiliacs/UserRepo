@@ -1,0 +1,33 @@
+<form>
+  <div class="container">
+      <h2>Log In</h2>
+      <label for="uname">Username:</label><br>
+      <input type="text" placeholder="Enter Email" [(ngModel)]="email" [ngModelOptions]="{standalone: true}" required>
+      <br>
+      <button (click)="login()">Login</button><br>
+  </div>
+  <div *ngIf="loggedIn">
+    <button (click)="deleteUser()">Delete User</button><br>
+    <button (click)="makeUserAdmin()">Make User Admin</button><br>
+  </div>
+</form>
+<br>
+<form class="registerform">
+  <div class="container">
+    <h2>Register</h2>
+    <label>Username:</label><br>
+    <input type="text" placeholder="Enter Username" [(ngModel)]="newUser.username" [ngModelOptions]="{standalone: true}" required><br>
+    <label>First Name:</label><br>
+    <input type="text" placeholder="Enter First Name" [(ngModel)]="newUser.firstname" [ngModelOptions]="{standalone: true}" required><br>
+    <label>Last Name:</label><br>
+    <input type="text" placeholder="Enter Last Name" [(ngModel)]="newUser.lastname" [ngModelOptions]="{standalone: true}" required><br>
+    <label>Email:</label><br>
+    <input type="email" placeholder="Enter Email Address" [(ngModel)]="newUser.email" [ngModelOptions]="{standalone: true}" required><br>
+    <label>Email:</label><br>
+    <input type="date" placeholder="Enter Date of Birth" [(ngModel)]="newUser.dateofbirth" [ngModelOptions]="{standalone: true}" required><br>
+    <button (click)="createUser()">Register</button><br>
+    <div *ngIf="loggedIn">
+      <button (click)="updateUser()">UpdateUser</button><br>
+    </div>
+  </div>
+</form>
