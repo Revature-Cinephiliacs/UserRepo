@@ -8,6 +8,8 @@ trigger:
 resources:
 - repo: self
 
+pool: default
+
 variables:
 
   # Container registry service connection established during pipeline creation
@@ -19,7 +21,7 @@ variables:
   imagePullSecret: 'testingregi19267404-auth'
 
   # Agent VM image name
-  vmImageName: 'ubuntu-latest'
+  # vmImageName: 'ubuntu-latest'
 
 
 stages:
