@@ -6,20 +6,20 @@ This microservice is part of the Cinephiliacs application. It manages all user-c
 
 ## Endpoint Objects
 * User
-..* userid: string,
-..* username: string,
-..* firstname: string,
-..* lastname: string,
-..* email: string,
-..* dateofbirth: string,
-..* permissions: number
+  * userid: string,
+  * username: string,
+  * firstname: string,
+  * lastname: string,
+  * email: string,
+  * dateofbirth: string,
+  * permissions: number
 
 * NewUser
-..* username: string,
-..* firstname: string,
-..* lastname: string,
-..* email: string,
-..* dateofbirth: string
+  * username: string,
+  * firstname: string,
+  * lastname: string,
+  * email: string,
+  * dateofbirth: string
 
 ### Object usage within an endpoint is denoted by placing the object name with parenthesis: (Object)
 ## Endpoints
