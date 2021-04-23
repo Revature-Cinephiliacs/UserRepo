@@ -7,8 +7,7 @@ using GlobalModels;
 namespace BusinessLogic
 {
     /// <summary>
-    /// An implementation of IUserLogic. Comments for overridden methods live
-    /// in the IUserLogic interface.
+    /// Comments for overridden methods live in the respective interface.
     /// </summary>
     public class UserLogic : Interfaces.IUserLogic
     {
