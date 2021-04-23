@@ -30,13 +30,14 @@ namespace UserApi
         {
             services.AddCors(options =>
             {
-                options.AddDefaultPolicy(
-                                builder =>
-                                {
-                                    builder.AllowAnyOrigin()
-                                        .AllowAnyHeader()
-                                        .AllowAnyMethod();
-                                });
+                options.AddPolicy( name: "_testingPolicy",
+                                builder => builder
+                                    .WithOrigins(
+                                        "http://localhost:4200"
+                                    )
+                                    .AllowAnyMethod()
+                                    .AllowAnyHeader()
+                                );
             });
 
             services.AddControllers();
@@ -71,7 +72,7 @@ namespace UserApi
             app.UseRouting();
 
             // Enables the CORS policty for all controller endpoints. Must come between UseRouting() and UseEndpoints()
-            app.UseCors();
+            app.UseCors("_testingPolicy");
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
