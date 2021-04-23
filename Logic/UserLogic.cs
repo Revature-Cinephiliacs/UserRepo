@@ -139,7 +139,7 @@ namespace BusinessLogic
             DateTime dateOfBirth = repoUser.DateOfBirth ?? DateTime.Now;
             DateTime now = DateTime.Now;
 
-            int years = DateTime.Now.Year - dateOfBirth.Year;
+            int years = DateTime.Now.Year  - dateOfBirth.Year;
             if(now.Month < dateOfBirth.Month)
             {
                 years -= 1;
