@@ -28,7 +28,7 @@ namespace BusinessLogic
                 Console.WriteLine("Mapper.UserToRepoUser() failed due to an invalid date");
                 return null;
             }
-            repoUser.Permissions = user.Permissions;
+            repoUser.Permissions = 1;
 
             return repoUser;
         }

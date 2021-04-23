@@ -31,13 +31,10 @@ namespace GlobalModels
         [RegularExpression( @"[12]\d\d\d-[01]\d-[0123]\d")]
         public string Dateofbirth { get; set; }
         
-        [Required]
         [Range(0,3)]
         public byte Permissions { get; set; }
         public User()
-        {
-
-        }
+        { }
 
         public User(string userId, string username, string firstname, string lastname, string email, string dateofbirth, byte permissions)
         {

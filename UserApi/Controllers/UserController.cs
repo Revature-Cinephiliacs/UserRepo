@@ -103,7 +103,7 @@ namespace CineAPI.Controllers
         /// <param name="userid"></param>
         /// <returns></returns>
         [HttpDelete("delete/{userid}")]
-        public async Task<ActionResult> DeleteUser(string userid, [FromBody] User user)
+        public async Task<ActionResult> DeleteUser(string userid)
         {
             if (!ModelState.IsValid)
             {
@@ -169,7 +169,7 @@ namespace CineAPI.Controllers
         /// <param name="username"></param>
         /// <returns></returns>
         [HttpGet("movies/{userid}")]
-        public async Task<ActionResult<List<string>>> GetFollowingMovies(string userid)
+        public async Task<ActionResult<List<string>>> GetFollowedMovies(string userid)
         {
             List<string> movieids = await _userLogic.GetFollowingMovies(userid);
             
