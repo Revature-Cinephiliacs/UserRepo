@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using BusinessLogic.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using BusinessLogic.Interfaces;
 using Repository;
 using GlobalModels;
 
@@ -26,6 +27,17 @@ namespace CineAPI.Controllers
         public async Task<ActionResult<List<User>>> Get()
         {
             return await _userLogic.GetUsers();
+        }
+
+        /// <summary>
+        /// Example for using authentication
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("users")]
+        [Authorize]
+        public async Task<ActionResult<dynamic>> GetExample()
+        {
+            return Ok(new { response = "success" });
         }
 
         /// <summary>
@@ -98,7 +110,7 @@ namespace CineAPI.Controllers
             StatusCode(200);
             return user;
         }
-        
+
         /// <summary>
         /// Delete the User based on userid.
         /// If modelbidning fails, return 400
@@ -173,7 +185,7 @@ namespace CineAPI.Controllers
             StatusCode(200);
             return age;
         }
-        
+
         /// <summary>
         /// Returns a list containing all of the movie IDs for the Movies that
         /// the User with the provided username is following.
@@ -184,12 +196,12 @@ namespace CineAPI.Controllers
         public async Task<ActionResult<List<string>>> GetFollowedMovies(string userid)
         {
             List<string> movieids = await _userLogic.GetFollowingMovies(userid);
-            
-            if(movieids == null)
+
+            if (movieids == null)
             {
                 return StatusCode(404);
             }
-            if(movieids.Count == 0)
+            if (movieids.Count == 0)
             {
                 return StatusCode(204);
             }
@@ -208,7 +220,7 @@ namespace CineAPI.Controllers
         public async Task<ActionResult> FollowMovie(string userid, string movieid)
         {
             var result = await _userLogic.FollowMovie(userid, movieid);
-            if(result)
+            if (result)
             {
                 return StatusCode(201);
             }
