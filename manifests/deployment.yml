@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: revaturecinephiliacsuserrepo 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: revaturecinephiliacsuserrepo
+  template:
+    metadata:
+      labels:
+        app: revaturecinephiliacsuserrepo 
+    spec:
+      containers:
+        - name: revaturecinephiliacsuserrepo 
+          image: testingregi.azurecr.io/revaturecinephiliacsuserrepo
+          ports:
+          - containerPort: 80
