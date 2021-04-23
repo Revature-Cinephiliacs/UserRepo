@@ -6,6 +6,10 @@ using GlobalModels;
 
 namespace BusinessLogic
 {
+    /// <summary>
+    /// An implementation of IUserLogic. Comments for overridden methods live
+    /// in the IUserLogic interface.
+    /// </summary>
     public class UserLogic : Interfaces.IUserLogic
     {
         private readonly RepoLogic _repo;
@@ -14,36 +18,19 @@ namespace BusinessLogic
         {
             _repo = repo;
         }
-        /// <summary>
-        /// Adds a new User Object to repository.
-        /// Returns true if sucessful; false otherwise.
-        /// </summary>
-        /// <param name="user"></param>
-        /// <returns></returns>
+        
         public async Task<bool> CreateUser(User user)
         {
             var repoUser = Mapper.UserToRepoUser(user);
             return await _repo.AddUser(repoUser);
         }
 
-        /// <summary>
-        /// Updates a User Object in repository.
-        /// Returns true if sucessful; false otherwise.
-        /// </summary>
-        /// <param name="user"></param>
-        /// <returns></returns>
         public async Task<bool> UpdateUser(string userid, User user)
         {
             var repoUser = Mapper.UserToRepoUser(user);
             return await _repo.UpdateUser(userid, repoUser);
         }
 
-         /// <summary>
-        /// Returns the User object whose Username is equal to the username argument.
-        /// Returns null if the username is not found.
-        /// </summary>
-        /// <param name="username"></param>
-        /// <returns>User</returns>
         public User GetUser(string useremail)
         {
             var repoUser = _repo.GetUserByEmail(useremail);
@@ -55,10 +42,6 @@ namespace BusinessLogic
             return Mapper.RepoUserToUser(repoUser);
         }
 
-        /// <summary>
-        /// Returns a list of every User object.
-        /// </summary>
-        /// <returns></returns>
         public async Task<List<User>> GetUsers()
         {
             var repoUsers = await _repo.GetUsers();
@@ -71,32 +54,16 @@ namespace BusinessLogic
             return users;
         }
 
-        /// <summary>
-        /// Delete the user
-        /// Return true if successful
-        /// </summary>
         public async Task<bool> DeleteUser(string userid)
         {
             return await _repo.DeleteUser(userid);
         }
 
-        /// <summary>
-        /// Updates the permission levels of a user in the database
-        /// Returns true is successful, else return false.
-        /// </summary>
-        /// <param name="userid"></param>
-        /// <param name="permissionLevel"></param>
-        /// <returns></returns>
         public async Task<bool> UpdatePermissions(string userid, int permissionLevel)
         {
             return await _repo.UpdatePermissions(userid, permissionLevel);
         }
 
-        /// <summary>
-        /// Get a list of movies that a user is following using the user's id
-        /// </summary>
-        /// <param name="userid"></param>
-        /// <returns></returns>
         public async Task<List<string>> GetFollowingMovies(string userid)
         {
             List<Repository.Models.FollowingMovie> repoFollowingMovies = await _repo.GetFollowingMovies(userid);
@@ -114,12 +81,6 @@ namespace BusinessLogic
             return followingMovies;
         }
 
-        /// <summary>
-        /// Have a user start following a movie using the userid and movieid
-        /// </summary>
-        /// <param name="userid"></param>
-        /// <param name="movieid"></param>
-        /// <returns></returns>
         public async Task<bool> FollowMovie(string userid, string movieid)
         {
             Repository.Models.FollowingMovie repoFollowingMovie = new Repository.Models.FollowingMovie();
