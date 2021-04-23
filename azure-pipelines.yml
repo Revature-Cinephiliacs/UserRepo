@@ -22,7 +22,7 @@ variables:
   imagePullSecret: 'testingregi19267404-auth'
 
   # Agent VM image name
-  # vmImageName: 'ubuntu-latest'
+  # vmImageName: 'default'
 
 
 stages:
@@ -32,7 +32,7 @@ stages:
   - job: Build
     displayName: Build
     pool:
-      vmImage: $(vmImageName)
+      name: default
     steps:
     - task: Docker@2
       displayName: Build and push an image to container registry
@@ -55,7 +55,7 @@ stages:
   - deployment: Deploy
     displayName: Deploy
     pool:
-      vmImage: $(vmImageName)
+      name: default
     environment: 'RevatureCinephiliacsUserRepo.default'
     strategy:
       runOnce:
