@@ -81,6 +81,8 @@ namespace CineAPI.Controllers
 
         /// <summary>
         /// Returns the User information associated with the provided user email.
+        /// If user doesn't exist, return 404
+        /// If user exists, return 200 and the user information.
         /// </summary>
         /// <param name="useremail"></param>
         /// <returns></returns>
@@ -99,6 +101,9 @@ namespace CineAPI.Controllers
         
         /// <summary>
         /// Delete the User based on userid.
+        /// If modelbidning fails, return 400
+        /// If deleting user fails(couldn't find user), return 404
+        /// If successfully deleted, return 400
         /// </summary>
         /// <param name="userid"></param>
         /// <returns></returns>
@@ -123,6 +128,8 @@ namespace CineAPI.Controllers
 
         /// <summary>
         /// Changes a user's permissionlevel up to an admin level's (3)
+        /// If updating permissions fails, return 404
+        /// If updating is sucessful, return 202
         /// </summary>
         /// <param name="userid"></param>
         /// <returns></returns>
@@ -141,6 +148,11 @@ namespace CineAPI.Controllers
 
         /// <summary>
         /// Returns the age of the user associated with the provided userid.
+        /// If we couldn't get their age(invalid user/no dob) return 404
+        /// If successful, return 200 and the age
+        /// ----------------------------------
+        /// Return type as a double instead of an int to allow for future implementation for more accurate age
+        /// ----------------------------------
         /// </summary>
         /// <param name="userid"></param>
         /// <returns></returns>
