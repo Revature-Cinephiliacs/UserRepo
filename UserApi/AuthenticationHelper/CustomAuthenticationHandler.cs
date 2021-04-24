@@ -10,6 +10,11 @@ using Newtonsoft.Json;
 
 namespace UserAPI.AuthenticationHelper
 {
+    /// <summary>
+    /// An authentication middleware class. <br/>
+    /// The request passes through to this class HandleAuthenticateAsync method
+    /// before going into any endpoint
+    /// </summary>
     public class CustomAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
         public IServiceProvider ServiceProvider { get; set; }
@@ -20,6 +25,12 @@ namespace UserAPI.AuthenticationHelper
             ServiceProvider = serviceProvider;
         }
 
+        /// <summary>
+        /// The request passes through this method before reaching any endpoint. <br/>
+        /// This Sends a request to the authenticationAPI to determine whether signed in or not.
+        /// And to also get all the current user permission.
+        /// </summary>
+        /// <returns></returns>
         protected async override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
             var headers = Request.Headers;
@@ -50,6 +61,9 @@ namespace UserAPI.AuthenticationHelper
         }
     }
 
+    /// <summary>
+    /// An object to recieve the permission object from AuthenticationAPI
+    /// </summary>
     public class PermissionObj
     {
         public string access { get; set; }
