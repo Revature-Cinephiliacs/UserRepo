@@ -3,62 +3,51 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Repository;
 using GlobalModels;
+using Microsoft.Extensions.Logging;
 
 namespace BusinessLogic
 {
+    /// <summary>
+    /// Comments in interface(IUserLogic.cs)
+    /// </summary>
     public class UserLogic : Interfaces.IUserLogic
     {
         private readonly RepoLogic _repo;
-        
+        private readonly ILogger<UserLogic> _logger;
+
         public UserLogic(RepoLogic repo)
         {
             _repo = repo;
         }
-        /// <summary>
-        /// Adds a new User Object to repository.
-        /// Returns true if sucessful; false otherwise.
-        /// </summary>
-        /// <param name="user"></param>
-        /// <returns></returns>
+        
+        public UserLogic(RepoLogic repo, ILogger<UserLogic> logger)
+        {
+            _repo = repo;
+            _logger = logger;
+        }
+        
         public async Task<bool> CreateUser(User user)
         {
             var repoUser = Mapper.UserToRepoUser(user);
             return await _repo.AddUser(repoUser);
         }
 
-        /// <summary>
-        /// Updates a User Object in repository.
-        /// Returns true if sucessful; false otherwise.
-        /// </summary>
-        /// <param name="user"></param>
-        /// <returns></returns>
-        public async Task<bool> UpdateUser(Guid userid, User user)
+        public async Task<bool> UpdateUser(string userid, User user)
         {
             var repoUser = Mapper.UserToRepoUser(user);
-            return await _repo.UpdateUser(userid.ToString(), repoUser);
+            return await _repo.UpdateUser(userid, repoUser);
         }
 
-         /// <summary>
-        /// Returns the User object whose Username is equal to the username argument.
-        /// Returns null if the username is not found.
-        /// </summary>
-        /// <param name="username"></param>
-        /// <returns>User</returns>
         public User GetUser(string useremail)
         {
-            var repoUser = _repo.GetUser(useremail);
+            var repoUser = _repo.GetUserByEmail(useremail);
             if(repoUser == null)
             {
-                Console.WriteLine("UserLogic.GetUser() was called with a nonexistant username.");
                 return null;
             }
             return Mapper.RepoUserToUser(repoUser);
         }
 
-        /// <summary>
-        /// Returns a list of every User object.
-        /// </summary>
-        /// <returns></returns>
         public async Task<List<User>> GetUsers()
         {
             var repoUsers = await _repo.GetUsers();
@@ -71,56 +60,21 @@ namespace BusinessLogic
             return users;
         }
 
-        /// <summary>
-        /// Delete the user
-        /// Return true if successful
-        /// </summary>
-        public async Task<bool> DeleteUser(Guid userid)
+        public async Task<bool> DeleteUser(string userid)
         {
-            return await _repo.DeleteUser(userid.ToString());
+            return await _repo.DeleteUser(userid);
         }
 
-        /// <summary>
-        /// Checks if a user already exists in the database by email
-        /// </summary>
-        /// <param name="email"></param>
-        /// <returns></returns>
-        public bool IsUserExistByEmail(string email)
+        public async Task<bool> UpdatePermissions(string userid, int permissionLevel)
         {
-            var isUser = _repo.GetUser(email);
-            if(isUser == null)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return await _repo.UpdatePermissions(userid, permissionLevel);
         }
 
-        /// <summary>
-        /// Updates the permission levels of a user in the database
-        /// Returns true is successful, else return false.
-        /// </summary>
-        /// <param name="userid"></param>
-        /// <param name="permissionLevel"></param>
-        /// <returns></returns>
-        public async Task<bool> UpdatePermissions(Guid userid, int permissionLevel)
+        public async Task<List<string>> GetFollowingMovies(string userid)
         {
-            return await _repo.UpdatePermissions(userid.ToString(), permissionLevel);
-        }
-
-        /// <summary>
-        /// Get a list of movies that a user is following using the user's id
-        /// </summary>
-        /// <param name="userid"></param>
-        /// <returns></returns>
-        public async Task<List<string>> GetFollowingMovies(Guid userid)
-        {
-            List<Repository.Models.FollowingMovie> repoFollowingMovies = await _repo.GetFollowingMovies(userid.ToString());
+            List<Repository.Models.FollowingMovie> repoFollowingMovies = await _repo.GetFollowingMovies(userid);
             if(repoFollowingMovies == null)
             {
-                Console.WriteLine("UserLogic.GetFollowingMovies() was called for a username that doesn't exist.");
                 return null;
             }
 
@@ -132,19 +86,35 @@ namespace BusinessLogic
             return followingMovies;
         }
 
-        /// <summary>
-        /// Have a user start following a movie using the userid and movieid
-        /// </summary>
-        /// <param name="userid"></param>
-        /// <param name="movieid"></param>
-        /// <returns></returns>
-        public async Task<bool> FollowMovie(Guid userid, string movieid)
+        public async Task<bool> FollowMovie(string userid, string movieid)
         {
             Repository.Models.FollowingMovie repoFollowingMovie = new Repository.Models.FollowingMovie();
-            repoFollowingMovie.UserId = userid.ToString();
+            repoFollowingMovie.UserId = userid;
             repoFollowingMovie.MovieId = movieid;
             
             return await _repo.FollowMovie(repoFollowingMovie);
+        }
+
+        public double? GetUserAge(string userid)
+        {
+            Repository.Models.User repoUser = _repo.GetUserByUserId(userid);
+            if(repoUser == null || repoUser.DateOfBirth == null)
+            {
+                return null;
+            }
+            DateTime dateOfBirth = repoUser.DateOfBirth ?? DateTime.Now;
+            DateTime now = DateTime.Now;
+
+            int years = DateTime.Now.Year  - dateOfBirth.Year;
+            if(now.Month < dateOfBirth.Month)
+            {
+                years -= 1;
+            }
+            else if(now.Month == dateOfBirth.Month && now.Day < dateOfBirth.Day)
+            {
+                years -= 1;
+            }
+            return years;
         }
     }
 }

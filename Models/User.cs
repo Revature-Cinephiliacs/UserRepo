@@ -8,7 +8,7 @@ namespace GlobalModels
     /// </summary>
     public sealed class User : IEquatable<User>
     {
-        public Guid Userid { get; set; } = Guid.NewGuid();
+        public string Userid { get; set; } = Guid.NewGuid().ToString();
         [Required]
         [StringLength(30)]
         public string Username { get; set; }
@@ -23,24 +23,22 @@ namespace GlobalModels
 
         [Required]
         [StringLength(50)]
-        [RegularExpression( @"(.+)(@)(.+).(.+){2,4}?$")]
+        [RegularExpression( @"(.+)(@)(.+).(.){2,4}$")]
         public string Email { get; set; }
 
         [Required]
         [StringLength(50)]
+        [RegularExpression( @"[12]\d\d\d-[01]\d-[0123]\d")]
         public string Dateofbirth { get; set; }
         
-        [Required]
         [Range(0,3)]
         public byte Permissions { get; set; }
         public User()
-        {
-
-        }
+        { }
 
         public User(string userId, string username, string firstname, string lastname, string email, string dateofbirth, byte permissions)
         {
-            Userid = Guid.Parse(userId);
+            Userid = userId;
             Username = username;
             Firstname = firstname;
             Lastname = lastname;

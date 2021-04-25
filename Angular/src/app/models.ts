@@ -3,8 +3,7 @@ export interface NewUser {
     firstname: string,
     lastname: string,
     email: string,
-    dateofbirth: string,
-    permissions: number
+    dateofbirth: string
   }
 
   export interface User {

@@ -16,25 +16,35 @@ export class UserService {
 
   constructor(private http:HttpClient) { }
 
-  createUser(newUser:NewUser){
-    console.log(newUser);
+  createUser(newUser:NewUser) {
     return this.http.post(this.serverURL + "user/", newUser);
   }
 
-  getUser(email:string){
-    return this.http.get<User>(this.serverURL +"user/" + email);
+  getUser(email:string) {
+    return this.http.get<User>(this.serverURL + "user/" + email);
   }
 
-  updateUser(userId: string, updatedUser: NewUser){
-    console.log(updatedUser);
-    return this.http.post(this.serverURL+ "user/update/" + userId, updatedUser);
+  updateUser(userId: string, updatedUser: NewUser) {
+    return this.http.post(this.serverURL + "user/update/" + userId, updatedUser);
   }
 
-  deleteUser(userId: string){
+  deleteUser(userId: string) {
     return this.http.delete(this.serverURL + "user/delete/" + userId);
   }
 
-  makeUserAdmin(userId: string){
-    return this.http.post(this.serverURL+ "user/addadmin/" + userId, null);
+  makeUserAdmin(userId: string) {
+    return this.http.post(this.serverURL + "user/addadmin/" + userId, null);
+  }
+
+  getFollowedMovies(userId: string) {
+    return this.http.get<string[]>(this.serverURL + "user/movies/" + userId);
+  }
+
+  followMovie(userId: string, movieId: string) {
+    return this.http.post(this.serverURL + "user/movie/" + userId + "/" + movieId, null);
+  }
+
+  getUserAge(userId: string) {
+    return this.http.get<number>(this.serverURL + "user/age/" + userId);
   }
 }

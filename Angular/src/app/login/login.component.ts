@@ -14,13 +14,15 @@ export class LoginComponent implements OnInit {
 
   isLoginPage: boolean = true;
 
+  movieId: string = '';
+  followingMovies: string[];
+
   newUser: NewUser = {
     username:'',
     firstname:'',
     lastname:'',
     email:'',
-    dateofbirth:'',
-    permissions:1
+    dateofbirth:''
   }
 
   currentUser: User = {
@@ -33,24 +35,47 @@ export class LoginComponent implements OnInit {
     permissions:1
   }
 
+  userAge: number;
+
   constructor(private _login: UserService) { }
 
   ngOnInit(): void {
   }
 
-  login(){
+  login() {
     console.log("Login attempt: " + this.email);
     this._login.getUser(this.email).subscribe((data: User) => {
       console.log(data);
       this.currentUser = data;
+      this.newUser.username = this.currentUser.username;
+      this.newUser.firstname = this.currentUser.firstname;
+      this.newUser.lastname = this.currentUser.lastname;
+      this.newUser.email = this.currentUser.email;
+      this.newUser.dateofbirth = this.currentUser.dateofbirth;
       this.loggedIn = true;
+      this.populateFollowedMovies();
+      this.populateUserAge();
+    });
+  }
+
+  populateFollowedMovies() {
+    this.followingMovies = null;
+    this._login.getFollowedMovies(this.currentUser.userid).subscribe((data: string[]) => {
+      console.log(data);
+      this.followingMovies = data;
+    });
+  }
+
+  populateUserAge() {
+    this._login.getUserAge(this.currentUser.userid).subscribe((age: number) => {
+      this.userAge = age;
     });
   }
 
   createUser() {
-    if(!this.newUser.firstname || !this.newUser.lastname || !this.newUser.username ||!this.newUser.email || !this.newUser.dateofbirth)
+    if(!this.newUser.username || !this.newUser.firstname || !this.newUser.lastname || !this.newUser.email || !this.newUser.dateofbirth)
     {
-      console.log("Please fill in all data")
+      console.log("Please fill in all data");
     }
     else
     {
@@ -62,9 +87,14 @@ export class LoginComponent implements OnInit {
   }
 
   updateUser() {
-    if(!this.newUser.firstname || !this.newUser.lastname || !this.newUser.username ||!this.newUser.email || !this.newUser.dateofbirth || this.email)
+    if(!this.currentUser.userid || !this.newUser.username || !this.newUser.firstname || !this.newUser.lastname || !this.newUser.email || !this.newUser.dateofbirth)
     {
-      console.log("Please fill in all data")
+      console.log("Please fill in all data");
+      console.log(this.newUser.username);
+      console.log(this.newUser.firstname);
+      console.log(this.newUser.lastname);
+      console.log(this.newUser.email);
+      console.log(this.newUser.dateofbirth);
     }
     else
     {
@@ -81,7 +111,7 @@ export class LoginComponent implements OnInit {
       this._login.deleteUser(this.currentUser.userid).subscribe(data => {
         console.log(data);
       });
-      this.loggedIn = false;
+      this.logOut();
     }
   }
 
@@ -91,7 +121,18 @@ export class LoginComponent implements OnInit {
       this._login.makeUserAdmin(this.currentUser.userid).subscribe(data => {
         console.log(data);
       });
-      this.loggedIn = false;
+      this.logOut();
     }
+  }
+
+  followMovie() {
+    this._login.followMovie(this.currentUser.userid, this.movieId).subscribe(data => {
+      this.populateFollowedMovies();
+    });
+  }
+
+  logOut() {
+    this.loggedIn = false;
+    this.followingMovies = null;
   }
 }

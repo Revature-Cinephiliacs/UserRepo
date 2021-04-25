@@ -1,14 +1,22 @@
 <form>
   <div class="container">
       <h2>Log In</h2>
-      <label for="uname">Username:</label><br>
+      <label>Email:</label><br>
       <input type="text" placeholder="Enter Email" [(ngModel)]="email" [ngModelOptions]="{standalone: true}" required>
       <br>
       <button (click)="login()">Login</button><br>
   </div>
   <div *ngIf="loggedIn">
+    <div>Age: {{userAge}}</div>
     <button (click)="deleteUser()">Delete User</button><br>
     <button (click)="makeUserAdmin()">Make User Admin</button><br>
+    <br>
+
+    <h2>Follow Movie</h2>
+    <label>Movie ID:</label><br>
+    <input type="text" placeholder="Movie ID" [(ngModel)]="movieId" [ngModelOptions]="{standalone: true}" required>
+    <br>
+    <button (click)="followMovie()">Follow Movie</button><br>
   </div>
 </form>
 <br>
@@ -23,7 +31,7 @@
     <input type="text" placeholder="Enter Last Name" [(ngModel)]="newUser.lastname" [ngModelOptions]="{standalone: true}" required><br>
     <label>Email:</label><br>
     <input type="email" placeholder="Enter Email Address" [(ngModel)]="newUser.email" [ngModelOptions]="{standalone: true}" required><br>
-    <label>Email:</label><br>
+    <label>Date of Birth:</label><br>
     <input type="date" placeholder="Enter Date of Birth" [(ngModel)]="newUser.dateofbirth" [ngModelOptions]="{standalone: true}" required><br>
     <button (click)="createUser()">Register</button><br>
     <div *ngIf="loggedIn">
@@ -31,3 +39,11 @@
     </div>
   </div>
 </form>
+<div *ngIf="followingMovies">
+  <h2>Followed Movies</h2>
+  <ul>
+    <li *ngFor="let movie of followingMovies">
+      {{movie}}
+    </li>
+  </ul>
+</div>
