@@ -35,7 +35,8 @@ namespace UserApi
                 options.AddPolicy(name: "_testingPolicy",
                 builder => builder
                     .WithOrigins(
-                        "http://localhost:4200"
+                        "http://localhost:4200",
+                        "https://localhost:5001"
                     )
                     .AllowAnyMethod()
                     .AllowAnyHeader()
