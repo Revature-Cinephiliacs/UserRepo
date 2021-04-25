@@ -8,6 +8,7 @@ using BusinessLogic;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 
 namespace Testing
 {

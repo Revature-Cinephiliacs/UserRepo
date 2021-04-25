@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Repository.Models;
 
 namespace Repository
@@ -11,10 +12,17 @@ namespace Repository
     public class RepoLogic
     {
         private readonly Cinephiliacs_UserContext _dbContext;
+        private readonly ILogger<RepoLogic> _logger;
 
         public RepoLogic(Cinephiliacs_UserContext dbContext)
         {
             _dbContext = dbContext;
+        }
+
+        public RepoLogic(Cinephiliacs_UserContext dbContext, ILogger<RepoLogic> logger)
+        {
+            _dbContext = dbContext;
+            _logger = logger;
         }
 
         /// <summary>
@@ -27,17 +35,17 @@ namespace Repository
         {
             if (UserExistsById(repoUser.UserId))
             {
-                Console.WriteLine("RepoLogic.AddUser() was called for a userid that already exists.");
+                _logger.LogWarning($"RepoLogic.AddUser() was called for a userid that already exists {repoUser.UserId}.");
                 return false;
             }
             if (UserExistsByEmail(repoUser.Email))
             {
-                Console.WriteLine("RepoLogic.AddUser() was called for a useremail that already exists.");
+                _logger.LogWarning($"RepoLogic.AddUser() was called for a useremail that already exists {repoUser.Email}.");
                 return false;
             }
             if (UserExistsByUsername(repoUser.Username))
             {
-                Console.WriteLine("RepoLogic.AddUser() was called for a username that already exists.");
+                _logger.LogWarning($"RepoLogic.AddUser() was called for a username that already exists {repoUser.Username}.");
                 return false;
             }
             await _dbContext.Users.AddAsync(repoUser);
@@ -60,7 +68,7 @@ namespace Repository
             User existingUser = _dbContext.Users.Where(u => u.UserId == userId).FirstOrDefault<User>();
             if (existingUser == null)
             {
-                Console.WriteLine("RepoLogic.UpdateUser() was called for a user that doesn't exist.");
+                _logger.LogWarning($"RepoLogic.UpdateUser() was called for a user that doesn't exist {userId}.");
                 return false;
             }
             if(existingUser.Username != updatedUser.Username)
@@ -71,7 +79,7 @@ namespace Repository
                 }
                 else
                 {
-                    Console.WriteLine("RepoLogic.UpdateUser() was called with a updated username that already exists.");
+                    _logger.LogWarning($"RepoLogic.UpdateUser() was called with a updated username that already exists {updatedUser.Username}.");
                     return false;
                 }
             }
@@ -83,7 +91,7 @@ namespace Repository
                 }
                 else
                 {
-                    Console.WriteLine("RepoLogic.UpdateUser() was called with a updated email that already exists.");
+                    _logger.LogWarning($"RepoLogic.UpdateUser() was called with a updated email that already exists {updatedUser.Email}.");
                     return false;
                 }
             }
@@ -127,7 +135,6 @@ namespace Repository
             return await _dbContext.Users.ToListAsync();
         }
 
-        
         /// <summary>
         /// Removes the user with the userId specified in the argument from the database.
         /// </summary>
@@ -138,7 +145,7 @@ namespace Repository
             User existingUser = _dbContext.Users.Where(u => u.UserId == userId).FirstOrDefault<User>();
             if (existingUser == null)
             {
-                Console.WriteLine("RepoLogic.DeleteUser() was called for a user that doesn't exist.");
+                _logger.LogWarning($"RepoLogic.DeleteUser() was called for a user that doesn't exist. {userId}");
                 return false;
             }
 
@@ -161,14 +168,14 @@ namespace Repository
             User existingUser = _dbContext.Users.Where(u => u.UserId == userId).FirstOrDefault<User>();
             if (existingUser == null)
             {
-                Console.WriteLine("RepoLogic.UpdatePermissions() was called for a user that doesn't exist.");
+                _logger.LogWarning($"RepoLogic.UpdatePermissions() was called for a user that doesn't exist {userId}.");
                 return false;
             }
 
             if(permissionsLevel > 255 || permissionsLevel < 0)
             {
-                Console.WriteLine("RepoLogic.UpdatePermissions() was called with a permissionsLevel that is " +
-                    "outside the range of the database type (Byte).");
+                _logger.LogWarning($"RepoLogic.UpdatePermissions() was called with a permissionsLevel that is " +
+                    $"outside the range of the database type (Byte) {permissionsLevel}.");
                 return false;
             }
             existingUser.Permissions = (byte)permissionsLevel;
@@ -187,7 +194,7 @@ namespace Repository
         {
             if(!UserExistsById(userId))
             {
-                Console.WriteLine("RepoLogic.GetFollowingMovies() was called for a user that doesn't exist.");
+                _logger.LogWarning($"RepoLogic.GetFollowingMovies() was called for a user that doesn't exist {userId}.");
                 return null;
             }
             return await _dbContext.FollowingMovies.Where(f => f.UserId == userId).ToListAsync();
@@ -205,7 +212,7 @@ namespace Repository
         {
             if(!UserExistsById(followingMovie.UserId))
             {
-                Console.WriteLine("RepoLogic.FollowMovie() was called for a user that doesn't exist.");
+                _logger.LogWarning($"RepoLogic.FollowMovie() was called for a user that doesn't exist {followingMovie.UserId}.");
                 return false;
             }
             // MS API CALL: Make sure movie exists //
@@ -216,8 +223,8 @@ namespace Repository
                     && fm.MovieId == followingMovie.MovieId
                 ).FirstOrDefaultAsync<FollowingMovie>()) != null)
             {
-                Console.WriteLine("RepoLogic.FollowMovie() was called for a movie that the user is " +
-                    "already following.");
+                _logger.LogWarning($"RepoLogic.FollowMovie() was called for a movie that the user is " +
+                    $"already following {followingMovie.MovieId}.");
                 return false;
             }
 

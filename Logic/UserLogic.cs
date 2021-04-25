@@ -3,19 +3,27 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Repository;
 using GlobalModels;
+using Microsoft.Extensions.Logging;
 
 namespace BusinessLogic
 {
     /// <summary>
-    /// Comments for overridden methods live in the respective interface.
+    /// Comments in interface(IUserLogic.cs)
     /// </summary>
     public class UserLogic : Interfaces.IUserLogic
     {
         private readonly RepoLogic _repo;
-        
+        private readonly ILogger<UserLogic> _logger;
+
         public UserLogic(RepoLogic repo)
         {
             _repo = repo;
+        }
+        
+        public UserLogic(RepoLogic repo, ILogger<UserLogic> logger)
+        {
+            _repo = repo;
+            _logger = logger;
         }
         
         public async Task<bool> CreateUser(User user)
@@ -35,7 +43,6 @@ namespace BusinessLogic
             var repoUser = _repo.GetUserByEmail(useremail);
             if(repoUser == null)
             {
-                Console.WriteLine("UserLogic.GetUser() was called with a nonexistant username.");
                 return null;
             }
             return Mapper.RepoUserToUser(repoUser);
@@ -68,7 +75,6 @@ namespace BusinessLogic
             List<Repository.Models.FollowingMovie> repoFollowingMovies = await _repo.GetFollowingMovies(userid);
             if(repoFollowingMovies == null)
             {
-                Console.WriteLine("UserLogic.GetFollowingMovies() was called for a username that doesn't exist.");
                 return null;
             }
 

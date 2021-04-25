@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using BusinessLogic.Interfaces;
 using Repository;
 using GlobalModels;
+using Microsoft.Extensions.Logging;
 
 namespace CineAPI.Controllers
 {
@@ -14,9 +15,11 @@ namespace CineAPI.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserLogic _userLogic;
-        public UserController(IUserLogic userLogic)
+        private readonly ILogger<UserController> _logger;
+        public UserController(IUserLogic userLogic, ILogger<UserController> logger)
         {
             _userLogic = userLogic;
+            _logger = logger;
         }
 
         /// <summary>
@@ -30,17 +33,6 @@ namespace CineAPI.Controllers
         }
 
         /// <summary>
-        /// Example for using authentication
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet("users")]
-        [Authorize]
-        public async Task<ActionResult<dynamic>> GetExample()
-        {
-            return Ok(new { response = "success" });
-        }
-
-        /// <summary>
         /// Adds a new User based on the information provided.
         /// Returns a 400 status code if creation fails.
         /// </summary>
@@ -51,7 +43,7 @@ namespace CineAPI.Controllers
         {
             if (!ModelState.IsValid)
             {
-                Console.WriteLine("UserController.CreateUser() was called with invalid body data.");
+                _logger.LogWarning("UserController.CreateUser() was called with invalid body data.");
                 return StatusCode(400);
             }
 
@@ -77,7 +69,7 @@ namespace CineAPI.Controllers
         {
             if (!ModelState.IsValid)
             {
-                Console.WriteLine("UserController.UpdateUser() was called with invalid body data.");
+                _logger.LogWarning("UserController.UpdateUser() was called with invalid body data.");
                 return StatusCode(400);
             }
 
@@ -124,7 +116,7 @@ namespace CineAPI.Controllers
         {
             if (!ModelState.IsValid)
             {
-                Console.WriteLine("UserController.UpdateUser() was called with invalid body data.");
+                _logger.LogWarning("UserController.UpdateUser() was called with invalid body data.");
                 return StatusCode(400);
             }
 
