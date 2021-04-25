@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Testing
 {
@@ -17,6 +18,9 @@ namespace Testing
         readonly DbContextOptions<Cinephiliacs_UserContext> options = new DbContextOptionsBuilder<Cinephiliacs_UserContext>()
             .UseInMemoryDatabase(databaseName: "Test")
             .Options;
+        
+        readonly ILogger<RepoLogic> repoLogger = new ServiceCollection().AddLogging().BuildServiceProvider().GetService<ILoggerFactory>().CreateLogger<RepoLogic>();
+        readonly ILogger<UserLogic> logicLogger = new ServiceCollection().AddLogging().BuildServiceProvider().GetService<ILoggerFactory>().CreateLogger<UserLogic>();
 
         [Fact]
         public async Task CreateUser_True_Test()
@@ -35,8 +39,8 @@ namespace Testing
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
 
-                RepoLogic userRepo = new RepoLogic(context);
-                UserLogic test = new UserLogic(userRepo);
+                RepoLogic userRepo = new RepoLogic(context, repoLogger);
+                UserLogic test = new UserLogic(userRepo, logicLogger);
                 returnedValue = await Task.Run(() => test.CreateUser(newUser));
             }
 
@@ -84,8 +88,8 @@ namespace Testing
             {
                 context1.Database.EnsureCreated();
                 
-                RepoLogic userRepo = new RepoLogic(context1);
-                UserLogic test = new UserLogic(userRepo);
+                RepoLogic userRepo = new RepoLogic(context1, repoLogger);
+                UserLogic test = new UserLogic(userRepo, logicLogger);
 
                 returnedValue = await Task.Run(() => test.CreateUser(newUser));
             }
@@ -126,8 +130,8 @@ namespace Testing
             {
                 context1.Database.EnsureCreated();
                 
-                RepoLogic userRepo = new RepoLogic(context1);
-                UserLogic test = new UserLogic(userRepo);
+                RepoLogic userRepo = new RepoLogic(context1, repoLogger);
+                UserLogic test = new UserLogic(userRepo, logicLogger);
 
                 returnedValue = await Task.Run(() => test.CreateUser(newUser));
             }
@@ -168,8 +172,8 @@ namespace Testing
             {
                 context1.Database.EnsureCreated();
                 
-                RepoLogic userRepo = new RepoLogic(context1);
-                UserLogic test = new UserLogic(userRepo);
+                RepoLogic userRepo = new RepoLogic(context1, repoLogger);
+                UserLogic test = new UserLogic(userRepo, logicLogger);
 
                 returnedValue = await Task.Run(() => test.CreateUser(newUser));
             }
@@ -210,8 +214,8 @@ namespace Testing
             {
                 context1.Database.EnsureCreated();
                 
-                RepoLogic userRepo = new RepoLogic(context1);
-                UserLogic test = new UserLogic(userRepo);
+                RepoLogic userRepo = new RepoLogic(context1, repoLogger);
+                UserLogic test = new UserLogic(userRepo, logicLogger);
                 
                 returnedValue = await Task.Run(() => test.UpdateUser(oldUser.UserId, newUser));
                 dbUser = context1.Users.FirstOrDefault(x => x.UserId == oldUser.UserId);
@@ -252,8 +256,8 @@ namespace Testing
             {
                 context1.Database.EnsureCreated();
                 
-                RepoLogic userRepo = new RepoLogic(context1);
-                UserLogic test = new UserLogic(userRepo);
+                RepoLogic userRepo = new RepoLogic(context1, repoLogger);
+                UserLogic test = new UserLogic(userRepo, logicLogger);
                 
                 returnedValue = await Task.Run(() => test.UpdateUser(newUser.Userid, newUser));
             }
@@ -301,8 +305,8 @@ namespace Testing
             {
                 context1.Database.EnsureCreated();
                 
-                RepoLogic userRepo = new RepoLogic(context1);
-                UserLogic test = new UserLogic(userRepo);
+                RepoLogic userRepo = new RepoLogic(context1, repoLogger);
+                UserLogic test = new UserLogic(userRepo, logicLogger);
                 
                 returnedValue = await Task.Run(() => test.UpdateUser(newUser.Userid, newUser));
             }
@@ -350,8 +354,8 @@ namespace Testing
             {
                 context1.Database.EnsureCreated();
                 
-                RepoLogic userRepo = new RepoLogic(context1);
-                UserLogic test = new UserLogic(userRepo);
+                RepoLogic userRepo = new RepoLogic(context1, repoLogger);
+                UserLogic test = new UserLogic(userRepo, logicLogger);
                 
                 returnedValue = await Task.Run(() => test.UpdateUser(newUser.Userid, newUser));
             }
@@ -384,8 +388,8 @@ namespace Testing
             {
                 context1.Database.EnsureCreated();
                 
-                RepoLogic userRepo = new RepoLogic(context1);
-                UserLogic test = new UserLogic(userRepo);
+                RepoLogic userRepo = new RepoLogic(context1, repoLogger);
+                UserLogic test = new UserLogic(userRepo, logicLogger);
                 
                 returnUser = await Task.Run(() => test.GetUser("oldtest@gmail.com"));
             }
@@ -418,8 +422,8 @@ namespace Testing
             {
                 context1.Database.EnsureCreated();
                 
-                RepoLogic userRepo = new RepoLogic(context1);
-                UserLogic test = new UserLogic(userRepo);
+                RepoLogic userRepo = new RepoLogic(context1, repoLogger);
+                UserLogic test = new UserLogic(userRepo, logicLogger);
                 
                 returnUser = await Task.Run(() => test.GetUser("failtest@gmail.com"));
             }
@@ -460,8 +464,8 @@ namespace Testing
             {
                 context1.Database.EnsureCreated();
                 
-                RepoLogic userRepo = new RepoLogic(context1);
-                UserLogic test = new UserLogic(userRepo);
+                RepoLogic userRepo = new RepoLogic(context1, repoLogger);
+                UserLogic test = new UserLogic(userRepo, logicLogger);
                 
                 returnUser = await Task.Run(() => test.GetUsers());
             }
@@ -502,8 +506,8 @@ namespace Testing
             {
                 context1.Database.EnsureCreated();
                 
-                RepoLogic userRepo = new RepoLogic(context1);
-                UserLogic test = new UserLogic(userRepo);
+                RepoLogic userRepo = new RepoLogic(context1, repoLogger);
+                UserLogic test = new UserLogic(userRepo, logicLogger);
                 
                 successDelete = await Task.Run(() => test.DeleteUser(oldUser.UserId));
             }
@@ -544,8 +548,8 @@ namespace Testing
             {
                 context1.Database.EnsureCreated();
                 
-                RepoLogic userRepo = new RepoLogic(context1);
-                UserLogic test = new UserLogic(userRepo);
+                RepoLogic userRepo = new RepoLogic(context1, repoLogger);
+                UserLogic test = new UserLogic(userRepo, logicLogger);
                 
                 successDelete = await Task.Run(() => test.DeleteUser(Guid.NewGuid().ToString()));
             }
@@ -578,8 +582,8 @@ namespace Testing
             {
                 context1.Database.EnsureCreated();
                 
-                RepoLogic userRepo = new RepoLogic(context1);
-                UserLogic test = new UserLogic(userRepo);
+                RepoLogic userRepo = new RepoLogic(context1, repoLogger);
+                UserLogic test = new UserLogic(userRepo, logicLogger);
                 
                 successUpdate = await Task.Run(() => test.UpdatePermissions(oldUser.UserId, 3));
             }
@@ -612,8 +616,8 @@ namespace Testing
             {
                 context1.Database.EnsureCreated();
                 
-                RepoLogic userRepo = new RepoLogic(context1);
-                UserLogic test = new UserLogic(userRepo);
+                RepoLogic userRepo = new RepoLogic(context1, repoLogger);
+                UserLogic test = new UserLogic(userRepo, logicLogger);
                 
                 successUpdate = await Task.Run(() => test.UpdatePermissions(Guid.NewGuid().ToString(), 3));
             }
@@ -646,8 +650,8 @@ namespace Testing
             {
                 context1.Database.EnsureCreated();
                 
-                RepoLogic userRepo = new RepoLogic(context1);
-                UserLogic test = new UserLogic(userRepo);
+                RepoLogic userRepo = new RepoLogic(context1, repoLogger);
+                UserLogic test = new UserLogic(userRepo, logicLogger);
                 
                 successUpdate = await Task.Run(() => test.UpdatePermissions(oldUser.UserId, -1));
             }
@@ -681,8 +685,8 @@ namespace Testing
             {
                 context1.Database.EnsureCreated();
                 
-                RepoLogic userRepo = new RepoLogic(context1);
-                UserLogic test = new UserLogic(userRepo);
+                RepoLogic userRepo = new RepoLogic(context1, repoLogger);
+                UserLogic test = new UserLogic(userRepo, logicLogger);
                 
                 age = await Task.Run(() => test.GetUserAge(oldUser.UserId));
             }
@@ -716,13 +720,235 @@ namespace Testing
             {
                 context1.Database.EnsureCreated();
                 
-                RepoLogic userRepo = new RepoLogic(context1);
-                UserLogic test = new UserLogic(userRepo);
+                RepoLogic userRepo = new RepoLogic(context1, repoLogger);
+                UserLogic test = new UserLogic(userRepo, logicLogger);
                 
                 age = await Task.Run(() => test.GetUserAge(Guid.NewGuid().ToString()));
             }
 
             Assert.Null(age);
+        }
+
+        [Fact]
+        public async Task FollowUser_Test()
+        {
+            Repository.Models.User oldUser = new Repository.Models.User();
+            oldUser.UserId = Guid.NewGuid().ToString();
+            oldUser.Username = "OldTestingTestington";
+            oldUser.FirstName = "OGTest";
+            oldUser.LastName = "OriginalTest";
+            oldUser.Permissions = 1;
+            oldUser.Email = "oldtest@gmail.com";
+            Repository.Models.User oldUser1 = new Repository.Models.User();
+            oldUser1.UserId = Guid.NewGuid().ToString();
+            oldUser1.Username = "OldTestingTestington1";
+            oldUser1.FirstName = "OGTest1";
+            oldUser1.LastName = "OriginalTest1";
+            oldUser1.Permissions = 1;
+            oldUser1.Email = "oldtest1@gmail.com";
+            
+
+            using(var context = new Cinephiliacs_UserContext(options))
+            {
+                context.Database.EnsureDeleted();
+                context.Database.EnsureCreated();
+
+                context.Add<Repository.Models.User>(oldUser);
+                context.Add<Repository.Models.User>(oldUser1);
+                context.SaveChanges();
+            }
+
+            bool success;
+            using(var context1 = new Cinephiliacs_UserContext(options))
+            {
+                context1.Database.EnsureCreated();
+                
+                RepoLogic userRepo = new RepoLogic(context1, repoLogger);
+                UserLogic test = new UserLogic(userRepo, logicLogger);
+                
+                success = await Task.Run(() => test.FollowUser(oldUser.UserId, oldUser1.UserId));
+            }
+
+            Assert.True(success);
+        }
+
+        [Fact]
+        public async Task FollowUser_FailInvalidFollower_Test()
+        {
+            Repository.Models.User oldUser = new Repository.Models.User();
+            oldUser.UserId = Guid.NewGuid().ToString();
+            oldUser.Username = "OldTestingTestington";
+            oldUser.FirstName = "OGTest";
+            oldUser.LastName = "OriginalTest";
+            oldUser.Permissions = 1;
+            oldUser.Email = "oldtest@gmail.com";
+            Repository.Models.User oldUser1 = new Repository.Models.User();
+            oldUser1.UserId = Guid.NewGuid().ToString();
+            oldUser1.Username = "OldTestingTestington1";
+            oldUser1.FirstName = "OGTest1";
+            oldUser1.LastName = "OriginalTest1";
+            oldUser1.Permissions = 1;
+            oldUser1.Email = "oldtest1@gmail.com";
+            
+
+            using(var context = new Cinephiliacs_UserContext(options))
+            {
+                context.Database.EnsureDeleted();
+                context.Database.EnsureCreated();
+
+                context.Add<Repository.Models.User>(oldUser);
+                context.Add<Repository.Models.User>(oldUser1);
+                context.SaveChanges();
+            }
+
+            bool success;
+            using(var context1 = new Cinephiliacs_UserContext(options))
+            {
+                context1.Database.EnsureCreated();
+                
+                RepoLogic userRepo = new RepoLogic(context1, repoLogger);
+                UserLogic test = new UserLogic(userRepo, logicLogger);
+                
+                success = await Task.Run(() => test.FollowUser(Guid.NewGuid().ToString(), oldUser1.UserId));
+            }
+
+            Assert.False(success);
+        }
+
+        [Fact]
+        public async Task FollowUser_FailInvalidFollowee_Test()
+        {
+            Repository.Models.User oldUser = new Repository.Models.User();
+            oldUser.UserId = Guid.NewGuid().ToString();
+            oldUser.Username = "OldTestingTestington";
+            oldUser.FirstName = "OGTest";
+            oldUser.LastName = "OriginalTest";
+            oldUser.Permissions = 1;
+            oldUser.Email = "oldtest@gmail.com";
+            Repository.Models.User oldUser1 = new Repository.Models.User();
+            oldUser1.UserId = Guid.NewGuid().ToString();
+            oldUser1.Username = "OldTestingTestington1";
+            oldUser1.FirstName = "OGTest1";
+            oldUser1.LastName = "OriginalTest1";
+            oldUser1.Permissions = 1;
+            oldUser1.Email = "oldtest1@gmail.com";
+            
+
+            using(var context = new Cinephiliacs_UserContext(options))
+            {
+                context.Database.EnsureDeleted();
+                context.Database.EnsureCreated();
+
+                context.Add<Repository.Models.User>(oldUser);
+                context.Add<Repository.Models.User>(oldUser1);
+                context.SaveChanges();
+            }
+
+            bool success;
+            using(var context1 = new Cinephiliacs_UserContext(options))
+            {
+                context1.Database.EnsureCreated();
+                
+                RepoLogic userRepo = new RepoLogic(context1, repoLogger);
+                UserLogic test = new UserLogic(userRepo, logicLogger);
+                
+                success = await Task.Run(() => test.FollowUser(oldUser1.UserId, Guid.NewGuid().ToString()));
+            }
+
+            Assert.False(success);
+        }
+
+        [Fact]
+        public async Task GetFollowingUsersList_Test()
+        {
+            Repository.Models.User oldUser = new Repository.Models.User();
+            oldUser.UserId = Guid.NewGuid().ToString();
+            oldUser.Username = "OldTestingTestington";
+            oldUser.FirstName = "OGTest";
+            oldUser.LastName = "OriginalTest";
+            oldUser.Permissions = 1;
+            oldUser.Email = "oldtest@gmail.com";
+            Repository.Models.User oldUser1 = new Repository.Models.User();
+            oldUser1.UserId = Guid.NewGuid().ToString();
+            oldUser1.Username = "OldTestingTestington1";
+            oldUser1.FirstName = "OGTest1";
+            oldUser1.LastName = "OriginalTest1";
+            oldUser1.Permissions = 1;
+            oldUser1.Email = "oldtest1@gmail.com";
+
+            Repository.Models.FollowingUser newFollow = new Repository.Models.FollowingUser();
+            newFollow.FollowerUserId = oldUser.UserId;
+            newFollow.FolloweeUserId = oldUser1.UserId;
+
+            using(var context = new Cinephiliacs_UserContext(options))
+            {
+                context.Database.EnsureDeleted();
+                context.Database.EnsureCreated();
+
+                context.Add<Repository.Models.User>(oldUser);
+                context.Add<Repository.Models.User>(oldUser1);
+                context.Add<Repository.Models.FollowingUser>(newFollow);
+                context.SaveChanges();
+            }
+
+            List<GlobalModels.User> allFollows;
+            using(var context1 = new Cinephiliacs_UserContext(options))
+            {
+                context1.Database.EnsureCreated();
+                
+                RepoLogic userRepo = new RepoLogic(context1, repoLogger);
+                UserLogic test = new UserLogic(userRepo, logicLogger);
+                
+                allFollows = await Task.Run(() => test.GetFollowingUsers(oldUser.UserId));
+            }
+
+            Assert.Equal(oldUser1.Username, allFollows[0].Username);
+        }
+
+        [Fact]
+        public async Task GetFollowingUsersList_FailInvalidUser_Test()
+        {
+            Repository.Models.User oldUser = new Repository.Models.User();
+            oldUser.UserId = Guid.NewGuid().ToString();
+            oldUser.Username = "OldTestingTestington";
+            oldUser.FirstName = "OGTest";
+            oldUser.LastName = "OriginalTest";
+            oldUser.Permissions = 1;
+            oldUser.Email = "oldtest@gmail.com";
+            Repository.Models.User oldUser1 = new Repository.Models.User();
+            oldUser1.UserId = Guid.NewGuid().ToString();
+            oldUser1.Username = "OldTestingTestington1";
+            oldUser1.FirstName = "OGTest1";
+            oldUser1.LastName = "OriginalTest1";
+            oldUser1.Permissions = 1;
+            oldUser1.Email = "oldtest1@gmail.com";
+
+            Repository.Models.FollowingUser newFollow = new Repository.Models.FollowingUser();
+            newFollow.FollowerUserId = oldUser.UserId;
+            newFollow.FolloweeUserId = oldUser1.UserId;
+
+            using(var context = new Cinephiliacs_UserContext(options))
+            {
+                context.Database.EnsureDeleted();
+                context.Database.EnsureCreated();
+
+                context.Add<Repository.Models.User>(oldUser);
+                context.Add<Repository.Models.User>(oldUser1);
+                context.Add<Repository.Models.FollowingUser>(newFollow);
+                context.SaveChanges();
+            }
+
+            List<GlobalModels.User> allFollows;
+            using(var context1 = new Cinephiliacs_UserContext(options))
+            {
+                context1.Database.EnsureCreated();
+                
+                RepoLogic userRepo = new RepoLogic(context1, repoLogger);
+                UserLogic test = new UserLogic(userRepo, logicLogger);
+                
+                allFollows = await Task.Run(() => test.GetFollowingUsers(Guid.NewGuid().ToString()));
+            }
+            Assert.Null(allFollows);
         }
 
         [Fact]
@@ -753,8 +979,8 @@ namespace Testing
             {
                 context1.Database.EnsureCreated();
                 
-                RepoLogic userRepo = new RepoLogic(context1);
-                UserLogic test = new UserLogic(userRepo);
+                RepoLogic userRepo = new RepoLogic(context1, repoLogger);
+                UserLogic test = new UserLogic(userRepo, logicLogger);
                 
                 successFollow = await Task.Run(() => test.FollowMovie(oldUser.UserId, randomMovieId));
             }
@@ -790,8 +1016,8 @@ namespace Testing
             {
                 context1.Database.EnsureCreated();
                 
-                RepoLogic userRepo = new RepoLogic(context1);
-                UserLogic test = new UserLogic(userRepo);
+                RepoLogic userRepo = new RepoLogic(context1, repoLogger);
+                UserLogic test = new UserLogic(userRepo, logicLogger);
                 
                 successFollow = await Task.Run(() => test.FollowMovie(Guid.NewGuid().ToString(), randomMovieId));
             }
@@ -827,8 +1053,8 @@ namespace Testing
             {
                 context1.Database.EnsureCreated();
                 
-                RepoLogic userRepo = new RepoLogic(context1);
-                UserLogic test = new UserLogic(userRepo);
+                RepoLogic userRepo = new RepoLogic(context1, repoLogger);
+                UserLogic test = new UserLogic(userRepo, logicLogger);
                 
                 successFollow = await Task.Run(() => test.FollowMovie(oldUser.UserId, randomMovieId));
                 successFollow = await Task.Run(() => test.FollowMovie(oldUser.UserId, randomMovieId));
@@ -875,8 +1101,8 @@ namespace Testing
             {
                 context1.Database.EnsureCreated();
                 
-                RepoLogic userRepo = new RepoLogic(context1);
-                UserLogic test = new UserLogic(userRepo);
+                RepoLogic userRepo = new RepoLogic(context1, repoLogger);
+                UserLogic test = new UserLogic(userRepo, logicLogger);
                 
                 movieList = await Task.Run(() => test.GetFollowingMovies(oldUser.UserId));
             }
@@ -922,8 +1148,8 @@ namespace Testing
             {
                 context1.Database.EnsureCreated();
                 
-                RepoLogic userRepo = new RepoLogic(context1);
-                UserLogic test = new UserLogic(userRepo);
+                RepoLogic userRepo = new RepoLogic(context1, repoLogger);
+                UserLogic test = new UserLogic(userRepo, logicLogger);
                 
                 movieList = await Task.Run(() => test.GetFollowingMovies(Guid.NewGuid().ToString()));
             }

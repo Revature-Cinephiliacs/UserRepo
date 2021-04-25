@@ -67,7 +67,7 @@ namespace BusinessLogic.Interfaces
         
         /// <summary>
         /// Adds a new FollowingMovie Object to storage.
-        /// Returns true if sucessful; false otherwise.
+        /// Returns true if successful; false otherwise.
         /// </summary>
         /// <param name="username"></param>
         /// <param name="movieid"></param>
@@ -81,5 +81,25 @@ namespace BusinessLogic.Interfaces
         /// <param name="userid"></param>
         /// <returns></returns>
         public double? GetUserAge(string userid);
+
+        /// <summary>
+        /// Function for one user to follow another user
+        /// Adds a new FollowingUser Object to database
+        /// Returns true is successful
+        /// Return false is failed
+        /// </summary>
+        /// <param name="follower"></param>
+        /// <param name="followee"></param>
+        /// <returns></returns>
+        public Task<bool> FollowUser(string follower, string followee);
+
+        /// <summary>
+        /// Returns a list of all the users a specific user is following
+        /// Will return an empty list if specific user exists, but no follows
+        /// Will return null if specific userid couldn't be found in database
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        public Task<List<User>> GetFollowingUsers(string userid);
     }
 }

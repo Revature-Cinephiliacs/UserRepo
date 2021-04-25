@@ -70,6 +70,35 @@ namespace BusinessLogic
             return await _repo.UpdatePermissions(userid, permissionLevel);
         }
 
+        public async Task<bool> FollowUser(string followerid, string followeeid)
+        {
+            Repository.Models.FollowingUser newFollow = new Repository.Models.FollowingUser();
+            newFollow.FollowerUserId = followerid;
+            newFollow.FolloweeUserId = followeeid;
+            return await _repo.FollowUser(newFollow);
+        }
+
+        public async Task<List<User>> GetFollowingUsers(string userid)
+        {
+            List<Repository.Models.FollowingUser> repoAllUsers = await _repo.GetFollowingUsers(userid);
+            if(repoAllUsers == null)
+            {
+                return null;
+            }
+            List<User> allUsers = new List<User>();
+            List<Task<User>> tasks = new List<Task<User>>();
+            foreach(Repository.Models.FollowingUser user in repoAllUsers)
+            {
+                tasks.Add(Task.Run(() => Mapper.RepoUserToUser(user.FolloweeUser)));
+            }
+            var results = await Task.WhenAll(tasks);
+            foreach(var item in results)
+            {
+                allUsers.Add(item);
+            }
+            return allUsers;
+        }
+
         public async Task<List<string>> GetFollowingMovies(string userid)
         {
             List<Repository.Models.FollowingMovie> repoFollowingMovies = await _repo.GetFollowingMovies(userid);

@@ -55,6 +55,48 @@ namespace Repository
         }
 
         /// <summary>
+        /// Adds a new FollowingUser object into the database
+        /// Checks if both the follower and followee exists, on id
+        /// If either follower or followee does not exist, return true
+        /// If successul in adding to database, return true
+        /// </summary>
+        /// <param name="newFollow"></param>
+        /// <returns></returns>
+        public async Task<bool> FollowUser(FollowingUser newFollow)
+        {
+            if(!UserExistsById(newFollow.FollowerUserId))
+            {
+                _logger.LogWarning($"RepoLogic.Follower() was called for a userid(follower) that does not exist {newFollow.FollowerUserId}.");
+                return false;
+            }
+            if(!UserExistsById(newFollow.FolloweeUserId))
+            {
+                _logger.LogWarning($"RepoLogic.Follower() was called for a userid(follower) that does not exist {newFollow.FolloweeUserId}.");
+                return false;
+            }
+            await _dbContext.AddAsync<FollowingUser>(newFollow);
+
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        /// <summary>
+        /// Returns the entire list of users that a specific user is following
+        /// Will return null if the specific userid does not exist
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        public async Task<List<FollowingUser>> GetFollowingUsers(string userid)
+        {
+            if(!UserExistsById(userid))
+            {
+                _logger.LogWarning($"RepoLogic.GetFollowing was called for a userid that does not exist {userid}.");
+                return null;
+            }
+            return await _dbContext.FollowingUsers.Include(x => x.FolloweeUser).Where(x => x.FollowerUserId == userid).ToListAsync();
+        }
+
+        /// <summary>
         /// Updates the information of the User identified by the userId argument
         /// to the information in the updatedUser object. Returns true iff successful.
         /// Returns false if the user doesn't exist, if the updated username already exists,
