@@ -179,6 +179,52 @@ namespace CineAPI.Controllers
         }
 
         /// <summary>
+        /// Adds a new follower->followee relationship.
+        /// Adds a new FollowingUser Object into the database.
+        /// Returns true if successful.
+        /// Returns false if failed.
+        /// </summary>
+        /// <param name="follower"></param>
+        /// <param name="followee"></param>
+        /// <returns></returns>
+        [HttpPost("follow/{follower}/{followee}")]
+        public async Task<ActionResult<bool>> FollowUser(string follower, string followee)
+        {
+            bool followNewUser = await _userLogic.FollowUser(follower, followee);
+            if(followNewUser)
+            {
+                return StatusCode(201);
+            }
+            else
+            {
+                return StatusCode(404);
+            }
+        }
+
+        /// <summary>
+        /// Returns a list of all the users someone is following from their userid
+        /// Returns 404 if unable to find original user
+        /// Returns 204 if able to find user, but has no follows
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        [HttpGet("followlist/{userid}")]
+        public async Task<ActionResult<List<User>>> GetFollowedUserList(string userid)
+        {
+            List<User> allUsers = await _userLogic.GetFollowingUsers(userid);
+            if(allUsers == null)
+            {
+                return StatusCode(404);
+            }
+            if(allUsers.Count == 0)
+            {
+                return StatusCode(204);
+            }
+            StatusCode(200);
+            return allUsers;
+        }
+
+        /// <summary>
         /// Returns a list containing all of the movie IDs for the Movies that
         /// the User with the provided username is following.
         /// </summary>
