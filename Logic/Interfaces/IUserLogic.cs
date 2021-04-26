@@ -54,26 +54,6 @@ namespace BusinessLogic.Interfaces
         /// <returns></returns>
         Task<bool> UpdatePermissions(string userid, int permissionLevel);
 
-        
-        /// <summary>
-        /// Returns a list of every FollowingMovie object that was created by the user
-        /// specified by the username argument. Returns null if the username doesn't
-        /// exist.
-        /// </summary>
-        /// <param name="username"></param>
-        /// <returns></returns>
-        public Task<List<string>> GetFollowingMovies(string userid);
-
-        
-        /// <summary>
-        /// Adds a new FollowingMovie Object to storage.
-        /// Returns true if successful; false otherwise.
-        /// </summary>
-        /// <param name="username"></param>
-        /// <param name="movieid"></param>
-        /// <returns></returns>
-        public Task<bool> FollowMovie(string userid, string movieid);
-
         /// <summary>
         /// Returns the age of the user, in years with decimal places representing
         /// the days. Returns null if the userid does not exist.
@@ -83,10 +63,18 @@ namespace BusinessLogic.Interfaces
         public double? GetUserAge(string userid);
 
         /// <summary>
+        /// Returns a User object using a userid
+        /// Will return null if userid was not found in the database
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        public Task<User> GetUserById(string userid);
+
+        /// <summary>
         /// Function for one user to follow another user
         /// Adds a new FollowingUser Object to database
-        /// Returns true is successful
-        /// Return false is failed
+        /// Returns true if successful
+        /// Return false if failed
         /// </summary>
         /// <param name="follower"></param>
         /// <param name="followee"></param>
