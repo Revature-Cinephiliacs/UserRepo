@@ -12,7 +12,6 @@ namespace Repository.Models
     {
         public User()
         {
-            FollowingMovies = new HashSet<FollowingMovie>();
             FollowingUserFolloweeUsers = new HashSet<FollowingUser>();
             FollowingUserFollowerUsers = new HashSet<FollowingUser>();
         }
@@ -25,7 +24,6 @@ namespace Repository.Models
         public DateTime? DateOfBirth { get; set; }
         public byte Permissions { get; set; }
 
-        public virtual ICollection<FollowingMovie> FollowingMovies { get; set; }
         public virtual ICollection<FollowingUser> FollowingUserFolloweeUsers { get; set; }
         public virtual ICollection<FollowingUser> FollowingUserFollowerUsers { get; set; }
     }

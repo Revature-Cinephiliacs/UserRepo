@@ -58,6 +58,25 @@ namespace CineAPI.Controllers
         }
 
         /// <summary>
+        /// Returns a user based on their user id
+        /// Returns 404 if user could not be found with the user id
+        /// Returns 200 if the user was found
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        [HttpGet("{userid}")]
+        public async Task<ActionResult<User>> GetUserById(string userid)
+        {
+            User findUser = await _userLogic.GetUserById(userid);
+            if(findUser == null)
+            {
+                return StatusCode(404);
+            }
+            StatusCode(200);
+            return findUser;
+        }
+
+        /// <summary>
         /// Updates User information based on the information provided.
         /// Returns a 400 status code if the incoming data is invalid.
         /// Returns a 404 status code if the userid does not already exist.
@@ -133,7 +152,7 @@ namespace CineAPI.Controllers
         /// <summary>
         /// Changes a user's permissionlevel up to an admin level's (3)
         /// If updating permissions fails, return 404
-        /// If updating is sucessful, return 202
+        /// If updating is successful, return 202
         /// </summary>
         /// <param name="userid"></param>
         /// <returns></returns>
@@ -222,50 +241,6 @@ namespace CineAPI.Controllers
             }
             StatusCode(200);
             return allUsers;
-        }
-
-        /// <summary>
-        /// Returns a list containing all of the movie IDs for the Movies that
-        /// the User with the provided username is following.
-        /// </summary>
-        /// <param name="username"></param>
-        /// <returns></returns>
-        [HttpGet("movies/{userid}")]
-        public async Task<ActionResult<List<string>>> GetFollowedMovies(string userid)
-        {
-            List<string> movieids = await _userLogic.GetFollowingMovies(userid);
-
-            if (movieids == null)
-            {
-                return StatusCode(404);
-            }
-            if (movieids.Count == 0)
-            {
-                return StatusCode(204);
-            }
-            StatusCode(200);
-            return movieids;
-        }
-
-        /// <summary>
-        /// Adds the Movie with the provided movie ID to the provided User's 
-        /// list of Movies they are following.
-        /// </summary>
-        /// <param name="username"></param>
-        /// <param name="movieid"></param>
-        /// <returns></returns>
-        [HttpPost("movie/{userid}/{movieid}")]
-        public async Task<ActionResult> FollowMovie(string userid, string movieid)
-        {
-            var result = await _userLogic.FollowMovie(userid, movieid);
-            if (result)
-            {
-                return StatusCode(201);
-            }
-            else
-            {
-                return StatusCode(400);
-            }
         }
     }
 }

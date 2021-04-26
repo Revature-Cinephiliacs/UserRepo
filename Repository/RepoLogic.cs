@@ -227,56 +227,6 @@ namespace Repository
         }
 
         /// <summary>
-        /// Returns a list of all FollowingMovie objects from the database that match the userId
-        /// specified in the argument. Returns null if the user doesn't exist.
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        public async Task<List<FollowingMovie>> GetFollowingMovies(string userId)
-        {
-            if(!UserExistsById(userId))
-            {
-                _logger.LogWarning($"RepoLogic.GetFollowingMovies() was called for a user that doesn't exist {userId}.");
-                return null;
-            }
-            return await _dbContext.FollowingMovies.Where(f => f.UserId == userId).ToListAsync();
-        }
-
-        /// <summary>
-        /// Adds the FollowingMovie specified in the argument to the database.
-        /// Returns true iff successful.
-        /// Returns false if the username or movieid referenced in the FollowingMovie object
-        /// do not already exist in their respective database tables.
-        /// </summary>
-        /// <param name="followingMovie"></param>
-        /// <returns></returns>
-        public async Task<bool> FollowMovie(FollowingMovie followingMovie)
-        {
-            if(!UserExistsById(followingMovie.UserId))
-            {
-                _logger.LogWarning($"RepoLogic.FollowMovie() was called for a user that doesn't exist {followingMovie.UserId}.");
-                return false;
-            }
-            // MS API CALL: Make sure movie exists //
-
-            // Ensure the User is not already Following this Movie
-            if((await _dbContext.FollowingMovies.Where(fm => 
-                    fm.UserId == followingMovie.UserId 
-                    && fm.MovieId == followingMovie.MovieId
-                ).FirstOrDefaultAsync<FollowingMovie>()) != null)
-            {
-                _logger.LogWarning($"RepoLogic.FollowMovie() was called for a movie that the user is " +
-                    $"already following {followingMovie.MovieId}.");
-                return false;
-            }
-
-            await _dbContext.FollowingMovies.AddAsync(followingMovie);
-
-            await _dbContext.SaveChangesAsync();
-            return true;
-        }
-
-        /// <summary>
         /// Returns true iff the userId, specified in the argument, exists in the database's Users table.
         /// </summary>
         /// <param name="userId"></param>

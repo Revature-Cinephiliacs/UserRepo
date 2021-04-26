@@ -17,7 +17,6 @@ namespace Repository.Models
         {
         }
 
-        public virtual DbSet<FollowingMovie> FollowingMovies { get; set; }
         public virtual DbSet<FollowingUser> FollowingUsers { get; set; }
         public virtual DbSet<User> Users { get; set; }
 
@@ -27,30 +26,6 @@ namespace Repository.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
-
-            modelBuilder.Entity<FollowingMovie>(entity =>
-            {
-                entity.HasKey(e => new { e.UserId, e.MovieId })
-                    .HasName("user_following_movie_pk");
-
-                entity.ToTable("following_movies");
-
-                entity.Property(e => e.UserId)
-                    .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("userID");
-
-                entity.Property(e => e.MovieId)
-                    .HasMaxLength(20)
-                    .IsUnicode(false)
-                    .HasColumnName("movieID");
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.FollowingMovies)
-                    .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__following__userI__797309D9");
-            });
 
             modelBuilder.Entity<FollowingUser>(entity =>
             {
