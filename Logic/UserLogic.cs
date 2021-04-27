@@ -38,6 +38,16 @@ namespace BusinessLogic
             return await _repo.UpdateUser(userid, repoUser);
         }
 
+        public async Task<User> GetUserById(string userid)
+        {
+            var repoUser = await Task.Run(() => _repo.GetUserByUserId(userid));
+            if(repoUser == null)
+            {
+                return null;
+            }
+            return await Task.Run(() => Mapper.RepoUserToUser(repoUser));
+        }
+
         public User GetUser(string useremail)
         {
             var repoUser = _repo.GetUserByEmail(useremail);
@@ -70,29 +80,33 @@ namespace BusinessLogic
             return await _repo.UpdatePermissions(userid, permissionLevel);
         }
 
-        public async Task<List<string>> GetFollowingMovies(string userid)
+        public async Task<bool> FollowUser(string followerid, string followeeid)
         {
-            List<Repository.Models.FollowingMovie> repoFollowingMovies = await _repo.GetFollowingMovies(userid);
-            if(repoFollowingMovies == null)
+            Repository.Models.FollowingUser newFollow = new Repository.Models.FollowingUser();
+            newFollow.FollowerUserId = followerid;
+            newFollow.FolloweeUserId = followeeid;
+            return await _repo.FollowUser(newFollow);
+        }
+
+        public async Task<List<User>> GetFollowingUsers(string userid)
+        {
+            List<Repository.Models.FollowingUser> repoAllUsers = await _repo.GetFollowingUsers(userid);
+            if(repoAllUsers == null)
             {
                 return null;
             }
-
-            List<string> followingMovies = new List<string>();
-            foreach (var repoFollowingMovie in repoFollowingMovies)
+            List<User> allUsers = new List<User>();
+            List<Task<User>> tasks = new List<Task<User>>();
+            foreach(Repository.Models.FollowingUser user in repoAllUsers)
             {
-                followingMovies.Add(repoFollowingMovie.MovieId);
+                tasks.Add(Task.Run(() => Mapper.RepoUserToUser(user.FolloweeUser)));
             }
-            return followingMovies;
-        }
-
-        public async Task<bool> FollowMovie(string userid, string movieid)
-        {
-            Repository.Models.FollowingMovie repoFollowingMovie = new Repository.Models.FollowingMovie();
-            repoFollowingMovie.UserId = userid;
-            repoFollowingMovie.MovieId = movieid;
-            
-            return await _repo.FollowMovie(repoFollowingMovie);
+            var results = await Task.WhenAll(tasks);
+            foreach(var item in results)
+            {
+                allUsers.Add(item);
+            }
+            return allUsers;
         }
 
         public double? GetUserAge(string userid)

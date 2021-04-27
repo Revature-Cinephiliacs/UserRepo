@@ -25,7 +25,7 @@ namespace UserApi
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        public IConfiguration Configuration { get; set;}
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -36,7 +36,8 @@ namespace UserApi
                 builder => builder
                     .WithOrigins(
                         "http://localhost:4200",
-                        "https://localhost:5001"
+                        "https://localhost:5001",
+                        "http://20.94.137.143"
                     )
                     .AllowAnyMethod()
                     .AllowAnyHeader()
@@ -83,6 +84,13 @@ namespace UserApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile("secrets/app-secrets.json", optional: true)
+                .AddEnvironmentVariables();
+            Configuration = builder.Build();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

@@ -58,6 +58,25 @@ namespace CineAPI.Controllers
         }
 
         /// <summary>
+        /// Returns a user based on their user id
+        /// Returns 404 if user could not be found with the user id
+        /// Returns 200 if the user was found
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        [HttpGet("{userid}")]
+        public async Task<ActionResult<User>> GetUserById(string userid)
+        {
+            User findUser = await _userLogic.GetUserById(userid);
+            if(findUser == null)
+            {
+                return StatusCode(404);
+            }
+            StatusCode(200);
+            return findUser;
+        }
+
+        /// <summary>
         /// Updates User information based on the information provided.
         /// Returns a 400 status code if the incoming data is invalid.
         /// Returns a 404 status code if the userid does not already exist.
@@ -133,7 +152,7 @@ namespace CineAPI.Controllers
         /// <summary>
         /// Changes a user's permissionlevel up to an admin level's (3)
         /// If updating permissions fails, return 404
-        /// If updating is sucessful, return 202
+        /// If updating is successful, return 202
         /// </summary>
         /// <param name="userid"></param>
         /// <returns></returns>
@@ -179,47 +198,49 @@ namespace CineAPI.Controllers
         }
 
         /// <summary>
-        /// Returns a list containing all of the movie IDs for the Movies that
-        /// the User with the provided username is following.
+        /// Adds a new follower->followee relationship.
+        /// Adds a new FollowingUser Object into the database.
+        /// Returns true if successful.
+        /// Returns false if failed.
         /// </summary>
-        /// <param name="username"></param>
+        /// <param name="follower"></param>
+        /// <param name="followee"></param>
         /// <returns></returns>
-        [HttpGet("movies/{userid}")]
-        public async Task<ActionResult<List<string>>> GetFollowedMovies(string userid)
+        [HttpPost("follow/{follower}/{followee}")]
+        public async Task<ActionResult<bool>> FollowUser(string follower, string followee)
         {
-            List<string> movieids = await _userLogic.GetFollowingMovies(userid);
-
-            if (movieids == null)
-            {
-                return StatusCode(404);
-            }
-            if (movieids.Count == 0)
-            {
-                return StatusCode(204);
-            }
-            StatusCode(200);
-            return movieids;
-        }
-
-        /// <summary>
-        /// Adds the Movie with the provided movie ID to the provided User's 
-        /// list of Movies they are following.
-        /// </summary>
-        /// <param name="username"></param>
-        /// <param name="movieid"></param>
-        /// <returns></returns>
-        [HttpPost("movie/{userid}/{movieid}")]
-        public async Task<ActionResult> FollowMovie(string userid, string movieid)
-        {
-            var result = await _userLogic.FollowMovie(userid, movieid);
-            if (result)
+            bool followNewUser = await _userLogic.FollowUser(follower, followee);
+            if(followNewUser)
             {
                 return StatusCode(201);
             }
             else
             {
-                return StatusCode(400);
+                return StatusCode(404);
             }
+        }
+
+        /// <summary>
+        /// Returns a list of all the users someone is following from their userid
+        /// Returns 404 if unable to find original user
+        /// Returns 204 if able to find user, but has no follows
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        [HttpGet("followlist/{userid}")]
+        public async Task<ActionResult<List<User>>> GetFollowedUserList(string userid)
+        {
+            List<User> allUsers = await _userLogic.GetFollowingUsers(userid);
+            if(allUsers == null)
+            {
+                return StatusCode(404);
+            }
+            if(allUsers.Count == 0)
+            {
+                return StatusCode(204);
+            }
+            StatusCode(200);
+            return allUsers;
         }
     }
 }
