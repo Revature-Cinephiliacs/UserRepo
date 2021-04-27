@@ -8,9 +8,10 @@ This microservice is part of the Cinephiliacs application. It manages all user-c
 * ASP.NET Core
 * EntityFramework Core
 
-## API Address
+## Usage
+#### API Address
 http://20.45.2.119/
-## Endpoint Objects
+#### Endpoint Objects
 * User
   * userid: string,
   * username: string,
@@ -27,8 +28,8 @@ http://20.45.2.119/
   * email: string,
   * dateofbirth: string
 
-### Object usage within an endpoint is denoted by placing the object name with parenthesis: (Object)
-## Endpoints
+##### Object usage within an endpoint is denoted by placing the object name with parenthesis: (Object)
+#### Endpoints
 | Description                | Type   | Path                          | Request Body | Returned | Comments   |
 |----------------------------|--------|-------------------------------|--------------|----------|------------|
 | Get all users              | Get    | user/users                    |              | (User)   |            |
