@@ -18,7 +18,7 @@ namespace Testing
         readonly DbContextOptions<Cinephiliacs_UserContext> options = new DbContextOptionsBuilder<Cinephiliacs_UserContext>()
             .UseInMemoryDatabase(databaseName: "Test")
             .Options;
-        
+
         readonly ILogger<RepoLogic> repoLogger = new ServiceCollection().AddLogging().BuildServiceProvider().GetService<ILoggerFactory>().CreateLogger<RepoLogic>();
         readonly ILogger<UserLogic> logicLogger = new ServiceCollection().AddLogging().BuildServiceProvider().GetService<ILoggerFactory>().CreateLogger<UserLogic>();
 
@@ -34,7 +34,7 @@ namespace Testing
             newUser.Dateofbirth = "1990-05-20";
 
             bool returnedValue;
-            using(var context = new Cinephiliacs_UserContext(options))
+            using (var context = new Cinephiliacs_UserContext(options))
             {
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
@@ -45,7 +45,7 @@ namespace Testing
             }
 
             Repository.Models.User dbUser;
-            using(var context1 = new Cinephiliacs_UserContext(options))
+            using (var context1 = new Cinephiliacs_UserContext(options))
             {
                 context1.Database.EnsureCreated();
                 dbUser = context1.Users.FirstOrDefault(x => x.UserId == newUser.Userid.ToString());
@@ -74,20 +74,20 @@ namespace Testing
             newUser.Dateofbirth = "1990-05-20";
 
             bool returnedValue;
-            using(var context = new Cinephiliacs_UserContext(options))
+            using (var context = new Cinephiliacs_UserContext(options))
             {
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
 
-                
+
                 context.Add<Repository.Models.User>(oldUser);
                 context.SaveChanges();
             }
 
-            using(var context1 = new Cinephiliacs_UserContext(options))
+            using (var context1 = new Cinephiliacs_UserContext(options))
             {
                 context1.Database.EnsureCreated();
-                
+
                 RepoLogic userRepo = new RepoLogic(context1, repoLogger);
                 UserLogic test = new UserLogic(userRepo, logicLogger);
 
@@ -116,20 +116,20 @@ namespace Testing
             newUser.Dateofbirth = "1990-05-20";
 
             bool returnedValue;
-            using(var context = new Cinephiliacs_UserContext(options))
+            using (var context = new Cinephiliacs_UserContext(options))
             {
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
 
-                
+
                 context.Add<Repository.Models.User>(oldUser);
                 context.SaveChanges();
             }
 
-            using(var context1 = new Cinephiliacs_UserContext(options))
+            using (var context1 = new Cinephiliacs_UserContext(options))
             {
                 context1.Database.EnsureCreated();
-                
+
                 RepoLogic userRepo = new RepoLogic(context1, repoLogger);
                 UserLogic test = new UserLogic(userRepo, logicLogger);
 
@@ -158,20 +158,20 @@ namespace Testing
             newUser.Dateofbirth = "1990-05-20";
 
             bool returnedValue;
-            using(var context = new Cinephiliacs_UserContext(options))
+            using (var context = new Cinephiliacs_UserContext(options))
             {
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
 
-                
+
                 context.Add<Repository.Models.User>(oldUser);
                 context.SaveChanges();
             }
 
-            using(var context1 = new Cinephiliacs_UserContext(options))
+            using (var context1 = new Cinephiliacs_UserContext(options))
             {
                 context1.Database.EnsureCreated();
-                
+
                 RepoLogic userRepo = new RepoLogic(context1, repoLogger);
                 UserLogic test = new UserLogic(userRepo, logicLogger);
 
@@ -200,7 +200,7 @@ namespace Testing
             newUser.Dateofbirth = "1990-05-20";
 
             bool returnedValue;
-            using(var context = new Cinephiliacs_UserContext(options))
+            using (var context = new Cinephiliacs_UserContext(options))
             {
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
@@ -210,13 +210,13 @@ namespace Testing
             }
 
             Repository.Models.User dbUser;
-            using(var context1 = new Cinephiliacs_UserContext(options))
+            using (var context1 = new Cinephiliacs_UserContext(options))
             {
                 context1.Database.EnsureCreated();
-                
+
                 RepoLogic userRepo = new RepoLogic(context1, repoLogger);
                 UserLogic test = new UserLogic(userRepo, logicLogger);
-                
+
                 returnedValue = await Task.Run(() => test.UpdateUser(oldUser.UserId, newUser));
                 dbUser = context1.Users.FirstOrDefault(x => x.UserId == oldUser.UserId);
             }
@@ -243,7 +243,7 @@ namespace Testing
             newUser.Dateofbirth = "1990-05-20";
 
             bool returnedValue;
-            using(var context = new Cinephiliacs_UserContext(options))
+            using (var context = new Cinephiliacs_UserContext(options))
             {
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
@@ -252,13 +252,13 @@ namespace Testing
                 context.SaveChanges();
             }
 
-            using(var context1 = new Cinephiliacs_UserContext(options))
+            using (var context1 = new Cinephiliacs_UserContext(options))
             {
                 context1.Database.EnsureCreated();
-                
+
                 RepoLogic userRepo = new RepoLogic(context1, repoLogger);
                 UserLogic test = new UserLogic(userRepo, logicLogger);
-                
+
                 returnedValue = await Task.Run(() => test.UpdateUser(newUser.Userid, newUser));
             }
 
@@ -291,7 +291,7 @@ namespace Testing
             newUser.Dateofbirth = "1990-05-20";
 
             bool returnedValue;
-            using(var context = new Cinephiliacs_UserContext(options))
+            using (var context = new Cinephiliacs_UserContext(options))
             {
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
@@ -301,18 +301,73 @@ namespace Testing
                 context.SaveChanges();
             }
 
-            using(var context1 = new Cinephiliacs_UserContext(options))
+            using (var context1 = new Cinephiliacs_UserContext(options))
             {
                 context1.Database.EnsureCreated();
-                
+
                 RepoLogic userRepo = new RepoLogic(context1, repoLogger);
                 UserLogic test = new UserLogic(userRepo, logicLogger);
-                
+
                 returnedValue = await Task.Run(() => test.UpdateUser(newUser.Userid, newUser));
             }
 
             Assert.False(returnedValue);
         }
+
+
+        [Fact]
+        public async Task TestGetReportedUsers()
+        {
+            List<string> ids = new List<string>()
+            {
+                "u1",
+                "u2",
+                "u3",
+            };
+            Repository.Models.User oldUser = new Repository.Models.User();
+            oldUser.UserId = "u1";
+            oldUser.Username = "OldTestingTestington";
+            oldUser.FirstName = "OGTest";
+            oldUser.LastName = "OriginalTest";
+            oldUser.Permissions = 1;
+            oldUser.Email = "oldtest@gmail.com";
+            Repository.Models.User oldUser1 = new Repository.Models.User();
+            oldUser1.UserId = "u2";
+            oldUser1.Username = "OldTestingTestington1";
+            oldUser1.FirstName = "OGTest1";
+            oldUser1.LastName = "OriginalTest1";
+            oldUser1.Permissions = 1;
+            oldUser1.Email = "oldtest1@gmail.com";
+            Repository.Models.User newUser = new Repository.Models.User();
+            newUser.UserId = "u3";
+            newUser.Username = "us1";
+            newUser.FirstName = "u1";
+            newUser.LastName = "l1";
+            newUser.Permissions = 0;
+            newUser.Email = "u1@gmail.com";
+
+            using (var context = new Cinephiliacs_UserContext(options))
+            {
+                context.Database.EnsureDeleted();
+                context.Database.EnsureCreated();
+
+                context.Add<Repository.Models.User>(oldUser);
+                context.Add<Repository.Models.User>(oldUser1);
+                context.Add<Repository.Models.User>(newUser);
+                context.SaveChanges();
+            }
+            var users = new List<Repository.Models.User>();
+            using (var context1 = new Cinephiliacs_UserContext(options))
+            {
+                context1.Database.EnsureCreated();
+
+                RepoLogic userRepo = new RepoLogic(context1, repoLogger);
+                users = await userRepo.GetReportedUsers(ids);
+            }
+
+            Assert.Equal(users.Count, 3);
+        }
+
 
         [Fact]
         public async Task UpdateUser_FalseByEmailExist_Test()
@@ -340,7 +395,7 @@ namespace Testing
             newUser.Dateofbirth = "1990-05-20";
 
             bool returnedValue;
-            using(var context = new Cinephiliacs_UserContext(options))
+            using (var context = new Cinephiliacs_UserContext(options))
             {
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
@@ -350,13 +405,13 @@ namespace Testing
                 context.SaveChanges();
             }
 
-            using(var context1 = new Cinephiliacs_UserContext(options))
+            using (var context1 = new Cinephiliacs_UserContext(options))
             {
                 context1.Database.EnsureCreated();
-                
+
                 RepoLogic userRepo = new RepoLogic(context1, repoLogger);
                 UserLogic test = new UserLogic(userRepo, logicLogger);
-                
+
                 returnedValue = await Task.Run(() => test.UpdateUser(newUser.Userid, newUser));
             }
 
@@ -374,7 +429,7 @@ namespace Testing
             oldUser.Permissions = 1;
             oldUser.Email = "oldtest@gmail.com";
 
-            using(var context = new Cinephiliacs_UserContext(options))
+            using (var context = new Cinephiliacs_UserContext(options))
             {
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
@@ -384,13 +439,13 @@ namespace Testing
             }
 
             GlobalModels.User returnUser;
-            using(var context1 = new Cinephiliacs_UserContext(options))
+            using (var context1 = new Cinephiliacs_UserContext(options))
             {
                 context1.Database.EnsureCreated();
-                
+
                 RepoLogic userRepo = new RepoLogic(context1, repoLogger);
                 UserLogic test = new UserLogic(userRepo, logicLogger);
-                
+
                 returnUser = await Task.Run(() => test.GetUser("oldtest@gmail.com"));
             }
 
@@ -408,7 +463,7 @@ namespace Testing
             oldUser.Permissions = 1;
             oldUser.Email = "oldtest@gmail.com";
 
-            using(var context = new Cinephiliacs_UserContext(options))
+            using (var context = new Cinephiliacs_UserContext(options))
             {
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
@@ -418,13 +473,13 @@ namespace Testing
             }
 
             GlobalModels.User returnUser;
-            using(var context1 = new Cinephiliacs_UserContext(options))
+            using (var context1 = new Cinephiliacs_UserContext(options))
             {
                 context1.Database.EnsureCreated();
-                
+
                 RepoLogic userRepo = new RepoLogic(context1, repoLogger);
                 UserLogic test = new UserLogic(userRepo, logicLogger);
-                
+
                 returnUser = await Task.Run(() => test.GetUser("failtest@gmail.com"));
             }
 
@@ -449,7 +504,7 @@ namespace Testing
             oldUser1.Permissions = 1;
             oldUser1.Email = "oldtest1@gmail.com";
 
-            using(var context = new Cinephiliacs_UserContext(options))
+            using (var context = new Cinephiliacs_UserContext(options))
             {
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
@@ -460,13 +515,13 @@ namespace Testing
             }
 
             List<GlobalModels.User> returnUser;
-            using(var context1 = new Cinephiliacs_UserContext(options))
+            using (var context1 = new Cinephiliacs_UserContext(options))
             {
                 context1.Database.EnsureCreated();
-                
+
                 RepoLogic userRepo = new RepoLogic(context1, repoLogger);
                 UserLogic test = new UserLogic(userRepo, logicLogger);
-                
+
                 returnUser = await Task.Run(() => test.GetUsers());
             }
 
@@ -491,7 +546,7 @@ namespace Testing
             oldUser1.Permissions = 1;
             oldUser1.Email = "oldtest1@gmail.com";
 
-            using(var context = new Cinephiliacs_UserContext(options))
+            using (var context = new Cinephiliacs_UserContext(options))
             {
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
@@ -502,13 +557,13 @@ namespace Testing
             }
 
             bool successDelete;
-            using(var context1 = new Cinephiliacs_UserContext(options))
+            using (var context1 = new Cinephiliacs_UserContext(options))
             {
                 context1.Database.EnsureCreated();
-                
+
                 RepoLogic userRepo = new RepoLogic(context1, repoLogger);
                 UserLogic test = new UserLogic(userRepo, logicLogger);
-                
+
                 successDelete = await Task.Run(() => test.DeleteUser(oldUser.UserId));
             }
 
@@ -533,7 +588,7 @@ namespace Testing
             oldUser1.Permissions = 1;
             oldUser1.Email = "oldtest1@gmail.com";
 
-            using(var context = new Cinephiliacs_UserContext(options))
+            using (var context = new Cinephiliacs_UserContext(options))
             {
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
@@ -544,13 +599,13 @@ namespace Testing
             }
 
             bool successDelete;
-            using(var context1 = new Cinephiliacs_UserContext(options))
+            using (var context1 = new Cinephiliacs_UserContext(options))
             {
                 context1.Database.EnsureCreated();
-                
+
                 RepoLogic userRepo = new RepoLogic(context1, repoLogger);
                 UserLogic test = new UserLogic(userRepo, logicLogger);
-                
+
                 successDelete = await Task.Run(() => test.DeleteUser(Guid.NewGuid().ToString()));
             }
 
@@ -568,7 +623,7 @@ namespace Testing
             oldUser.Permissions = 1;
             oldUser.Email = "oldtest@gmail.com";
 
-            using(var context = new Cinephiliacs_UserContext(options))
+            using (var context = new Cinephiliacs_UserContext(options))
             {
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
@@ -578,13 +633,13 @@ namespace Testing
             }
 
             bool successUpdate;
-            using(var context1 = new Cinephiliacs_UserContext(options))
+            using (var context1 = new Cinephiliacs_UserContext(options))
             {
                 context1.Database.EnsureCreated();
-                
+
                 RepoLogic userRepo = new RepoLogic(context1, repoLogger);
                 UserLogic test = new UserLogic(userRepo, logicLogger);
-                
+
                 successUpdate = await Task.Run(() => test.UpdatePermissions(oldUser.UserId, 3));
             }
 
@@ -602,7 +657,7 @@ namespace Testing
             oldUser.Permissions = 1;
             oldUser.Email = "oldtest@gmail.com";
 
-            using(var context = new Cinephiliacs_UserContext(options))
+            using (var context = new Cinephiliacs_UserContext(options))
             {
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
@@ -612,13 +667,13 @@ namespace Testing
             }
 
             bool successUpdate;
-            using(var context1 = new Cinephiliacs_UserContext(options))
+            using (var context1 = new Cinephiliacs_UserContext(options))
             {
                 context1.Database.EnsureCreated();
-                
+
                 RepoLogic userRepo = new RepoLogic(context1, repoLogger);
                 UserLogic test = new UserLogic(userRepo, logicLogger);
-                
+
                 successUpdate = await Task.Run(() => test.UpdatePermissions(Guid.NewGuid().ToString(), 3));
             }
 
@@ -636,7 +691,7 @@ namespace Testing
             oldUser.Permissions = 1;
             oldUser.Email = "oldtest@gmail.com";
 
-            using(var context = new Cinephiliacs_UserContext(options))
+            using (var context = new Cinephiliacs_UserContext(options))
             {
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
@@ -646,13 +701,13 @@ namespace Testing
             }
 
             bool successUpdate;
-            using(var context1 = new Cinephiliacs_UserContext(options))
+            using (var context1 = new Cinephiliacs_UserContext(options))
             {
                 context1.Database.EnsureCreated();
-                
+
                 RepoLogic userRepo = new RepoLogic(context1, repoLogger);
                 UserLogic test = new UserLogic(userRepo, logicLogger);
-                
+
                 successUpdate = await Task.Run(() => test.UpdatePermissions(oldUser.UserId, -1));
             }
 
@@ -671,7 +726,7 @@ namespace Testing
             oldUser.Email = "oldtest@gmail.com";
             oldUser.DateOfBirth = DateTime.Parse("1994-05-20");
 
-            using(var context = new Cinephiliacs_UserContext(options))
+            using (var context = new Cinephiliacs_UserContext(options))
             {
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
@@ -681,13 +736,13 @@ namespace Testing
             }
 
             double? age;
-            using(var context1 = new Cinephiliacs_UserContext(options))
+            using (var context1 = new Cinephiliacs_UserContext(options))
             {
                 context1.Database.EnsureCreated();
-                
+
                 RepoLogic userRepo = new RepoLogic(context1, repoLogger);
                 UserLogic test = new UserLogic(userRepo, logicLogger);
-                
+
                 age = await Task.Run(() => test.GetUserAge(oldUser.UserId));
             }
 
@@ -706,7 +761,7 @@ namespace Testing
             oldUser.Email = "oldtest@gmail.com";
             oldUser.DateOfBirth = DateTime.Parse("1994-05-20");
 
-            using(var context = new Cinephiliacs_UserContext(options))
+            using (var context = new Cinephiliacs_UserContext(options))
             {
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
@@ -716,13 +771,13 @@ namespace Testing
             }
 
             double? age;
-            using(var context1 = new Cinephiliacs_UserContext(options))
+            using (var context1 = new Cinephiliacs_UserContext(options))
             {
                 context1.Database.EnsureCreated();
-                
+
                 RepoLogic userRepo = new RepoLogic(context1, repoLogger);
                 UserLogic test = new UserLogic(userRepo, logicLogger);
-                
+
                 age = await Task.Run(() => test.GetUserAge(Guid.NewGuid().ToString()));
             }
 
@@ -746,9 +801,9 @@ namespace Testing
             oldUser1.LastName = "OriginalTest1";
             oldUser1.Permissions = 1;
             oldUser1.Email = "oldtest1@gmail.com";
-            
 
-            using(var context = new Cinephiliacs_UserContext(options))
+
+            using (var context = new Cinephiliacs_UserContext(options))
             {
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
@@ -759,13 +814,13 @@ namespace Testing
             }
 
             bool success;
-            using(var context1 = new Cinephiliacs_UserContext(options))
+            using (var context1 = new Cinephiliacs_UserContext(options))
             {
                 context1.Database.EnsureCreated();
-                
+
                 RepoLogic userRepo = new RepoLogic(context1, repoLogger);
                 UserLogic test = new UserLogic(userRepo, logicLogger);
-                
+
                 success = await Task.Run(() => test.FollowUser(oldUser.UserId, oldUser1.UserId));
             }
 
@@ -789,9 +844,9 @@ namespace Testing
             oldUser1.LastName = "OriginalTest1";
             oldUser1.Permissions = 1;
             oldUser1.Email = "oldtest1@gmail.com";
-            
 
-            using(var context = new Cinephiliacs_UserContext(options))
+
+            using (var context = new Cinephiliacs_UserContext(options))
             {
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
@@ -802,13 +857,13 @@ namespace Testing
             }
 
             bool success;
-            using(var context1 = new Cinephiliacs_UserContext(options))
+            using (var context1 = new Cinephiliacs_UserContext(options))
             {
                 context1.Database.EnsureCreated();
-                
+
                 RepoLogic userRepo = new RepoLogic(context1, repoLogger);
                 UserLogic test = new UserLogic(userRepo, logicLogger);
-                
+
                 success = await Task.Run(() => test.FollowUser(Guid.NewGuid().ToString(), oldUser1.UserId));
             }
 
@@ -832,9 +887,9 @@ namespace Testing
             oldUser1.LastName = "OriginalTest1";
             oldUser1.Permissions = 1;
             oldUser1.Email = "oldtest1@gmail.com";
-            
 
-            using(var context = new Cinephiliacs_UserContext(options))
+
+            using (var context = new Cinephiliacs_UserContext(options))
             {
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
@@ -845,13 +900,13 @@ namespace Testing
             }
 
             bool success;
-            using(var context1 = new Cinephiliacs_UserContext(options))
+            using (var context1 = new Cinephiliacs_UserContext(options))
             {
                 context1.Database.EnsureCreated();
-                
+
                 RepoLogic userRepo = new RepoLogic(context1, repoLogger);
                 UserLogic test = new UserLogic(userRepo, logicLogger);
-                
+
                 success = await Task.Run(() => test.FollowUser(oldUser1.UserId, Guid.NewGuid().ToString()));
             }
 
@@ -880,7 +935,7 @@ namespace Testing
             newFollow.FollowerUserId = oldUser.UserId;
             newFollow.FolloweeUserId = oldUser1.UserId;
 
-            using(var context = new Cinephiliacs_UserContext(options))
+            using (var context = new Cinephiliacs_UserContext(options))
             {
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
@@ -892,13 +947,13 @@ namespace Testing
             }
 
             List<GlobalModels.User> allFollows;
-            using(var context1 = new Cinephiliacs_UserContext(options))
+            using (var context1 = new Cinephiliacs_UserContext(options))
             {
                 context1.Database.EnsureCreated();
-                
+
                 RepoLogic userRepo = new RepoLogic(context1, repoLogger);
                 UserLogic test = new UserLogic(userRepo, logicLogger);
-                
+
                 allFollows = await Task.Run(() => test.GetFollowingUsers(oldUser.UserId));
             }
 
@@ -927,7 +982,7 @@ namespace Testing
             newFollow.FollowerUserId = oldUser.UserId;
             newFollow.FolloweeUserId = oldUser1.UserId;
 
-            using(var context = new Cinephiliacs_UserContext(options))
+            using (var context = new Cinephiliacs_UserContext(options))
             {
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
@@ -939,13 +994,13 @@ namespace Testing
             }
 
             List<GlobalModels.User> allFollows;
-            using(var context1 = new Cinephiliacs_UserContext(options))
+            using (var context1 = new Cinephiliacs_UserContext(options))
             {
                 context1.Database.EnsureCreated();
-                
+
                 RepoLogic userRepo = new RepoLogic(context1, repoLogger);
                 UserLogic test = new UserLogic(userRepo, logicLogger);
-                
+
                 allFollows = await Task.Run(() => test.GetFollowingUsers(Guid.NewGuid().ToString()));
             }
             Assert.Null(allFollows);
