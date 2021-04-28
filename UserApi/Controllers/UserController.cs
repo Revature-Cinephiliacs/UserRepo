@@ -32,6 +32,13 @@ namespace CineAPI.Controllers
             return await _userLogic.GetUsers();
         }
 
+        [HttpGet("isadmin")]
+        [Authorize("manage:awebsite")]
+        public ActionResult GetAdmin()
+        {
+            return Ok(new { response = "testapi: success" });
+        }
+
         /// <summary>
         /// Adds a new User based on the information provided.
         /// Returns a 400 status code if creation fails.
@@ -157,6 +164,7 @@ namespace CineAPI.Controllers
         /// <param name="userid"></param>
         /// <returns></returns>
         [HttpPost("addadmin/{userid}")]
+        [Authorize("manage:website")]
         public async Task<ActionResult> AddAsAdmin(string userid)
         {
             if (await _userLogic.UpdatePermissions(userid, 3))
@@ -166,33 +174,6 @@ namespace CineAPI.Controllers
             else
             {
                 return StatusCode(404);
-            }
-        }
-
-        /// <summary>
-        /// Checks if a user has adminlevel permissions
-        /// Returns 404 if unable to find user
-        /// Returns 201 false if user not an admin
-        /// Returns 200 true if user is an admin
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet("permissions/{userid}")]
-        public async Task<ActionResult<bool>> IsAdmin(string userid)
-        {
-            GlobalModels.User getUser = await _userLogic.GetUserById(userid);
-            if(getUser == null)
-            {
-                StatusCode(404);
-            }
-            if(getUser.Permissions == 3)
-            {
-                StatusCode(200);
-                return true;
-            }
-            else
-            {
-                StatusCode(201);
-                return false;
             }
         }
 
