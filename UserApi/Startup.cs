@@ -25,26 +25,27 @@ namespace UserApi
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; set;}
+        public IConfiguration Configuration { get; set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+
+            services.AddControllers();
             services.AddCors(options =>
             {
                 options.AddPolicy(name: "_testingPolicy",
                 builder => builder
                     .WithOrigins(
                         "http://localhost:4200",
-                        "https://localhost:5001",
+                        "https://localhost:5005",
                         "http://20.94.137.143"
                     )
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                 );
             });
-
-            services.AddControllers();
 
             var myConnectionString = Configuration.GetConnectionString("Cinephiliacs_User");
             services.AddDbContext<Cinephiliacs_UserContext>(

@@ -65,10 +65,11 @@ namespace CineAPI.Controllers
         /// <param name="userid"></param>
         /// <returns></returns>
         [HttpGet("{userid}")]
+        [Authorize]
         public async Task<ActionResult<User>> GetUserById(string userid)
         {
             User findUser = await _userLogic.GetUserById(userid);
-            if(findUser == null)
+            if (findUser == null)
             {
                 return StatusCode(404);
             }
@@ -100,26 +101,6 @@ namespace CineAPI.Controllers
             {
                 return StatusCode(404);
             }
-        }
-
-        /// <summary>
-        /// Returns the User information associated with the provided user email.
-        /// If user doesn't exist, return 404
-        /// If user exists, return 200 and the user information.
-        /// </summary>
-        /// <param name="useremail"></param>
-        /// <returns></returns>
-        [HttpGet("{useremail}")]
-        public ActionResult<User> GetUser(string useremail)
-        {
-            User user = _userLogic.GetUser(useremail);
-
-            if (user == null)
-            {
-                return StatusCode(404);
-            }
-            StatusCode(200);
-            return user;
         }
 
         /// <summary>
@@ -210,7 +191,7 @@ namespace CineAPI.Controllers
         public async Task<ActionResult<bool>> FollowUser(string follower, string followee)
         {
             bool followNewUser = await _userLogic.FollowUser(follower, followee);
-            if(followNewUser)
+            if (followNewUser)
             {
                 return StatusCode(201);
             }
@@ -231,11 +212,11 @@ namespace CineAPI.Controllers
         public async Task<ActionResult<List<User>>> GetFollowedUserList(string userid)
         {
             List<User> allUsers = await _userLogic.GetFollowingUsers(userid);
-            if(allUsers == null)
+            if (allUsers == null)
             {
                 return StatusCode(404);
             }
-            if(allUsers.Count == 0)
+            if (allUsers.Count == 0)
             {
                 return StatusCode(204);
             }
