@@ -32,6 +32,10 @@ namespace CineAPI.Controllers
             return await _userLogic.GetUsers();
         }
 
+        /// <summary>
+        /// Returns an ok status if a user is an authorized admin as part of Auth0
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("isadmin")]
         [Authorize("manage:awebsite")]
         public ActionResult GetAdmin()
