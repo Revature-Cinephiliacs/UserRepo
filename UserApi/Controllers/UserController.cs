@@ -33,6 +33,17 @@ namespace CineAPI.Controllers
         }
 
         /// <summary>
+        /// Returns an ok status if a user is an authorized admin as part of Auth0
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("isadmin")]
+        [Authorize("manage:awebsite")]
+        public ActionResult GetAdmin()
+        {
+            return Ok(new { response = "testapi: success" });
+        }
+
+        /// <summary>
         /// Adds a new User based on the information provided.
         /// Returns a 400 status code if creation fails.
         /// </summary>
@@ -138,6 +149,7 @@ namespace CineAPI.Controllers
         /// <param name="userid"></param>
         /// <returns></returns>
         [HttpPost("addadmin/{userid}")]
+        [Authorize("manage:website")]
         public async Task<ActionResult> AddAsAdmin(string userid)
         {
             if (await _userLogic.UpdatePermissions(userid, 3))
