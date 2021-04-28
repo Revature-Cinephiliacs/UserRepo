@@ -64,12 +64,12 @@ namespace Repository
         /// <returns></returns>
         public async Task<bool> FollowUser(FollowingUser newFollow)
         {
-            if(!UserExistsById(newFollow.FollowerUserId))
+            if (!UserExistsById(newFollow.FollowerUserId))
             {
                 _logger.LogWarning($"RepoLogic.Follower() was called for a userid(follower) that does not exist {newFollow.FollowerUserId}.");
                 return false;
             }
-            if(!UserExistsById(newFollow.FolloweeUserId))
+            if (!UserExistsById(newFollow.FolloweeUserId))
             {
                 _logger.LogWarning($"RepoLogic.Follower() was called for a userid(follower) that does not exist {newFollow.FolloweeUserId}.");
                 return false;
@@ -88,7 +88,7 @@ namespace Repository
         /// <returns></returns>
         public async Task<List<FollowingUser>> GetFollowingUsers(string userid)
         {
-            if(!UserExistsById(userid))
+            if (!UserExistsById(userid))
             {
                 _logger.LogWarning($"RepoLogic.GetFollowing was called for a userid that does not exist {userid}.");
                 return null;
@@ -113,9 +113,9 @@ namespace Repository
                 _logger.LogWarning($"RepoLogic.UpdateUser() was called for a user that doesn't exist {userId}.");
                 return false;
             }
-            if(existingUser.Username != updatedUser.Username)
+            if (existingUser.Username != updatedUser.Username)
             {
-                if(_dbContext.Users.Where(u => u.Username == updatedUser.Username).FirstOrDefault<User>() == null)
+                if (_dbContext.Users.Where(u => u.Username == updatedUser.Username).FirstOrDefault<User>() == null)
                 {
                     existingUser.Username = updatedUser.Username;
                 }
@@ -125,9 +125,9 @@ namespace Repository
                     return false;
                 }
             }
-            if(existingUser.Email != updatedUser.Email)
+            if (existingUser.Email != updatedUser.Email)
             {
-                if(_dbContext.Users.Where(u => u.Email == updatedUser.Email).FirstOrDefault<User>() == null)
+                if (_dbContext.Users.Where(u => u.Email == updatedUser.Email).FirstOrDefault<User>() == null)
                 {
                     existingUser.Email = updatedUser.Email;
                 }
@@ -191,10 +191,16 @@ namespace Repository
                 return false;
             }
 
+
             _dbContext.Users.Remove(existingUser);
 
             await _dbContext.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<List<User>> GetReportedUsers(List<string> ids)
+        {
+            return await _dbContext.Users.Where(u => ids.Contains(u.UserId)).ToListAsync();
         }
 
         /// <summary>
@@ -214,7 +220,7 @@ namespace Repository
                 return false;
             }
 
-            if(permissionsLevel > 255 || permissionsLevel < 0)
+            if (permissionsLevel > 255 || permissionsLevel < 0)
             {
                 _logger.LogWarning($"RepoLogic.UpdatePermissions() was called with a permissionsLevel that is " +
                     $"outside the range of the database type (Byte) {permissionsLevel}.");
