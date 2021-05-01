@@ -198,6 +198,11 @@ namespace Repository
             return true;
         }
 
+        /// <summary>
+        /// Returns a list of users based on a list of userids
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
         public async Task<List<User>> GetReportedUsers(List<string> ids)
         {
             return await _dbContext.Users.Where(u => ids.Contains(u.UserId)).ToListAsync();

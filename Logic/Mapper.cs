@@ -25,7 +25,6 @@ namespace BusinessLogic
                 repoUser.DateOfBirth = DateTime.ParseExact(user.Dateofbirth, "yyyy-MM-dd", CultureInfo.InvariantCulture);
             }
             catch (FormatException) {
-                Console.WriteLine("Mapper.UserToRepoUser() failed due to an invalid date");
                 return null;
             }
             repoUser.Permissions = 1;
