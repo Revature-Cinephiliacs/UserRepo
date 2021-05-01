@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace Repository.Models
 {
     /// <summary>
-    /// Database model for User from database-first
+    /// Model from database-first scaffolding for Repo Layer
     /// </summary>
     public partial class User
     {
@@ -14,6 +14,7 @@ namespace Repository.Models
         {
             FollowingUserFolloweeUsers = new HashSet<FollowingUser>();
             FollowingUserFollowerUsers = new HashSet<FollowingUser>();
+            Notifications = new HashSet<Notification>();
         }
 
         public string UserId { get; set; }
@@ -26,5 +27,6 @@ namespace Repository.Models
 
         public virtual ICollection<FollowingUser> FollowingUserFolloweeUsers { get; set; }
         public virtual ICollection<FollowingUser> FollowingUserFollowerUsers { get; set; }
+        public virtual ICollection<Notification> Notifications { get; set; }
     }
 }
