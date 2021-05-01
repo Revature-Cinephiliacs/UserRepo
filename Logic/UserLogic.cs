@@ -130,5 +130,94 @@ namespace BusinessLogic
             }
             return years;
         }
+
+        public async Task CreateNotifications(ModelNotification modelNotifications, string type)
+        {
+            List<Repository.Models.Notification> newNotifications = new List<Repository.Models.Notification>();
+            List<Task<Repository.Models.Notification>> tasks = new List<Task<Repository.Models.Notification>>();
+            Task<List<Repository.Models.FollowingUser>> followeeTask = Task.Run(() => _repo.GetUserFollowees(modelNotifications.UserId));
+
+            foreach(string userid in modelNotifications.Followers)
+            {
+                tasks.Add(Task.Run(() => Mapper.ModelNotifToRepoNotif(userid, modelNotifications.OtherId, type)));
+            }
+            var results = await Task.WhenAll(tasks);
+            foreach(var item in results)
+            {
+                newNotifications.Add(item);
+            }
+            List<Task> repoTasks = new List<Task>();
+            foreach(var notification in newNotifications)
+            {
+                repoTasks.Add(Task.Run(() => _repo.AddNotification(notification)));
+            }
+            followeeTask.Wait();
+            List<Repository.Models.FollowingUser> allFollowees = followeeTask.Result;
+            List<Repository.Models.Notification> otherNotifications = await Task.Run(() => FolloweeNotifications(modelNotifications.OtherId, type, allFollowees, newNotifications));
+            foreach(var notification in otherNotifications)
+            {
+                repoTasks.Add(Task.Run(() => _repo.AddNotification(notification)));
+            }
+            await Task.WhenAll(repoTasks);
+        }
+
+        public async Task<List<NotificationDTO>> GetNotifications(string userid)
+        {
+            List<Repository.Models.Notification> repoNotifications = await _repo.GetNotifications(userid);
+            if(repoNotifications == null)
+            {
+                return null;
+            }
+            List<NotificationDTO> newNotifications = new List<NotificationDTO>();
+            List<Task<NotificationDTO>> tasks = new List<Task<NotificationDTO>>();
+            foreach(var repoN in repoNotifications)
+            {
+                tasks.Add(Task.Run(() => Mapper.RepoNotifToNotifDTO(repoN)));
+            }
+            var results = await Task.WhenAll(tasks);
+            foreach(var item in results)
+            {
+                newNotifications.Add(item);
+            }
+            return newNotifications;
+        }
+
+        public async Task<bool> DeleteSingleNotification(Guid notificationid)
+        {
+            return await _repo.DeleteNotification(notificationid.ToString());
+        }
+
+        public async Task<bool> DeleteNotifications(string userid)
+        {
+            return await _repo.DeleteAllNotifications(userid);
+        }
+
+        /// <summary>
+        /// Returns a list of new notifications that were not created based on a user following another user
+        /// Goes through the list of newly created notifications and checks if the followeeid + otherid combination is there
+        /// If not, will make a new notification to be returned
+        /// </summary>
+        /// <param name="followeeeid"></param>
+        /// <param name="otherid"></param>
+        /// <param name="curNotif"></param>
+        /// <returns></returns>
+        private async Task<List<Repository.Models.Notification>> FolloweeNotifications(Guid otherid, string type, List<Repository.Models.FollowingUser> followees, List<Repository.Models.Notification> curNotif)
+        {
+            List<Repository.Models.Notification> newNotifications = new List<Repository.Models.Notification>();
+            List<Task<Repository.Models.Notification>> tasks = new List<Task<Repository.Models.Notification>>();
+            foreach(Repository.Models.FollowingUser followee in followees)
+            {
+                if(!curNotif.Exists(x => x.UserId == followee.FolloweeUserId))
+                {
+                    tasks.Add(Task.Run(() => Mapper.ModelNotifToRepoNotif(followee.FolloweeUserId, otherid, type)));
+                }
+            }
+            var results = await Task.WhenAll(tasks);
+            foreach(var item in results)
+            {   
+                newNotifications.Add(item);
+            }
+            return newNotifications;
+        }
     }
 }
