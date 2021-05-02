@@ -90,6 +90,30 @@ namespace CineAPI.Controllers
             StatusCode(200);
             return findUser;
         }
+
+        /// <summary>
+        /// Returns a user using auth0 login token
+        /// Gets the userid from the token
+        /// Returns 404 if user is found
+        /// Returns 200 if user is not found
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("userinfo")]
+        [Authorize]
+        public async Task<ActionResult<User>> GetUserByToken()
+        {
+            var response = await Helper.Sendrequest("/userdata", Method.GET, Helper.GetTokenFromRequest(this.Request));
+            Dictionary<string, string> dictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(response.Content);
+            var userid = dictionary["sub"];
+
+            User findUser = await _userLogic.GetUserById(userid);
+            if (findUser == null)
+            {
+                return StatusCode(404);
+            }
+            StatusCode(200);
+            return findUser;
+        }
         
         /// <summary>
         /// Returns the username of the user based on their user id
