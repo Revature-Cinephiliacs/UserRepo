@@ -91,6 +91,14 @@ namespace BusinessLogic.Interfaces
         public Task<List<User>> GetFollowingUsers(string userid);
 
         /// <summary>
+        /// Returns the username of a user based on their userid
+        /// Returns null is unable to find the user
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        public Task<string> GetUserNameById(string userid);
+
+        /// <summary>
         /// Creates notifications about a newly created object(reviews, discussion, comments)
         /// Type defines the microservice that we received the newly recreated object from
         /// c = comments, d = discussions, r = reviews

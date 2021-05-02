@@ -48,6 +48,16 @@ namespace BusinessLogic
             return await Task.Run(() => Mapper.RepoUserToUser(repoUser));
         }
 
+        public async Task<string> GetUserNameById(string userid)
+        {
+            Repository.Models.User repoUser = await Task.Run(() => _repo.GetUserByUserId(userid));
+            if(repoUser == null)
+            {
+                return null;
+            }
+            return repoUser.Username;
+        }
+
         public User GetUser(string useremail)
         {
             var repoUser = _repo.GetUserByEmail(useremail);
