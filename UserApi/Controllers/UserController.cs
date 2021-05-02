@@ -91,6 +91,13 @@ namespace CineAPI.Controllers
             return findUser;
         }
 
+        /// <summary>
+        /// Returns a user using auth0 login token
+        /// Gets the userid from the token
+        /// Returns 404 if user is found
+        /// Returns 200 if user is not found
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("userinfo")]
         [Authorize]
         public async Task<ActionResult<User>> GetUserByToken()
