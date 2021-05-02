@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace Repository.Models
 {
     /// <summary>
-    /// Database model for junction table from database-first
+    /// Model from database-first scaffolding for Repo Layer
     /// </summary>
     public partial class FollowingUser
     {

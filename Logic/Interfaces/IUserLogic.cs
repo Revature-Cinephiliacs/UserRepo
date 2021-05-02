@@ -89,5 +89,44 @@ namespace BusinessLogic.Interfaces
         /// <param name="userid"></param>
         /// <returns></returns>
         public Task<List<User>> GetFollowingUsers(string userid);
+
+        /// <summary>
+        /// Returns the username of a user based on their userid
+        /// Returns null is unable to find the user
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        public Task<string> GetUserNameById(string userid);
+
+        /// <summary>
+        /// Creates notifications about a newly created object(reviews, discussion, comments)
+        /// Type defines the microservice that we received the newly recreated object from
+        /// c = comments, d = discussions, r = reviews
+        /// </summary>
+        /// <param name="commentNotification"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public Task CreateNotifications(ModelNotification modelNotifications, string type);
+
+        /// <summary>
+        /// Gets a list of notifications for a user based on userid
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        public Task<List<NotificationDTO>> GetNotifications(string userid);
+
+        /// <summary>
+        /// Deletes a single notification from the database
+        /// </summary>
+        /// <param name="notificationid"></param>
+        /// <returns></returns>
+        public Task<bool> DeleteSingleNotification(Guid notificationid);
+
+        /// <summary>
+        /// Deletes all notifications that belong to a user, based on userid
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        public Task<bool> DeleteNotifications(string userid);
     }
 }

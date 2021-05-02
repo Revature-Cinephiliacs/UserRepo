@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using System.Threading.Tasks;
 using GlobalModels;
 
 namespace BusinessLogic
@@ -25,7 +26,6 @@ namespace BusinessLogic
                 repoUser.DateOfBirth = DateTime.ParseExact(user.Dateofbirth, "yyyy-MM-dd", CultureInfo.InvariantCulture);
             }
             catch (FormatException) {
-                Console.WriteLine("Mapper.UserToRepoUser() failed due to an invalid date");
                 return null;
             }
             repoUser.Permissions = 1;
@@ -46,6 +46,38 @@ namespace BusinessLogic
             var user = new User(repoUser.UserId, repoUser.Username, repoUser.FirstName, repoUser.LastName,
                 repoUser.Email, dtoDate, repoUser.Permissions);
             return user;
+        }
+
+        /// <summary>
+        /// Converts a comment notification to a notification to be stored in the database
+        /// service: c = comments, d = disuccsion, r = review
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <param name="commentId"></param>
+        /// <param name="v"></param>
+        /// <returns></returns>
+        internal static Repository.Models.Notification ModelNotifToRepoNotif(string userid, Guid commentId, string service)
+        {
+            Repository.Models.Notification newNotification = new Repository.Models.Notification();
+            newNotification.NotificationId = Guid.NewGuid().ToString();
+            newNotification.UserId = userid;
+            newNotification.OtherId = commentId.ToString();
+            newNotification.FromService = service;
+            return newNotification;
+        }
+
+        /// <summary>
+        /// Converts a repo notification to a notificationDTO for frontend to use
+        /// </summary>
+        /// <param name="repoN"></param>
+        /// <returns></returns>
+        internal static NotificationDTO RepoNotifToNotifDTO(Repository.Models.Notification repoN)
+        {
+            NotificationDTO newNotif = new NotificationDTO();
+            newNotif.NotificationId = repoN.NotificationId;
+            newNotif.OtherId = Guid.Parse(repoN.OtherId);
+            newNotif.FromService = repoN.FromService;
+            return newNotif;
         }
     }
 }

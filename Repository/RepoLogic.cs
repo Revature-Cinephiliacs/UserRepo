@@ -146,6 +146,77 @@ namespace Repository
         }
 
         /// <summary>
+        /// Returns a list of notifications of the user based on userid
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        public async Task<List<Notification>> GetNotifications(string userid)
+        {
+            if(!UserExistsById(userid))
+            {
+                return null;
+            }
+            return await _dbContext.Notifications.Where(x => x.UserId == userid).ToListAsync();
+        }
+
+        /// <summary>
+        /// Returns a list of everyone following the user(userid)
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        public async Task<List<FollowingUser>> GetUserFollowees(string userid)
+        {
+            return await _dbContext.FollowingUsers.Include(x => x.FollowerUser).Where(x => x.FolloweeUserId == userid).ToListAsync();
+        }
+
+        /// <summary>
+        /// Deletes all notifications that belong to a user
+        /// Returns true if successful
+        /// Returns false if unable to find the user
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        public async Task<bool> DeleteAllNotifications(string userid)
+        {
+            if(!UserExistsById(userid))
+            {
+                return false;
+            }
+            List<Notification> allNotifications = await _dbContext.Notifications.Where(x => x.UserId == userid).ToListAsync();
+
+            _dbContext.RemoveRange(allNotifications);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        /// <summary>
+        /// Deletes a notification from the database
+        /// </summary>
+        /// <param name="v"></param>
+        /// <returns></returns>
+        public async Task<bool> DeleteNotification(string notificationid)
+        {
+            Notification notification = await _dbContext.Notifications.FirstOrDefaultAsync(x => x.NotificationId == notificationid);
+            if(notification == null)
+            {
+                return false;
+            }
+            _dbContext.Notifications.Remove(notification);
+
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        /// <summary>
+        /// Adds a new notification into the database
+        /// </summary>
+        /// <param name="notification"></param>
+        public async Task AddNotification(Notification notification)
+        {
+            await _dbContext.AddAsync<Notification>(notification);
+        }
+
+        /// <summary>
         /// Returns the User object from the database that matches the email specified
         /// in the argument. Returns null if the email is not found.
         /// </summary>
