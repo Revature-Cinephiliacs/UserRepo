@@ -79,10 +79,7 @@ namespace CineAPI.Controllers
         /// <param name="userid"></param>
         /// <returns></returns>
         [HttpGet("{userid}")]
-
-        // Commnted out authorize for now so frontend can test
-        // Will be added back in later
-        //[Authorize("manage:awebsite")]
+        [Authorize("manage:awebsite")]
         public async Task<ActionResult<User>> GetUserById(string userid)
         {
             User findUser = await _userLogic.GetUserById(userid);
@@ -92,6 +89,25 @@ namespace CineAPI.Controllers
             }
             StatusCode(200);
             return findUser;
+        }
+        
+        /// <summary>
+        /// Returns the username of the user based on their user id
+        /// Returns 404 if could not find userid in the database
+        /// Returns 200 if user was found
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        [HttpGet("username/{userid}")]
+        public async Task<ActionResult<string>> GetUsernameById(string userid)
+        {
+            string username = await _userLogic.GetUserNameById(userid);
+            if(username == null)
+            {
+                return StatusCode(404);
+            }
+            StatusCode(200);
+            return username;
         }
 
         /// <summary>
