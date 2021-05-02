@@ -79,7 +79,10 @@ namespace CineAPI.Controllers
         /// <param name="userid"></param>
         /// <returns></returns>
         [HttpGet("{userid}")]
-        [Authorize("manage:awebsite")]
+
+        // Commnted out authorize for now so frontend can test
+        // Will be added back in later
+        //[Authorize("manage:awebsite")]
         public async Task<ActionResult<User>> GetUserById(string userid)
         {
             User findUser = await _userLogic.GetUserById(userid);
