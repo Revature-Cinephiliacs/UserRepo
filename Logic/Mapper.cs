@@ -78,6 +78,7 @@ namespace BusinessLogic
             newNotif.NotificationId = repoN.NotificationId;
             newNotif.OtherId = Guid.Parse(repoN.OtherId);
             newNotif.FromService = repoN.FromService;
+            newNotif.CreatorId = repoN.CreatorId;
             return newNotif;
         }
     }
