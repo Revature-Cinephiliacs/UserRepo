@@ -59,7 +59,7 @@ namespace CineAPI.Controllers
             if (!ModelState.IsValid)
             {
                 _logger.LogWarning("UserController.CreateUser() was called with invalid body data.");
-                var errorstring = "";
+                var errorstring = "error string: ";
                 ModelState.Values.ToList().ForEach(value =>
                 {
                     errorstring += $" {value.AttemptedValue}";
