@@ -237,33 +237,6 @@ namespace CineAPI.Controllers
         }
 
         /// <summary>
-        /// Checks if a user has adminlevel permissions
-        /// Returns 404 if unable to find user
-        /// Returns 201 false if user not an admin
-        /// Returns 200 true if user is an admin
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet("permissions/{userid}")]
-        public async Task<ActionResult<bool>> IsAdmin(string userid)
-        {
-            GlobalModels.User getUser = await _userLogic.GetUserById(userid);
-            if(getUser == null)
-            {
-                StatusCode(404);
-            }
-            if(getUser.Permissions == 3)
-            {
-                StatusCode(200);
-                return true;
-            }
-            else
-            {
-                StatusCode(201);
-                return false;
-            }
-        }
-
-        /// <summary>
         /// Returns the age of the user associated with the provided userid.
         /// If we couldn't get their age(invalid user/no dob) return 404
         /// If successful, return 200 and the age
