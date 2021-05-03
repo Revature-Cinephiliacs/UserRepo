@@ -118,12 +118,10 @@ namespace CineAPI.Controllers
             Dictionary<string, string> dictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(response.Content);
             var userid = dictionary["sub"];
 
-            return this.BadRequest(new { recievedid = userid, udictionary = dictionary });
-
             User findUser = await _userLogic.GetUserById(userid);
             if (findUser == null)
             {
-                return StatusCode(404);
+                return BadRequest(new { recievedid = userid, udictionary = dictionary });
             }
             StatusCode(200);
             return findUser;
