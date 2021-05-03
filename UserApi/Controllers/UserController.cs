@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using UserAPI.AuthenticationHelper;
 using RestSharp;
 using Newtonsoft.Json;
+using System.Linq;
 
 namespace CineAPI.Controllers
 {
@@ -30,6 +31,7 @@ namespace CineAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("users")]
+        [Authorize("manage:awebsite")]
         public async Task<ActionResult<List<User>>> Get()
         {
             return await _userLogic.GetUsers();
@@ -47,7 +49,7 @@ namespace CineAPI.Controllers
         }
 
         /// <summary>
-        /// Adds a new User based on the information provided.
+        /// Creates a new User based on the information provided.
         /// Returns a 400 status code if creation fails.
         /// </summary>
         /// <param name="user"></param>
@@ -58,7 +60,7 @@ namespace CineAPI.Controllers
             if (!ModelState.IsValid)
             {
                 _logger.LogWarning("UserController.CreateUser() was called with invalid body data.");
-                return StatusCode(400);
+                return BadRequest();
             }
 
             if (await _userLogic.CreateUser(user))
@@ -67,7 +69,7 @@ namespace CineAPI.Controllers
             }
             else
             {
-                return StatusCode(200);
+                return this.Conflict(new { response = "user already created" });
             }
         }
 
@@ -90,7 +92,31 @@ namespace CineAPI.Controllers
             StatusCode(200);
             return findUser;
         }
-        
+
+        /// <summary>
+        /// Returns a user using auth0 login token
+        /// Gets the userid from the token
+        /// Returns 404 if user is found
+        /// Returns 200 if user is not found
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("userinfo")]
+        [Authorize]
+        public async Task<ActionResult<User>> GetUserByToken()
+        {
+            var response = await Helper.Sendrequest("/userdata", Method.GET, Helper.GetTokenFromRequest(this.Request));
+            Dictionary<string, string> dictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(response.Content);
+            var userid = dictionary["sub"];
+
+            User findUser = await _userLogic.GetUserById(userid);
+            if (findUser == null)
+            {
+                return BadRequest();
+            }
+            StatusCode(200);
+            return findUser;
+        }
+
         /// <summary>
         /// Returns the username of the user based on their user id
         /// Returns 404 if could not find userid in the database
@@ -102,7 +128,7 @@ namespace CineAPI.Controllers
         public async Task<ActionResult<string>> GetUsernameById(string userid)
         {
             string username = await _userLogic.GetUserNameById(userid);
-            if(username == null)
+            if (username == null)
             {
                 return StatusCode(404);
             }
@@ -169,13 +195,40 @@ namespace CineAPI.Controllers
         /// </summary>
         /// <param name="userid"></param>
         /// <returns></returns>
-        [HttpPost("addadmin/{userid}")]
+        [HttpPost("role/admin/{userid}")]
         [Authorize("manage:website")]
-        public async Task<ActionResult> AddAsAdmin(string userid)
+        public async Task<ActionResult> AddAdminRole(string userid)
         {
             if (await _userLogic.UpdatePermissions(userid, 3))
             {
-                return StatusCode(202);
+                var response = await Helper.Sendrequest("/role/Admin", Method.POST, Helper.GetTokenFromRequest(this.Request), userid);
+                if (response.IsSuccessful)
+                    return StatusCode(202);
+                return StatusCode(400);
+            }
+            else
+            {
+                return StatusCode(404);
+            }
+        }
+
+        /// <summary>
+        /// Changes a user's permissionlevel down to a normal user level's (1)
+        /// If updating permissions fails, return 404
+        /// If updating is successful, return 202
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        [HttpDelete("role/admin/{userid}")]
+        [Authorize("manage:website")]
+        public async Task<ActionResult> RemoveAdminRole(string userid)
+        {
+            if (await _userLogic.UpdatePermissions(userid, 1))
+            {
+                var response = await Helper.Sendrequest("/role/Admin", Method.DELETE, Helper.GetTokenFromRequest(this.Request), userid);
+                if (response.IsSuccessful)
+                    return StatusCode(202);
+                return StatusCode(400);
             }
             else
             {
@@ -292,7 +345,7 @@ namespace CineAPI.Controllers
                 return StatusCode(400);
             }
             await _userLogic.CreateNotifications(discussionNotification, "d");
-                
+
             return StatusCode(200);
         }
 
@@ -312,10 +365,10 @@ namespace CineAPI.Controllers
                 return StatusCode(400);
             }
             await _userLogic.CreateNotifications(reviewNotification, "r");
-                
+
             return StatusCode(200);
         }
-        
+
         /// <summary>
         /// Gets all notifications for a specific user
         /// </summary>
@@ -330,12 +383,12 @@ namespace CineAPI.Controllers
                 return StatusCode(400);
             }
             List<NotificationDTO> newNotifications = await _userLogic.GetNotifications(userid);
-            if(newNotifications == null)
+            if (newNotifications == null)
             {
                 _logger.LogWarning($"UserController.GetAllNotifications(), but could not find user id {userid}.");
                 return StatusCode(404);
             }
-            if(newNotifications.Count == 0)
+            if (newNotifications.Count == 0)
             {
                 return StatusCode(204);
             }
@@ -356,7 +409,7 @@ namespace CineAPI.Controllers
                 _logger.LogWarning("UserController.GetAllNotifications() was called with invalid body data.");
                 return StatusCode(400);
             }
-            if(await _userLogic.DeleteSingleNotification(notificationid))
+            if (await _userLogic.DeleteSingleNotification(notificationid))
             {
                 return StatusCode(200);
             }
@@ -378,7 +431,7 @@ namespace CineAPI.Controllers
             var response = await Helper.Sendrequest("/userdata", Method.GET, Helper.GetTokenFromRequest(this.Request));
             Dictionary<string, string> dictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(response.Content);
             var userid = dictionary["sub"];
-            if(await _userLogic.DeleteNotifications(userid))
+            if (await _userLogic.DeleteNotifications(userid))
             {
                 return StatusCode(200);
             }
