@@ -70,7 +70,7 @@ namespace CineAPI.Controllers
                     });
                     errorstring += "}";
                 });
-                return Ok(new { error = errorstring });
+                return this.NotFound(new { response = errorstring });
             }
 
             if (await _userLogic.CreateUser(user))
@@ -79,7 +79,7 @@ namespace CineAPI.Controllers
             }
             else
             {
-                return StatusCode(200);
+                return this.Conflict(new { response = "user already created" });
             }
         }
 
