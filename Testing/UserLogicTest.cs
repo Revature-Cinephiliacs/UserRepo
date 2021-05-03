@@ -1005,5 +1005,46 @@ namespace Testing
             }
             Assert.Null(allFollows);
         }
+
+        [Fact]
+        public async Task GetUserById_Test()
+        {
+            Repository.Models.User oldUser = new Repository.Models.User();
+            var id = Guid.NewGuid().ToString();
+            oldUser.UserId = id;
+            oldUser.Username = "OldTestingTestington";
+            oldUser.FirstName = "OGTest";
+            oldUser.LastName = "OriginalTest";
+            oldUser.Permissions = 1;
+            oldUser.Email = "oldtest@gmail.com";
+            Repository.Models.User oldUser1 = new Repository.Models.User();
+            oldUser1.UserId = Guid.NewGuid().ToString();
+            oldUser1.Username = "OldTestingTestington1";
+            oldUser1.FirstName = "OGTest1";
+            oldUser1.LastName = "OriginalTest1";
+            oldUser1.Permissions = 1;
+            oldUser1.Email = "oldtest1@gmail.com";
+
+            using (var context = new Cinephiliacs_UserContext(options))
+            {
+                context.Database.EnsureDeleted();
+                context.Database.EnsureCreated();
+
+                context.Add<Repository.Models.User>(oldUser);
+                context.Add<Repository.Models.User>(oldUser1);
+                context.SaveChanges();
+            }
+            GlobalModels.User user = null;
+            using (var context1 = new Cinephiliacs_UserContext(options))
+            {
+                context1.Database.EnsureCreated();
+
+                RepoLogic userRepo = new RepoLogic(context1, repoLogger);
+                UserLogic test = new UserLogic(userRepo, logicLogger);
+
+                user = await Task.Run(() => test.GetUserById(id));
+            }
+            Assert.Equal(user.Email, "oldtest@gmail.com");
+        }
     }
 }
