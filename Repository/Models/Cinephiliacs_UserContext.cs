@@ -17,18 +17,44 @@ namespace Repository.Models
         {
         }
 
+        public virtual DbSet<FollowingMovie> FollowingMovies { get; set; }
         public virtual DbSet<FollowingUser> FollowingUsers { get; set; }
         public virtual DbSet<Notification> Notifications { get; set; }
+        public virtual DbSet<Review> Reviews { get; set; }
         public virtual DbSet<User> Users { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-           
+            
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
+
+            modelBuilder.Entity<FollowingMovie>(entity =>
+            {
+                entity.HasKey(e => new { e.UserId, e.MovieId })
+                    .HasName("user_following_movie_pk");
+
+                entity.ToTable("following_movies");
+
+                entity.Property(e => e.UserId)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasColumnName("userID");
+
+                entity.Property(e => e.MovieId)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasColumnName("movieID");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.FollowingMovies)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__following__userI__797309D9");
+            });
 
             modelBuilder.Entity<FollowingUser>(entity =>
             {
@@ -51,13 +77,13 @@ namespace Repository.Models
                     .WithMany(p => p.FollowingUserFolloweeUsers)
                     .HasForeignKey(d => d.FolloweeUserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__following__follo__619B8048");
+                    .HasConstraintName("FK__following__follo__76969D2E");
 
                 entity.HasOne(d => d.FollowerUser)
                     .WithMany(p => p.FollowingUserFollowerUsers)
                     .HasForeignKey(d => d.FollowerUserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__following__follo__60A75C0F");
+                    .HasConstraintName("FK__following__follo__75A278F5");
             });
 
             modelBuilder.Entity<Notification>(entity =>
@@ -68,6 +94,10 @@ namespace Repository.Models
                     .HasMaxLength(50)
                     .IsUnicode(false)
                     .HasColumnName("notificationID");
+
+                entity.Property(e => e.CreatorId)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.FromService)
                     .IsRequired()
@@ -90,17 +120,43 @@ namespace Repository.Models
                     .WithMany(p => p.Notifications)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__notificat__userI__6477ECF3");
+                    .HasConstraintName("FK__notificat__userI__0F624AF8");
+            });
+
+            modelBuilder.Entity<Review>(entity =>
+            {
+                entity.ToTable("Review");
+
+                entity.Property(e => e.ReviewId)
+                    .HasColumnName("reviewId")
+                    .HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.CreationTime)
+                    .HasColumnName("creationTime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.ImdbId)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .HasColumnName("imdbId");
+
+                entity.Property(e => e.Review1)
+                    .HasColumnType("text")
+                    .HasColumnName("review");
+
+                entity.Property(e => e.Score).HasColumnName("score");
+
+                entity.Property(e => e.UsernameId).HasColumnName("usernameId");
             });
 
             modelBuilder.Entity<User>(entity =>
             {
                 entity.ToTable("users");
 
-                entity.HasIndex(e => e.Email, "UQ__users__AB6E61640949F73B")
+                entity.HasIndex(e => e.Email, "UQ__users__AB6E6164D3A26C5C")
                     .IsUnique();
 
-                entity.HasIndex(e => e.Username, "UQ__users__F3DBC5722C5C4BA0")
+                entity.HasIndex(e => e.Username, "UQ__users__F3DBC572EED267C9")
                     .IsUnique();
 
                 entity.Property(e => e.UserId)

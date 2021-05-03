@@ -149,7 +149,7 @@ namespace BusinessLogic
 
             foreach(string userid in modelNotifications.Followers)
             {
-                tasks.Add(Task.Run(() => Mapper.ModelNotifToRepoNotif(userid, modelNotifications.OtherId, type)));
+                tasks.Add(Task.Run(() => Mapper.ModelNotifToRepoNotif(userid, modelNotifications.OtherId, type, null)));
             }
             var results = await Task.WhenAll(tasks);
             foreach(var item in results)
@@ -163,7 +163,7 @@ namespace BusinessLogic
             }
             followeeTask.Wait();
             List<Repository.Models.FollowingUser> allFollowees = followeeTask.Result;
-            List<Repository.Models.Notification> otherNotifications = await Task.Run(() => FolloweeNotifications(modelNotifications.OtherId, type, allFollowees, newNotifications));
+            List<Repository.Models.Notification> otherNotifications = await Task.Run(() => FolloweeNotifications(modelNotifications.OtherId, type, allFollowees, newNotifications, modelNotifications.UserId));
             foreach(var notification in otherNotifications)
             {
                 repoTasks.Add(Task.Run(() => _repo.AddNotification(notification)));
@@ -211,7 +211,7 @@ namespace BusinessLogic
         /// <param name="otherid"></param>
         /// <param name="curNotif"></param>
         /// <returns></returns>
-        private async Task<List<Repository.Models.Notification>> FolloweeNotifications(Guid otherid, string type, List<Repository.Models.FollowingUser> followees, List<Repository.Models.Notification> curNotif)
+        private async Task<List<Repository.Models.Notification>> FolloweeNotifications(Guid otherid, string type, List<Repository.Models.FollowingUser> followees, List<Repository.Models.Notification> curNotif, string creatorid)
         {
             List<Repository.Models.Notification> newNotifications = new List<Repository.Models.Notification>();
             List<Task<Repository.Models.Notification>> tasks = new List<Task<Repository.Models.Notification>>();
@@ -219,7 +219,7 @@ namespace BusinessLogic
             {
                 if(!curNotif.Exists(x => x.UserId == followee.FolloweeUserId))
                 {
-                    tasks.Add(Task.Run(() => Mapper.ModelNotifToRepoNotif(followee.FolloweeUserId, otherid, type)));
+                    tasks.Add(Task.Run(() => Mapper.ModelNotifToRepoNotif(followee.FolloweeUserId, otherid, type, creatorid)));
                 }
             }
             var results = await Task.WhenAll(tasks);
