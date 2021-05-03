@@ -38,7 +38,10 @@ namespace UserApi
                     .WithOrigins(
                         "http://localhost:4200",
                         "https://localhost:5005",
-                        "http://20.94.137.143"
+                        "http://20.45.6.142", //forum
+                        "http://20.189.30.176", //review
+                        "http://20.189.29.112", //admintools
+                        "https://cinephiliacsapp.azurewebsites.net"
                     )
                     .AllowAnyMethod()
                     .AllowAnyHeader()

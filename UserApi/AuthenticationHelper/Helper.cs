@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using RestSharp;
 
@@ -27,7 +28,7 @@ namespace UserAPI.AuthenticationHelper
         /// <param name="method"></param>
         /// <param name="token"></param>
         /// <returns>The response of the request</returns>
-        public async static Task<IRestResponse> Sendrequest(string urlExtension, Method method, string token)
+        public async static Task<IRestResponse> Sendrequest(string urlExtension, Method method, string token, dynamic body = null)
         {
             if (Debugger.IsAttached)
             {
@@ -42,6 +43,10 @@ namespace UserAPI.AuthenticationHelper
             var request = new RestRequest(method);
             request.AddHeader("Content-Type", "application/json");
             request.AddHeader("Authorization", token);
+            if (body != null)
+            {
+                request.AddParameter("application/json", JsonSerializer.Serialize(body), ParameterType.RequestBody);
+            }
             IRestResponse response = await client.ExecuteAsync(request);
             Console.WriteLine("response.Content");
             Console.WriteLine(response.Content);

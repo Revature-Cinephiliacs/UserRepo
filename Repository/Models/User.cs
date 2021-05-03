@@ -6,14 +6,16 @@ using System.Collections.Generic;
 namespace Repository.Models
 {
     /// <summary>
-    /// Database model for User from database-first
+    /// Model from database-first for repo
     /// </summary>
     public partial class User
     {
         public User()
         {
+            FollowingMovies = new HashSet<FollowingMovie>();
             FollowingUserFolloweeUsers = new HashSet<FollowingUser>();
             FollowingUserFollowerUsers = new HashSet<FollowingUser>();
+            Notifications = new HashSet<Notification>();
         }
 
         public string UserId { get; set; }
@@ -24,7 +26,9 @@ namespace Repository.Models
         public DateTime? DateOfBirth { get; set; }
         public byte Permissions { get; set; }
 
+        public virtual ICollection<FollowingMovie> FollowingMovies { get; set; }
         public virtual ICollection<FollowingUser> FollowingUserFolloweeUsers { get; set; }
         public virtual ICollection<FollowingUser> FollowingUserFollowerUsers { get; set; }
+        public virtual ICollection<Notification> Notifications { get; set; }
     }
 }
