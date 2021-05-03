@@ -31,6 +31,7 @@ namespace CineAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("users")]
+        [Authorize("manage:awebsite")]
         public async Task<ActionResult<List<User>>> Get()
         {
             return await _userLogic.GetUsers();
@@ -59,18 +60,7 @@ namespace CineAPI.Controllers
             if (!ModelState.IsValid)
             {
                 _logger.LogWarning("UserController.CreateUser() was called with invalid body data.");
-                var errorstring = "error string: ";
-                ModelState.Values.ToList().ForEach(value =>
-                {
-                    errorstring += $" {value.AttemptedValue}";
-                    errorstring += "{";
-                    value.Errors.ToList().ForEach(err =>
-                    {
-                        errorstring += err.ErrorMessage;
-                    });
-                    errorstring += "}";
-                });
-                return this.NotFound(new { response = errorstring });
+                return BadRequest();
             }
 
             if (await _userLogic.CreateUser(user))
@@ -121,7 +111,7 @@ namespace CineAPI.Controllers
             User findUser = await _userLogic.GetUserById(userid);
             if (findUser == null)
             {
-                return BadRequest(new { recievedid = userid, udictionary = dictionary });
+                return BadRequest();
             }
             StatusCode(200);
             return findUser;
