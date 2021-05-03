@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Repository;
 using GlobalModels;
 using Microsoft.Extensions.Logging;
+using System.Linq;
 
 namespace BusinessLogic
 {
@@ -19,13 +20,13 @@ namespace BusinessLogic
         {
             _repo = repo;
         }
-        
+
         public UserLogic(RepoLogic repo, ILogger<UserLogic> logger)
         {
             _repo = repo;
             _logger = logger;
         }
-        
+
         public async Task<bool> CreateUser(User user)
         {
             var repoUser = Mapper.UserToRepoUser(user);
@@ -41,7 +42,7 @@ namespace BusinessLogic
         public async Task<User> GetUserById(string userid)
         {
             var repoUser = await Task.Run(() => _repo.GetUserByUserId(userid));
-            if(repoUser == null)
+            if (repoUser == null)
             {
                 return null;
             }
@@ -51,7 +52,7 @@ namespace BusinessLogic
         public async Task<string> GetUserNameById(string userid)
         {
             Repository.Models.User repoUser = await Task.Run(() => _repo.GetUserByUserId(userid));
-            if(repoUser == null)
+            if (repoUser == null)
             {
                 return null;
             }
@@ -61,7 +62,7 @@ namespace BusinessLogic
         public User GetUser(string useremail)
         {
             var repoUser = _repo.GetUserByEmail(useremail);
-            if(repoUser == null)
+            if (repoUser == null)
             {
                 return null;
             }
@@ -101,18 +102,18 @@ namespace BusinessLogic
         public async Task<List<User>> GetFollowingUsers(string userid)
         {
             List<Repository.Models.FollowingUser> repoAllUsers = await _repo.GetFollowingUsers(userid);
-            if(repoAllUsers == null)
+            if (repoAllUsers == null)
             {
                 return null;
             }
             List<User> allUsers = new List<User>();
             List<Task<User>> tasks = new List<Task<User>>();
-            foreach(Repository.Models.FollowingUser user in repoAllUsers)
+            foreach (Repository.Models.FollowingUser user in repoAllUsers)
             {
                 tasks.Add(Task.Run(() => Mapper.RepoUserToUser(user.FolloweeUser)));
             }
             var results = await Task.WhenAll(tasks);
-            foreach(var item in results)
+            foreach (var item in results)
             {
                 allUsers.Add(item);
             }
@@ -122,19 +123,19 @@ namespace BusinessLogic
         public double? GetUserAge(string userid)
         {
             Repository.Models.User repoUser = _repo.GetUserByUserId(userid);
-            if(repoUser == null || repoUser.DateOfBirth == null)
+            if (repoUser == null || repoUser.DateOfBirth == null)
             {
                 return null;
             }
             DateTime dateOfBirth = repoUser.DateOfBirth ?? DateTime.Now;
             DateTime now = DateTime.Now;
 
-            int years = DateTime.Now.Year  - dateOfBirth.Year;
-            if(now.Month < dateOfBirth.Month)
+            int years = DateTime.Now.Year - dateOfBirth.Year;
+            if (now.Month < dateOfBirth.Month)
             {
                 years -= 1;
             }
-            else if(now.Month == dateOfBirth.Month && now.Day < dateOfBirth.Day)
+            else if (now.Month == dateOfBirth.Month && now.Day < dateOfBirth.Day)
             {
                 years -= 1;
             }
@@ -147,24 +148,24 @@ namespace BusinessLogic
             List<Task<Repository.Models.Notification>> tasks = new List<Task<Repository.Models.Notification>>();
             Task<List<Repository.Models.FollowingUser>> followeeTask = Task.Run(() => _repo.GetUserFollowees(modelNotifications.UserId));
 
-            foreach(string userid in modelNotifications.Followers)
+            foreach (string userid in modelNotifications.Followers)
             {
                 tasks.Add(Task.Run(() => Mapper.ModelNotifToRepoNotif(userid, modelNotifications.OtherId, type, null)));
             }
             var results = await Task.WhenAll(tasks);
-            foreach(var item in results)
+            foreach (var item in results)
             {
                 newNotifications.Add(item);
             }
             List<Task> repoTasks = new List<Task>();
-            foreach(var notification in newNotifications)
+            foreach (var notification in newNotifications)
             {
                 repoTasks.Add(Task.Run(() => _repo.AddNotification(notification)));
             }
             followeeTask.Wait();
             List<Repository.Models.FollowingUser> allFollowees = followeeTask.Result;
             List<Repository.Models.Notification> otherNotifications = await Task.Run(() => FolloweeNotifications(modelNotifications.OtherId, type, allFollowees, newNotifications, modelNotifications.UserId));
-            foreach(var notification in otherNotifications)
+            foreach (var notification in otherNotifications)
             {
                 repoTasks.Add(Task.Run(() => _repo.AddNotification(notification)));
             }
@@ -174,19 +175,23 @@ namespace BusinessLogic
         public async Task<List<NotificationDTO>> GetNotifications(string userid)
         {
             List<Repository.Models.Notification> repoNotifications = await _repo.GetNotifications(userid);
-            if(repoNotifications == null)
+            if (repoNotifications == null)
             {
                 return null;
             }
+            var userIdList = repoNotifications.Select(n => n.CreatorId).ToList();
+            var users = await _repo.GetReportedUsers(userIdList);
             List<NotificationDTO> newNotifications = new List<NotificationDTO>();
             List<Task<NotificationDTO>> tasks = new List<Task<NotificationDTO>>();
-            foreach(var repoN in repoNotifications)
+            foreach (var repoN in repoNotifications)
             {
                 tasks.Add(Task.Run(() => Mapper.RepoNotifToNotifDTO(repoN)));
+
             }
             var results = await Task.WhenAll(tasks);
-            foreach(var item in results)
+            foreach (var item in results)
             {
+                item.CreatorUsername = users.Where(u => u.UserId == item.CreatorId).FirstOrDefault().Username;
                 newNotifications.Add(item);
             }
             return newNotifications;
@@ -215,16 +220,16 @@ namespace BusinessLogic
         {
             List<Repository.Models.Notification> newNotifications = new List<Repository.Models.Notification>();
             List<Task<Repository.Models.Notification>> tasks = new List<Task<Repository.Models.Notification>>();
-            foreach(Repository.Models.FollowingUser followee in followees)
+            foreach (Repository.Models.FollowingUser followee in followees)
             {
-                if(!curNotif.Exists(x => x.UserId == followee.FolloweeUserId))
+                if (!curNotif.Exists(x => x.UserId == followee.FolloweeUserId))
                 {
                     tasks.Add(Task.Run(() => Mapper.ModelNotifToRepoNotif(followee.FolloweeUserId, otherid, type, creatorid)));
                 }
             }
             var results = await Task.WhenAll(tasks);
-            foreach(var item in results)
-            {   
+            foreach (var item in results)
+            {
                 newNotifications.Add(item);
             }
             return newNotifications;
