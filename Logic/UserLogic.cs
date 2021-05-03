@@ -179,7 +179,7 @@ namespace BusinessLogic
             {
                 return null;
             }
-            var userIdList = repoNotifications.Select(n => n.CreatorId).ToList();
+            var userIdList = repoNotifications.Select(n => n.CreatorId).Where(u => u != null).ToList();
             var users = await _repo.GetReportedUsers(userIdList);
             List<NotificationDTO> newNotifications = new List<NotificationDTO>();
             List<Task<NotificationDTO>> tasks = new List<Task<NotificationDTO>>();
@@ -191,7 +191,8 @@ namespace BusinessLogic
             var results = await Task.WhenAll(tasks);
             foreach (var item in results)
             {
-                item.CreatorUsername = users.Where(u => u.UserId == item.CreatorId).FirstOrDefault().Username;
+                if (item.CreatorId != null)
+                    item.CreatorUsername = users.Where(u => u.UserId == item.CreatorId).FirstOrDefault().Username;
                 newNotifications.Add(item);
             }
             return newNotifications;
