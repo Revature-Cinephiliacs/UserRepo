@@ -5,11 +5,11 @@ using System.Collections.Generic;
 
 namespace Repository.Models
 {
-    /// <summary>
-    /// Model from database-first scaffolding for Repo Layer
-    /// </summary>
     public partial class FollowingUser
     {
+        /// <summary>
+        /// Model from database-first for repo
+        /// </summary>
         public string FollowerUserId { get; set; }
         public string FolloweeUserId { get; set; }
 
