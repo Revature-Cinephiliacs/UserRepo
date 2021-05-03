@@ -48,7 +48,7 @@ namespace CineAPI.Controllers
         }
 
         /// <summary>
-        /// Adds a new User based on the information provided.
+        /// Creates a new User based on the information provided.
         /// Returns a 400 status code if creation fails.
         /// </summary>
         /// <param name="user"></param>
