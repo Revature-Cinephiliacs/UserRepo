@@ -70,7 +70,7 @@ namespace CineAPI.Controllers
                     });
                     errorstring += "}";
                 });
-                return this.BadRequest(new { error = errorstring });
+                return Ok(new { error = errorstring });
             }
 
             if (await _userLogic.CreateUser(user))
