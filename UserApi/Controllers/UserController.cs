@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using UserAPI.AuthenticationHelper;
 using RestSharp;
 using Newtonsoft.Json;
+using System.Linq;
 
 namespace CineAPI.Controllers
 {
@@ -58,7 +59,18 @@ namespace CineAPI.Controllers
             if (!ModelState.IsValid)
             {
                 _logger.LogWarning("UserController.CreateUser() was called with invalid body data.");
-                return StatusCode(400);
+                var errorstring = "";
+                ModelState.Values.ToList().ForEach(value =>
+                {
+                    errorstring += $" {value.AttemptedValue}";
+                    errorstring += "{";
+                    value.Errors.ToList().ForEach(err =>
+                    {
+                        errorstring += err.ErrorMessage;
+                    });
+                    errorstring += "}";
+                });
+                return this.NotFound(new { error = errorstring });
             }
 
             if (await _userLogic.CreateUser(user))
