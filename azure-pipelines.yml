@@ -58,12 +58,13 @@ stages:
 
       - task: SonarCloudPrepare@1
         inputs:
-          SonarCloud: 'SonarCloudUsers'
+          SonarCloud: 'UsersRepo'
           organization: 'revature-cinephiliacs'
           scannerMode: 'MSBuild'
           projectKey: 'Revature-Cinephiliacs_UserRepo'
           projectName: 'UserRepo'
-          extraProperties: 
+          extraProperties: |
+            sonar.exclusions=/obj/,/lib/,/*.dll,/UserApi,/Migrations/**
             sonar.cs.opencover.reportsPaths=$(Agent.TempDirectory)/*/coverage.opencover.xml
 
       - task: DotNetCoreCLI@2
