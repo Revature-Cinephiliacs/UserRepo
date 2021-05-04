@@ -214,6 +214,7 @@ namespace Repository
         public async Task AddNotification(Notification notification)
         {
             await _dbContext.AddAsync<Notification>(notification);
+            await _dbContext.SaveChangesAsync();
         }
 
         /// <summary>

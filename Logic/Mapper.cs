@@ -56,12 +56,12 @@ namespace BusinessLogic
         /// <param name="commentId"></param>
         /// <param name="v"></param>
         /// <returns></returns>
-        internal static Repository.Models.Notification ModelNotifToRepoNotif(string userid, Guid commentId, string service, string creatorid)
+        internal static Repository.Models.Notification ModelNotifToRepoNotif(string userid, Guid otherId, string service, string creatorid)
         {
             Repository.Models.Notification newNotification = new Repository.Models.Notification();
             newNotification.NotificationId = Guid.NewGuid().ToString();
             newNotification.UserId = userid;
-            newNotification.OtherId = commentId.ToString();
+            newNotification.OtherId = otherId.ToString();
             newNotification.FromService = service;
             newNotification.CreatorId = creatorid;
             return newNotification;
