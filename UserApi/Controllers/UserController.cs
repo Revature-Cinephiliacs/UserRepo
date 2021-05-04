@@ -143,7 +143,7 @@ namespace CineAPI.Controllers
         /// </summary>
         /// <param name="userid"></param>
         /// <returns></returns>
-        [HttpGet("user/username/{userid}")]
+        [HttpGet("user/username/{username}")]
         public async Task<ActionResult<User>> GetUserByUsername(string username)
         {
             User user = await _userLogic.GetUserByUsername(username);
