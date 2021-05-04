@@ -146,7 +146,7 @@ namespace BusinessLogic
         {
             List<Repository.Models.Notification> newNotifications = new List<Repository.Models.Notification>();
             List<Task<Repository.Models.Notification>> tasks = new List<Task<Repository.Models.Notification>>();
-            Task<List<Repository.Models.FollowingUser>> followeeTask = Task.Run(() => _repo.GetUserFollowees(modelNotifications.UserId));
+            List<Repository.Models.FollowingUser> allFollowees = await _repo.GetUserFollowees(modelNotifications.Usernameid);
 
             foreach (string userid in modelNotifications.Followers)
             {
@@ -160,16 +160,14 @@ namespace BusinessLogic
             List<Task> repoTasks = new List<Task>();
             foreach (var notification in newNotifications)
             {
-                repoTasks.Add(Task.Run(() => _repo.AddNotification(notification)));
+                await _repo.AddNotification(notification);
             }
-            followeeTask.Wait();
-            List<Repository.Models.FollowingUser> allFollowees = followeeTask.Result;
-            List<Repository.Models.Notification> otherNotifications = await Task.Run(() => FolloweeNotifications(modelNotifications.OtherId, type, allFollowees, newNotifications, modelNotifications.UserId));
+
+            List<Repository.Models.Notification> otherNotifications = await Task.Run(() => FolloweeNotifications(modelNotifications.OtherId, type, allFollowees, newNotifications, modelNotifications.Usernameid));
             foreach (var notification in otherNotifications)
             {
-                repoTasks.Add(Task.Run(() => _repo.AddNotification(notification)));
+                await _repo.AddNotification(notification);
             }
-            await Task.WhenAll(repoTasks);
         }
 
         public async Task<List<NotificationDTO>> GetNotifications(string userid)
