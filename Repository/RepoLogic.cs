@@ -55,6 +55,16 @@ namespace Repository
         }
 
         /// <summary>
+        /// Returns a user and their information based on their username
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
+        public async Task<User> GetUserByUsername(string username)
+        {
+            return await _dbContext.Users.FirstOrDefaultAsync(x => x.Username == username);
+        }
+
+        /// <summary>
         /// Adds a new FollowingUser object into the database
         /// Checks if both the follower and followee exists, on id
         /// If either follower or followee does not exist, return true
@@ -214,6 +224,7 @@ namespace Repository
         public async Task AddNotification(Notification notification)
         {
             await _dbContext.AddAsync<Notification>(notification);
+            await _dbContext.SaveChangesAsync();
         }
 
         /// <summary>

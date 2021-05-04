@@ -128,5 +128,12 @@ namespace BusinessLogic.Interfaces
         /// <param name="userid"></param>
         /// <returns></returns>
         public Task<bool> DeleteNotifications(string userid);
+
+        /// <summary>
+        /// Gets a user's information from their username
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
+        public Task<User> GetUserByUsername(string username);
     }
 }
