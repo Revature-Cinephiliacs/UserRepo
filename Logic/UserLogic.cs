@@ -49,6 +49,16 @@ namespace BusinessLogic
             return await Task.Run(() => Mapper.RepoUserToUser(repoUser));
         }
 
+        public async Task<User> GetUserByUsername(string username)
+        {
+            var repoUser = await Task.Run(() => _repo.GetUserByUsername(username));
+            if(repoUser == null)
+            {
+                return null;
+            }
+            return await Task.Run(() => Mapper.RepoUserToUser(repoUser));
+        }
+
         public async Task<string> GetUserNameById(string userid)
         {
             Repository.Models.User repoUser = await Task.Run(() => _repo.GetUserByUserId(userid));
@@ -150,7 +160,10 @@ namespace BusinessLogic
 
             foreach (string userid in modelNotifications.Followers)
             {
-                tasks.Add(Task.Run(() => Mapper.ModelNotifToRepoNotif(userid, modelNotifications.OtherId, type, null)));
+                if(userid != modelNotifications.Usernameid)
+                {
+                    tasks.Add(Task.Run(() => Mapper.ModelNotifToRepoNotif(userid, modelNotifications.OtherId, type, null)));
+                }
             }
             var results = await Task.WhenAll(tasks);
             foreach (var item in results)

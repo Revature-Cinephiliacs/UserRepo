@@ -137,6 +137,25 @@ namespace CineAPI.Controllers
         }
 
         /// <summary>
+        /// Returns the username of the user based on their user id
+        /// Returns 404 if could not find userid in the database
+        /// Returns 200 if user was found
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        [HttpGet("user/username/{username}")]
+        public async Task<ActionResult<User>> GetUserByUsername(string username)
+        {
+            User user = await _userLogic.GetUserByUsername(username);
+            if (user == null)
+            {
+                return StatusCode(404);
+            }
+            StatusCode(200);
+            return user;
+        }
+
+        /// <summary>
         /// Updates User information based on the information provided.
         /// Returns a 400 status code if the incoming data is invalid.
         /// Returns a 404 status code if the userid does not already exist.
