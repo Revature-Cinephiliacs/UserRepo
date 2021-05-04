@@ -215,7 +215,7 @@ namespace CineAPI.Controllers
         /// <param name="userid"></param>
         /// <returns></returns>
         [HttpPost("role/admin/{userid}")]
-        [Authorize("manage:website")]
+        //[Authorize("manage:website")]
         public async Task<ActionResult> AddAdminRole(string userid)
         {
             if (await _userLogic.UpdatePermissions(userid, 3))

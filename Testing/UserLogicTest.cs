@@ -1046,5 +1046,371 @@ namespace Testing
             }
             Assert.Equal(user.Email, "oldtest@gmail.com");
         }
+
+        [Fact]
+        public async Task GetUserByUsername_Test()
+        {
+            Repository.Models.User oldUser = new Repository.Models.User();
+            var id = Guid.NewGuid().ToString();
+            oldUser.UserId = id;
+            oldUser.Username = "OldTestingTestington";
+            oldUser.FirstName = "OGTest";
+            oldUser.LastName = "OriginalTest";
+            oldUser.Permissions = 1;
+            oldUser.Email = "oldtest@gmail.com";
+            Repository.Models.User oldUser1 = new Repository.Models.User();
+            oldUser1.UserId = Guid.NewGuid().ToString();
+            oldUser1.Username = "OldTestingTestington1";
+            oldUser1.FirstName = "OGTest1";
+            oldUser1.LastName = "OriginalTest1";
+            oldUser1.Permissions = 1;
+            oldUser1.Email = "oldtest1@gmail.com";
+
+            using (var context = new Cinephiliacs_UserContext(options))
+            {
+                context.Database.EnsureDeleted();
+                context.Database.EnsureCreated();
+
+                context.Add<Repository.Models.User>(oldUser);
+                context.Add<Repository.Models.User>(oldUser1);
+                context.SaveChanges();
+            }
+            GlobalModels.User user = null;
+            using (var context1 = new Cinephiliacs_UserContext(options))
+            {
+                context1.Database.EnsureCreated();
+
+                RepoLogic userRepo = new RepoLogic(context1, repoLogger);
+                UserLogic test = new UserLogic(userRepo, logicLogger);
+
+                user = await Task.Run(() => test.GetUserByUsername(oldUser.Username));
+            }
+            Assert.Equal(user.Email, "oldtest@gmail.com");
+        }
+
+        [Fact]
+        public async Task CreateNotifications_NoFollowers_Test()
+        {
+            Repository.Models.User oldUser = new Repository.Models.User();
+            var id = Guid.NewGuid().ToString();
+            oldUser.UserId = id;
+            oldUser.Username = "OldTestingTestington";
+            oldUser.FirstName = "OGTest";
+            oldUser.LastName = "OriginalTest";
+            oldUser.Permissions = 1;
+            oldUser.Email = "oldtest@gmail.com";
+            Repository.Models.User oldUser1 = new Repository.Models.User();
+            oldUser1.UserId = Guid.NewGuid().ToString();
+            oldUser1.Username = "OldTestingTestington1";
+            oldUser1.FirstName = "OGTest1";
+            oldUser1.LastName = "OriginalTest1";
+            oldUser1.Permissions = 1;
+            oldUser1.Email = "oldtest1@gmail.com";
+            ModelNotification recNotification = new ModelNotification();
+            recNotification.Usernameid = oldUser.UserId;
+            recNotification.DiscussionId = Guid.NewGuid();
+            recNotification.Followers = new List<string>();
+            recNotification.Followers.Add("follower1");
+            recNotification.Followers.Add("follower2");
+
+            using (var context = new Cinephiliacs_UserContext(options))
+            {
+                context.Database.EnsureDeleted();
+                context.Database.EnsureCreated();
+
+                context.Add<Repository.Models.User>(oldUser);
+                context.Add<Repository.Models.User>(oldUser1);
+                context.SaveChanges();
+            }
+            List<Repository.Models.Notification> allNotifications;
+            using (var context1 = new Cinephiliacs_UserContext(options))
+            {
+                context1.Database.EnsureCreated();
+
+                RepoLogic userRepo = new RepoLogic(context1, repoLogger);
+                UserLogic test = new UserLogic(userRepo, logicLogger);
+
+                await test.CreateNotifications(recNotification, "d");
+                allNotifications = await context1.Notifications.ToListAsync();
+            }
+
+            Assert.Equal(2, allNotifications.Count);
+        }
+
+        [Fact]
+        public async Task CreateNotifications_Followers_NoOverlap_Test()
+        {
+            Repository.Models.User oldUser = new Repository.Models.User();
+            var id = Guid.NewGuid().ToString();
+            oldUser.UserId = id;
+            oldUser.Username = "OldTestingTestington";
+            oldUser.FirstName = "OGTest";
+            oldUser.LastName = "OriginalTest";
+            oldUser.Permissions = 1;
+            oldUser.Email = "oldtest@gmail.com";
+            Repository.Models.User oldUser1 = new Repository.Models.User();
+            oldUser1.UserId = Guid.NewGuid().ToString();
+            oldUser1.Username = "OldTestingTestington1";
+            oldUser1.FirstName = "OGTest1";
+            oldUser1.LastName = "OriginalTest1";
+            oldUser1.Permissions = 1;
+            oldUser1.Email = "oldtest1@gmail.com";
+            ModelNotification recNotification = new ModelNotification();
+            recNotification.Usernameid = oldUser.UserId;
+            recNotification.CommentId = Guid.NewGuid();
+            recNotification.Followers = new List<string>();
+            recNotification.Followers.Add("follower1");
+            recNotification.Followers.Add("follower2");
+            Repository.Models.FollowingUser userFollows = new Repository.Models.FollowingUser();
+            userFollows.FollowerUserId = oldUser1.UserId;
+            userFollows.FolloweeUserId = oldUser.UserId;
+
+            using (var context = new Cinephiliacs_UserContext(options))
+            {
+                context.Database.EnsureDeleted();
+                context.Database.EnsureCreated();
+
+                context.Add<Repository.Models.User>(oldUser);
+                context.Add<Repository.Models.User>(oldUser1);
+                context.Add<Repository.Models.FollowingUser>(userFollows);
+                context.SaveChanges();
+            }
+            List<Repository.Models.Notification> allNotifications;
+            using (var context1 = new Cinephiliacs_UserContext(options))
+            {
+                context1.Database.EnsureCreated();
+
+                RepoLogic userRepo = new RepoLogic(context1, repoLogger);
+                UserLogic test = new UserLogic(userRepo, logicLogger);
+
+                await test.CreateNotifications(recNotification, "c");
+                allNotifications = await context1.Notifications.ToListAsync();
+            }
+
+            Assert.Equal(3, allNotifications.Count);
+        }
+
+        [Fact]
+        public async Task CreateNotifications_Followers_Overlap_Test()
+        {
+            Repository.Models.User oldUser = new Repository.Models.User();
+            var id = Guid.NewGuid().ToString();
+            oldUser.UserId = id;
+            oldUser.Username = "OldTestingTestington";
+            oldUser.FirstName = "OGTest";
+            oldUser.LastName = "OriginalTest";
+            oldUser.Permissions = 1;
+            oldUser.Email = "oldtest@gmail.com";
+            Repository.Models.User oldUser1 = new Repository.Models.User();
+            oldUser1.UserId = Guid.NewGuid().ToString();
+            oldUser1.Username = "OldTestingTestington1";
+            oldUser1.FirstName = "OGTest1";
+            oldUser1.LastName = "OriginalTest1";
+            oldUser1.Permissions = 1;
+            oldUser1.Email = "oldtest1@gmail.com";
+            ModelNotification recNotification = new ModelNotification();
+            recNotification.Usernameid = oldUser.UserId;
+            recNotification.ReviewId = Guid.NewGuid();
+            recNotification.Followers = new List<string>();
+            recNotification.Followers.Add(oldUser1.UserId);
+            recNotification.Followers.Add("follower2");
+            Repository.Models.FollowingUser userFollows = new Repository.Models.FollowingUser();
+            userFollows.FollowerUserId = oldUser.UserId;
+            userFollows.FolloweeUserId = oldUser1.UserId;
+
+            using (var context = new Cinephiliacs_UserContext(options))
+            {
+                context.Database.EnsureDeleted();
+                context.Database.EnsureCreated();
+
+                context.Add<Repository.Models.User>(oldUser);
+                context.Add<Repository.Models.User>(oldUser1);
+                context.Add<Repository.Models.FollowingUser>(userFollows);
+                context.SaveChanges();
+            }
+            List<Repository.Models.Notification> allNotifications;
+            using (var context1 = new Cinephiliacs_UserContext(options))
+            {
+                context1.Database.EnsureCreated();
+
+                RepoLogic userRepo = new RepoLogic(context1, repoLogger);
+                UserLogic test = new UserLogic(userRepo, logicLogger);
+
+                await test.CreateNotifications(recNotification, "r");
+                allNotifications = await context1.Notifications.ToListAsync();
+            }
+
+            Assert.Equal(2, allNotifications.Count);
+        }
+
+        [Fact]
+        public async Task GetNotifications_Test()
+        {
+            Repository.Models.User oldUser = new Repository.Models.User();
+            var id = Guid.NewGuid().ToString();
+            oldUser.UserId = id;
+            oldUser.Username = "OldTestingTestington";
+            oldUser.FirstName = "OGTest";
+            oldUser.LastName = "OriginalTest";
+            oldUser.Permissions = 1;
+            oldUser.Email = "oldtest@gmail.com";
+            Repository.Models.User oldUser1 = new Repository.Models.User();
+            oldUser1.UserId = Guid.NewGuid().ToString();
+            oldUser1.Username = "OldTestingTestington1";
+            oldUser1.FirstName = "OGTest1";
+            oldUser1.LastName = "OriginalTest1";
+            oldUser1.Permissions = 1;
+            oldUser1.Email = "oldtest1@gmail.com";
+            Repository.Models.Notification newNotification = new Repository.Models.Notification();
+            newNotification.NotificationId = Guid.NewGuid().ToString();
+            newNotification.UserId = oldUser.UserId;
+            newNotification.OtherId = Guid.NewGuid().ToString();
+            newNotification.FromService = "r";
+            newNotification.CreatorId = null;
+            Repository.Models.Notification newNotification1 = new Repository.Models.Notification();
+            newNotification1.NotificationId = Guid.NewGuid().ToString();
+            newNotification1.UserId = oldUser.UserId;
+            newNotification1.OtherId = Guid.NewGuid().ToString();
+            newNotification1.FromService = "d";
+            newNotification1.CreatorId = null;
+
+            using (var context = new Cinephiliacs_UserContext(options))
+            {
+                context.Database.EnsureDeleted();
+                context.Database.EnsureCreated();
+
+                context.Add<Repository.Models.User>(oldUser);
+                context.Add<Repository.Models.User>(oldUser1);
+                context.Add<Repository.Models.Notification>(newNotification);
+                context.Add<Repository.Models.Notification>(newNotification1);
+                context.SaveChanges();
+            }
+            List<GlobalModels.NotificationDTO> allNotifications;
+            using (var context1 = new Cinephiliacs_UserContext(options))
+            {
+                context1.Database.EnsureCreated();
+
+                RepoLogic userRepo = new RepoLogic(context1, repoLogger);
+                UserLogic test = new UserLogic(userRepo, logicLogger);
+
+                allNotifications = await test.GetNotifications(oldUser.UserId);
+            }
+
+            Assert.Equal(2, allNotifications.Count);
+        }
+
+        [Fact]
+        public async Task DeleteSingleNotification_Test()
+        {
+            Repository.Models.User oldUser = new Repository.Models.User();
+            var id = Guid.NewGuid().ToString();
+            oldUser.UserId = id;
+            oldUser.Username = "OldTestingTestington";
+            oldUser.FirstName = "OGTest";
+            oldUser.LastName = "OriginalTest";
+            oldUser.Permissions = 1;
+            oldUser.Email = "oldtest@gmail.com";
+            Repository.Models.User oldUser1 = new Repository.Models.User();
+            oldUser1.UserId = Guid.NewGuid().ToString();
+            oldUser1.Username = "OldTestingTestington1";
+            oldUser1.FirstName = "OGTest1";
+            oldUser1.LastName = "OriginalTest1";
+            oldUser1.Permissions = 1;
+            oldUser1.Email = "oldtest1@gmail.com";
+            Repository.Models.Notification newNotification = new Repository.Models.Notification();
+            newNotification.NotificationId = Guid.NewGuid().ToString();
+            newNotification.UserId = oldUser.UserId;
+            newNotification.OtherId = Guid.NewGuid().ToString();
+            newNotification.FromService = "r";
+            newNotification.CreatorId = null;
+            Repository.Models.Notification newNotification1 = new Repository.Models.Notification();
+            newNotification1.NotificationId = Guid.NewGuid().ToString();
+            newNotification1.UserId = oldUser.UserId;
+            newNotification1.OtherId = Guid.NewGuid().ToString();
+            newNotification1.FromService = "d";
+            newNotification1.CreatorId = null;
+
+            using (var context = new Cinephiliacs_UserContext(options))
+            {
+                context.Database.EnsureDeleted();
+                context.Database.EnsureCreated();
+
+                context.Add<Repository.Models.User>(oldUser);
+                context.Add<Repository.Models.User>(oldUser1);
+                context.Add<Repository.Models.Notification>(newNotification);
+                context.Add<Repository.Models.Notification>(newNotification1);
+                context.SaveChanges();
+            }
+            List<Repository.Models.Notification> allNotifications;
+            using (var context1 = new Cinephiliacs_UserContext(options))
+            {
+                context1.Database.EnsureCreated();
+
+                RepoLogic userRepo = new RepoLogic(context1, repoLogger);
+                UserLogic test = new UserLogic(userRepo, logicLogger);
+
+                await test.DeleteSingleNotification(Guid.Parse(newNotification.NotificationId));
+                allNotifications = await context1.Notifications.ToListAsync();
+            }
+
+            Assert.Equal(1, allNotifications.Count);
+        }
+
+        [Fact]
+        public async Task DeleteAllNotification_Test()
+        {
+            Repository.Models.User oldUser = new Repository.Models.User();
+            var id = Guid.NewGuid().ToString();
+            oldUser.UserId = id;
+            oldUser.Username = "OldTestingTestington";
+            oldUser.FirstName = "OGTest";
+            oldUser.LastName = "OriginalTest";
+            oldUser.Permissions = 1;
+            oldUser.Email = "oldtest@gmail.com";
+            Repository.Models.User oldUser1 = new Repository.Models.User();
+            oldUser1.UserId = Guid.NewGuid().ToString();
+            oldUser1.Username = "OldTestingTestington1";
+            oldUser1.FirstName = "OGTest1";
+            oldUser1.LastName = "OriginalTest1";
+            oldUser1.Permissions = 1;
+            oldUser1.Email = "oldtest1@gmail.com";
+            Repository.Models.Notification newNotification = new Repository.Models.Notification();
+            newNotification.NotificationId = Guid.NewGuid().ToString();
+            newNotification.UserId = oldUser.UserId;
+            newNotification.OtherId = Guid.NewGuid().ToString();
+            newNotification.FromService = "r";
+            newNotification.CreatorId = null;
+            Repository.Models.Notification newNotification1 = new Repository.Models.Notification();
+            newNotification1.NotificationId = Guid.NewGuid().ToString();
+            newNotification1.UserId = oldUser.UserId;
+            newNotification1.OtherId = Guid.NewGuid().ToString();
+            newNotification1.FromService = "d";
+            newNotification1.CreatorId = null;
+
+            using (var context = new Cinephiliacs_UserContext(options))
+            {
+                context.Database.EnsureDeleted();
+                context.Database.EnsureCreated();
+
+                context.Add<Repository.Models.User>(oldUser);
+                context.Add<Repository.Models.User>(oldUser1);
+                context.Add<Repository.Models.Notification>(newNotification);
+                context.Add<Repository.Models.Notification>(newNotification1);
+                context.SaveChanges();
+            }
+            List<Repository.Models.Notification> allNotifications;
+            using (var context1 = new Cinephiliacs_UserContext(options))
+            {
+                context1.Database.EnsureCreated();
+
+                RepoLogic userRepo = new RepoLogic(context1, repoLogger);
+                UserLogic test = new UserLogic(userRepo, logicLogger);
+
+                await test.DeleteNotifications(oldUser.UserId);
+                allNotifications = await context1.Notifications.ToListAsync();
+            }
+
+            Assert.Equal(0, allNotifications.Count);
+        }
     }
 }
