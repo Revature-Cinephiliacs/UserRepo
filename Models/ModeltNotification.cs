@@ -12,9 +12,9 @@ namespace GlobalModels
     {
         public string Usernameid { get; set; }
         public string OtherId { get; set; }
-        public string Reviewid { set { OtherId = value; } }
-        public string DiscussionId { set { OtherId = value; } }
-        public string CommentId { set { OtherId = value; } }
+        public string Reviewid { set { if(!string.IsNullOrEmpty(value)) OtherId = value; } }
+        public string DiscussionId { set { if(!string.IsNullOrEmpty(value)) OtherId = value; } }
+        public string CommentId { set { if(!string.IsNullOrEmpty(value)) OtherId = value; } }
         public List<string> Followers { get; set; }
     }
 }
