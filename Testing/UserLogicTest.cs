@@ -1108,7 +1108,7 @@ namespace Testing
             oldUser1.Email = "oldtest1@gmail.com";
             ModelNotification recNotification = new ModelNotification();
             recNotification.Usernameid = oldUser.UserId;
-            recNotification.DiscussionId = Guid.NewGuid();
+            recNotification.DiscussionId = Guid.NewGuid().ToString();
             recNotification.Followers = new List<string>();
             recNotification.Followers.Add("follower1");
             recNotification.Followers.Add("follower2");
@@ -1157,7 +1157,7 @@ namespace Testing
             oldUser1.Email = "oldtest1@gmail.com";
             ModelNotification recNotification = new ModelNotification();
             recNotification.Usernameid = oldUser.UserId;
-            recNotification.CommentId = Guid.NewGuid();
+            recNotification.CommentId = Guid.NewGuid().ToString();
             recNotification.Followers = new List<string>();
             recNotification.Followers.Add("follower1");
             recNotification.Followers.Add("follower2");
@@ -1210,7 +1210,7 @@ namespace Testing
             oldUser1.Email = "oldtest1@gmail.com";
             ModelNotification recNotification = new ModelNotification();
             recNotification.Usernameid = oldUser.UserId;
-            recNotification.Reviewid = Guid.NewGuid();
+            recNotification.Reviewid = Guid.NewGuid().ToString();
             recNotification.Followers = new List<string>();
             recNotification.Followers.Add(oldUser1.UserId);
             recNotification.Followers.Add("follower2");

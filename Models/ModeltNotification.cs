@@ -11,10 +11,10 @@ namespace GlobalModels
     public class ModelNotification
     {
         public string Usernameid { get; set; }
-        public Guid OtherId { get; set; }
-        public Guid Reviewid { set { OtherId = value; } }
-        public Guid DiscussionId { set { OtherId = value; } }
-        public Guid CommentId { set { OtherId = value; } }
+        public string OtherId { get; set; }
+        public string Reviewid { set { OtherId = value; } }
+        public string DiscussionId { set { OtherId = value; } }
+        public string CommentId { set { OtherId = value; } }
         public List<string> Followers { get; set; }
     }
 }

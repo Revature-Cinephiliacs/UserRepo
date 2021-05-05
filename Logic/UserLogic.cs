@@ -228,7 +228,7 @@ namespace BusinessLogic
         /// <param name="otherid"></param>
         /// <param name="curNotif"></param>
         /// <returns></returns>
-        private async Task<List<Repository.Models.Notification>> FolloweeNotifications(Guid otherid, string type, List<Repository.Models.FollowingUser> followees, List<Repository.Models.Notification> curNotif, string creatorid)
+        private async Task<List<Repository.Models.Notification>> FolloweeNotifications(string otherid, string type, List<Repository.Models.FollowingUser> followees, List<Repository.Models.Notification> curNotif, string creatorid)
         {
             List<Repository.Models.Notification> newNotifications = new List<Repository.Models.Notification>();
             List<Task<Repository.Models.Notification>> tasks = new List<Task<Repository.Models.Notification>>();
