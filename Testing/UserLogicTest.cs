@@ -1162,8 +1162,8 @@ namespace Testing
             recNotification.Followers.Add("follower1");
             recNotification.Followers.Add("follower2");
             Repository.Models.FollowingUser userFollows = new Repository.Models.FollowingUser();
-            userFollows.FollowerUserId = oldUser1.UserId;
-            userFollows.FolloweeUserId = oldUser.UserId;
+            userFollows.FollowerUserId = oldUser.UserId;
+            userFollows.FolloweeUserId = oldUser1.UserId;
 
             using (var context = new Cinephiliacs_UserContext(options))
             {
