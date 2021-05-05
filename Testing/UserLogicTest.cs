@@ -1210,7 +1210,7 @@ namespace Testing
             oldUser1.Email = "oldtest1@gmail.com";
             ModelNotification recNotification = new ModelNotification();
             recNotification.Usernameid = oldUser.UserId;
-            recNotification.ReviewId = Guid.NewGuid();
+            recNotification.Reviewid = Guid.NewGuid();
             recNotification.Followers = new List<string>();
             recNotification.Followers.Add(oldUser1.UserId);
             recNotification.Followers.Add("follower2");
