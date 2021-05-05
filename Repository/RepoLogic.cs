@@ -176,7 +176,7 @@ namespace Repository
         /// <returns></returns>
         public async Task<List<FollowingUser>> GetUserFollowees(string userid)
         {
-            return await _dbContext.FollowingUsers.Include(x => x.FollowerUser).Where(x => x.FolloweeUserId == userid).ToListAsync();
+            return await _dbContext.FollowingUsers.Include(x => x.FollowerUser).Where(x => x.FollowerUserId == userid).ToListAsync();
         }
 
         /// <summary>
