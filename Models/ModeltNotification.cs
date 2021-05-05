@@ -12,7 +12,6 @@ namespace GlobalModels
     {
         public string Usernameid { get; set; }
         public Guid OtherId { get; set; }
-        [JsonPropertyName("Reviewid")]
         public Guid ReviewId { set { OtherId = value; } }
         public Guid DiscussionId { set { OtherId = value; } }
         public Guid CommentId { set { OtherId = value; } }
